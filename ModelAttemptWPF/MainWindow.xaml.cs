@@ -3,27 +3,10 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Diagnostics;
-using IronPython.Hosting;
-using IronPython.Runtime;
-using Microsoft.Scripting.Hosting;
-using SciChart;
-using SciChart.Charting.Visuals;
-using SciChart.Charting.Visuals.Annotations;
-using SciChart.Charting.Visuals.Axes;
-using SciChart.Charting.ChartModifiers;
+
+
 
 namespace ModelAttemptWPF
 {
@@ -57,11 +40,11 @@ namespace ModelAttemptWPF
             this.fixedNFake = 100; // number of fake news articles in the experiment
             this.fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
-            this.values = new List<double> {0.4};
+            this.values = new List<double> { 0.4 ,0.6};//,0.6,0.8,0.9};
             this.dpNumber = 0;
 
             this.UKDistributionSimulation("OL40", fixedN, fixedK, fixedNFake, fixedNTrue, values[0]); // start the simulation with these parameters
-            this.RunLoop(100);
+            //this.RunLoop(100);
         }
 
         private void SetClockFunctions()
@@ -111,8 +94,6 @@ namespace ModelAttemptWPF
 
         private void UKDistributionSimulation(string name,int n,int k=100,int nFake=20,int nTrue=20,double  nMean=(3.24/5))
         {
-           
-
             //this.Activate();
             this.simulation = new Simulation(name, 10,  nMean); // create a new simulation object
             this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
@@ -126,7 +107,7 @@ namespace ModelAttemptWPF
 
             // Create some news to be shared
             AddDistributedNews(nFake, nTrue,this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
-            //SetClockFunctions(); // Start the clock
+           SetClockFunctions(); // Start the clock
         }
         
         private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake=0.75, double meanETrue=0.5, double meanBFake=0.25,double meanBTrue = 0.75)
@@ -203,7 +184,6 @@ namespace ModelAttemptWPF
             {
                 // the number that shared with respect to time
                 //var singleString = string.Join(",", _values.ToArray() );
-                Console.WriteLine(string.Join(",", news.nSharedList.ToArray()));
                 csvNShared.Append(string.Join(",",news.nSharedList.ToArray())+"\n");
                 csvNViewed.Append(string.Join(",",news.nViewedList.ToArray())+ "\n"); ;
 
@@ -272,7 +252,7 @@ namespace ModelAttemptWPF
             csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings
             foreach (Account account in facebook.accountList)
             {
-                Console.WriteLine("OL in write:" + account.person.onlineLiteracy);
+                Console.WriteLine("OL written to file:" + account.person.onlineLiteracy);
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}", account.ID, account.followers.Count, account.person.o, account.person.c, account.person.e, account.person.a, account.person.n, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
                 csv.AppendLine(line);
             }
