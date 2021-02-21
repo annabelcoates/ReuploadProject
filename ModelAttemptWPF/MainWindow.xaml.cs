@@ -21,7 +21,7 @@ namespace ModelAttemptWPF
         public DispatcherTimer Clock { get; set; } = new DispatcherTimer();
         private DispatcherTimer MinClock {get;set;}=new DispatcherTimer();
         Facebook facebook;
-        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\small_world_graph.csv"; //!! set to local results folder
+        private string smallWorldPath = @"C:\Users\Anni\source\repos\ModelAttemptWPF\FacebookUK\small_world_graph.csv";
 
 
         // define fixed settings 

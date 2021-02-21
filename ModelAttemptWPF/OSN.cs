@@ -17,8 +17,8 @@ namespace ModelAttemptWPF
         public int feedTimeFrame = 150; // the number of timeslots to go back 
 
         private Process process = null; // for python connection
-        public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\follows";
-        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\small_world_graph.csv";
+        public string followCSVPath = @"C:\Users\Anni\source\repos\ModelAttemptWPF\FacebookUK\follows";
+        private string smallWorldPath = @"C:\Users\Anni\source\repos\ModelAttemptWPF\FacebookUK\small_world_graph.csv";
 
 
         public List<Account> accountList = new List<Account>();
