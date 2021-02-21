@@ -8,6 +8,7 @@ using Microsoft.Data.Analysis;
 using Medallion;
 using System.Text;
 
+
 namespace ModelAttemptWPF
 {
     public class OSN
@@ -16,8 +17,8 @@ namespace ModelAttemptWPF
         public int feedTimeFrame = 150; // the number of timeslots to go back 
 
         private Process process = null; // for python connection
-        public string followCSVPath = @"C:\Users\Anni\Documents\Uni\Computer Science\Proj\CSVs and text files\FacebookUK\follows";
-        private string smallWorldPath = @"C:\Users\Anni\Documents\Uni\Computer Science\Proj\CSVs and text files\FacebookUK\small_world_graph.csv";
+        public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\follows";
+        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\small_world_graph.csv";
 
 
         public List<Account> accountList = new List<Account>();
@@ -248,14 +249,14 @@ namespace ModelAttemptWPF
         private void CreateGraphCSV(string n, string k)
         {
             process = new Process();
-            process.StartInfo.WorkingDirectory = @"C:\Users\Anni\source\repos\ModelAttemptWPF\ModelAttemptWPF";
+            process.StartInfo.WorkingDirectory = @"C:\Users\ancoa\Documents\Proj\ReuploadProject"; //!! set this to the folder that the .sln file is in
             process.OutputDataReceived += (sender, e) => Console.WriteLine($"Recieved:\t{e.Data}");
             process.ErrorDataReceived += (sender, e) => Console.WriteLine($"ERROR:\t {e.Data}");
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.UseShellExecute = false;
 
-            process.StartInfo.FileName = @"C:\Users\Anni\AppData\Local\Programs\Python\Python37\python.exe";
+            process.StartInfo.FileName = @"C:\Users\Anni\AppData\Local\Programs\Python\Python37\python.exe"; //!! set this to the location of python.exe on your device
             /// python exe @"C:\Users\Anni\PycharmProjects\NetworkGraphs\tester_wheel_graph.py";
             process.StartInfo.Arguments = "tester_wheel_graph.py --n " + n + " --k " + k;
             process.Start();

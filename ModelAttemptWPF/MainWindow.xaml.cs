@@ -21,7 +21,7 @@ namespace ModelAttemptWPF
         public DispatcherTimer Clock { get; set; } = new DispatcherTimer();
         private DispatcherTimer MinClock {get;set;}=new DispatcherTimer();
         Facebook facebook;
-        private string smallWorldPath = @"C:\Users\Anni\Documents\Uni\Computer Science\Proj\CSVs and text files\FacebookUK\small_world_graph.csv";
+        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\FacebookUK\small_world_graph.csv"; //!! set to local results folder
 
 
         // define fixed settings 
@@ -159,7 +159,7 @@ namespace ModelAttemptWPF
         {
 
 
-            string generalPath = @"C:\Users\Anni\Documents\Uni\Computer Science\Proj\CSVs and text files\"+simulation.versionName+"_"+simulation.runNumber+@"\";
+            string generalPath = @"C:\Users\ancoa\Documents\Proj\CSVs and text files\" + simulation.versionName+"_"+simulation.runNumber+@"\"; //!! set to local results folder
            Directory.CreateDirectory(generalPath);
 
             facebook.SaveFollowCSV(generalPath);
