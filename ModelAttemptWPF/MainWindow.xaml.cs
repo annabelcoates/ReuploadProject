@@ -21,33 +21,36 @@ namespace ModelAttemptWPF
         public DispatcherTimer Clock { get; set; } = new DispatcherTimer();
         private DispatcherTimer MinClock {get;set;}=new DispatcherTimer();
         Facebook facebook;
-        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
+        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
 
 
         // define fixed settings 
-        public int fixedN;
-        public int fixedK;
-        public int fixedNFake;
-        public int fixedNTrue;
-        public int dpNumber;
+        public const int fixedN = 1000;
+        public const int fixedK = 100;
+        public const int fixedNFake = 100;
+        public const int fixedNTrue = 200;
+        public const int RUNS = 3;
+        public const double DEFAULT_FRAC_FOLLOWS = 0.5;
+        public const int RUNTIME = 100;
+        public const int FB_TIMEFRAME = 150;
 
         public List<double> values;
-        
+
         public MainWindow()
         {
-            this.fixedN = 1000; // the fixed number of people in the simulation
-            this.fixedK = 100; // the fixed k-value of the network (how many in each clique)
-            this.fixedNFake = 100; // number of fake news articles in the experiment
-            this.fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
+            //this.fixedN = 1000; // the fixed number of people in the simulation
+            //this.fixedK = 100; // the fixed k-value of the network (how many in each clique)
+            //this.fixedNFake = 100; // number of fake news articles in the experiment
+            //this.fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
             this.values = new List<double> { 0.4 ,0.6};//,0.6,0.8,0.9};
-            this.dpNumber = 0;
 
-            this.UKDistributionSimulation("OL40", fixedN, fixedK, fixedNFake, fixedNTrue, values[0]); // start the simulation with these parameters
+            this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, values); // start the simulation with these parameters
+            this.Close();
             //this.RunLoop(100);
         }
 
-        private void SetClockFunctions()
+        /*private void SetClockFunctions()
         {
             Clock.Interval = TimeSpan.FromMilliseconds(150f / simulation.runSpeed);
             Clock.Tick += StandardFBUpdate;
@@ -55,8 +58,8 @@ namespace ModelAttemptWPF
             InitializeComponent();
             Clock.Start();
             MinClock.Start();
-        }
-        private void StandardFBUpdate(object sender, EventArgs e)
+        }*/
+        /*private Boolean StandardFBUpdate()
         {
             this.facebook.TimeSlotPasses(simulation.time);
 
@@ -73,10 +76,10 @@ namespace ModelAttemptWPF
              //   this.AddDistributedNews(0, 1, this.facebook);
             }
             simulation.time++;
+            return (simulation.time > RUNTIME);
+        }*/
 
-        }
-
-        private void RunLoop(int iterations=1000)
+        /*private void RunLoop(int iterations=1000)
         {
             for (int timestep = 0; timestep < iterations; timestep++)
             {
@@ -90,24 +93,33 @@ namespace ModelAttemptWPF
                     SimulationEnd(this.simulation);
                 }
             }
-        }
+        }*/
 
-        private void UKDistributionSimulation(string name,int n,int k=100,int nFake=20,int nTrue=20,double  nMean=(3.24/5))
+        private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, List<double> nMeans)
         {
-            //this.Activate();
-            this.simulation = new Simulation(name, 10,  nMean); // create a new simulation object
-            this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
-            this.facebook = new Facebook("FacebookUK"); // make a facebook object
+            foreach (double val in nMeans)
+            {
+                for (int i = 0; i < RUNS; i++)
+                {
+                    //this.Activate();
+                    this.simulation = new Simulation(name, val,i+1); // create a new simulation object
+                    this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
+                    this.facebook = new Facebook("FacebookUK", FB_TIMEFRAME); // make a facebook object
 
-            // Give facebook a small initial population
-            int defaultFollows = n/2; // set the default number of people that each Facebook user will follow
-            this.facebook.PopulateFromPeople(n,k, simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
-            this.facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
-            this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
+                    // Give facebook a small initial population
+                    int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
+                    this.facebook.PopulateFromPeople(n, k, simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
+                    this.facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
+                    this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
 
-            // Create some news to be shared
-            AddDistributedNews(nFake, nTrue,this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
-           SetClockFunctions(); // Start the clock
+                    // Create some news to be shared
+                    AddDistributedNews(nFake, nTrue, this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
+                    //SetClockFunctions(); // Start the clock
+                    facebook.RunFor(RUNTIME);
+                    
+                    SimulationEnd();
+                }
+            }
         }
         
         private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake=0.75, double meanETrue=0.5, double meanBFake=0.25,double meanBTrue = 0.75)
@@ -155,12 +167,15 @@ namespace ModelAttemptWPF
 
   
        
-        private void SimulationEnd(Simulation simulation)
+        private void SimulationEnd()
         {
 
+            double newValue = simulation.value;
+            string endFileName = Convert.ToInt64((newValue * 100)).ToString();
 
-            string generalPath = @"C:\Users\Anni\source\repos\ModelAttemptWPF\Results\" + simulation.versionName+"_"+simulation.runNumber+@"\"; //!! set to local results folder
+            string generalPath = @"..\..\Results\" + simulation.versionName + endFileName +"_"+simulation.runNumber+@"\"; //!! set to local results folder
            Directory.CreateDirectory(generalPath);
+            Console.WriteLine(generalPath);
 
             facebook.SaveFollowCSV(generalPath);
 
@@ -214,11 +229,11 @@ namespace ModelAttemptWPF
 
             CreateNSharesCSV(generalPath);
 
-            MakeNextSimulation(simulation);
+            //MakeNextSimulation(simulation);
             
         }
 
-        private void MakeNextSimulation(Simulation currentSimulation)
+        /*private void MakeNextSimulation(Simulation currentSimulation)
         {
 
             if (currentSimulation.runNumber == currentSimulation.nRuns) // if all the runs of one data point have been done
@@ -244,7 +259,7 @@ namespace ModelAttemptWPF
             }
             
 
-        }
+        }*/
     
         public void CreateNSharesCSV(string generalPath)
         {

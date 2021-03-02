@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class Simulation
 {
-    public double runSpeed = 1;
     public string versionName;
     public int nRuns;
     public int runNumber=1;
@@ -22,12 +21,11 @@ public class Simulation
     // whatever is being changed in each simulation run
     public double value;
 
-    public Simulation(string versionName, double runSpeed,double value,int nRuns=50)
+    public Simulation(string versionName,double value,int runNumber)
 	{
         this.versionName = versionName;
-        this.runSpeed = runSpeed;
         this.value = value;
-        this.nRuns = nRuns;
+        this.runNumber = runNumber;
 	}
 
 

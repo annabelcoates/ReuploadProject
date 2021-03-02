@@ -53,10 +53,9 @@ public class Person
         double tempFreqUse = -0.18 * this.c + 0.12 * this.e - 0.21 * this.a + 0.14 * this.n;
         double minFreqUse = -0.39; // -0.18-0.21
         double maxFreqUse = 0.26; // 0.12+0.14
-        this.freqUse = (tempFreqUse + minFreqUse)/ (maxFreqUse - minFreqUse);
+        this.freqUse = (tempFreqUse - minFreqUse)/ (2.0*(maxFreqUse - minFreqUse));
 
-        // in the experiment the frequency of use and session length were just used unnormalised
-
+        // frequencies are lowered to be roughly around 20% usin the magic number 2.0
         
 
 
@@ -65,7 +64,7 @@ public class Person
         double tempSL = -0.16 * this.c + 0.24 * e + 0.14 * this.n;
         double minSL = -0.16; // -0.16
         double maxSL = 0.38;//
-        this.sessionLength = (tempSL + minSL) / (maxSL - minSL);
+        this.sessionLength = (tempSL - minSL) / (maxSL - minSL);
  
         this.largeNetwork = Math.Max(0,(0.24 * this.o - 0.28 * this.c + 0.47 * this.e - 0.28 * this.a)); // can be larger than 1
         // research on likelihood of sharing from amichai- vitinzsky
@@ -78,19 +77,19 @@ public class Person
         // Currently the news is assessed according to 3 factors equally, politics, emotional level and believability
 
         // political factor is higher if the political leanings are closer
-        double politicalFactor = 1 - Math.Abs(news.politicalLeaning - this.politicalLeaning);
-
+        double poldist = news.politicalLeaning - this.politicalLeaning;
+        double politicalFactor = Math.Max(0.4 - 0.4*Math.Abs(poldist), 1-5*poldist*poldist); //if poldist is close, then we care strongly about how close -- if it's far, probability is small
         // how much the news appeals emotionally increases with the person's emotional level and how emotional the news is
         double emotionalFactor = this.n * news.emotionalLevel;
 
-        double believabilityFactor = (news.believability/onlineLiteracy);
+        double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
         //believabilityFactor = 1 - onlineLiteracy;
         // The perceived believability is dependent on the believability of the article and the person's online literacy
         
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 
-        double shareProb = this.sharingFreq *believabilityFactor*(politicalFactor +emotionalFactor);
+        double shareProb = Math.Min(1,this.sharingFreq *believabilityFactor*(politicalFactor +emotionalFactor));
         //Console.WriteLine(this.name+" probability of sharing "+news.name+": "  shareProb);
         // return the likelihood that someone will share the news
         return shareProb;

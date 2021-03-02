@@ -5,9 +5,9 @@ namespace ModelAttemptWPF
 {
     public class Facebook : OSN
     {
-        public Facebook(string name):base(name)
+        public Facebook(string name, int ftf):base(name, ftf)
         {
-            this.feedTimeFrame = 150;
+
         }
 
         public new void CreateRandomMutualFollows(Account account, int nConnections)

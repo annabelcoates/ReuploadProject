@@ -14,11 +14,13 @@ namespace ModelAttemptWPF
     public class OSN
     {
         public string name;
-        public int feedTimeFrame = 150; // the number of timeslots to go back 
+        public int feedTimeFrame; // the number of timeslots to go back 
 
         private Process process = null; // for python connection
-        public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\follows";
-        private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
+        //public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\follows";
+        //private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
+        public string followCSVPath = @"..\..\..\FacebookUK\follows";
+        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
 
 
         public List<Account> accountList = new List<Account>();
@@ -42,9 +44,10 @@ namespace ModelAttemptWPF
         public List<double> trueShareProbs = new List<double>();
         
 
-        public OSN(string name)
+        public OSN(string name, int ftf)
         {
             this.name = name;
+            feedTimeFrame = ftf;
             followCSV.AppendLine("key,source,target");
         }
 
@@ -250,7 +253,8 @@ namespace ModelAttemptWPF
         {
             // Currently not used as a fixed graph generated previously is used each time (from the FacebookUK folder)
             process = new Process();
-            process.StartInfo.WorkingDirectory = @"C:\Users\ancoa\Documents\Proj\ReuploadProject"; //set this to the folder that the .sln file is in
+            //process.StartInfo.WorkingDirectory = @"C:\Users\ancoa\Documents\Proj\ReuploadProject"; //set this to the folder that the .sln file is in
+            process.StartInfo.WorkingDirectory = @"..\..\..\"; //set this to the folder that the .sln file is in
             process.OutputDataReceived += (sender, e) => Console.WriteLine($"Recieved:\t{e.Data}");
             process.ErrorDataReceived += (sender, e) => Console.WriteLine($"ERROR:\t {e.Data}");
             process.StartInfo.RedirectStandardOutput = true;
@@ -325,6 +329,14 @@ namespace ModelAttemptWPF
             string[] allSmallWorld = File.ReadAllLines(smallWorldPath);
             File.AppendAllLines(generalPath+"follows.csv", allSmallWorld);
 
+        }
+
+        public void RunFor(int runtime)
+        {
+            for (int j = 0; j < runtime; j++)
+            {
+                TimeSlotPasses(j);
+            }
         }
     }
 }

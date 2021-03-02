@@ -5,9 +5,8 @@ namespace ModelAttemptWPF
 {
     public class Twitter : OSN
     {
-        public Twitter(string name):base(name)
+        public Twitter(string name, int ftf):base(name,ftf)
         {
-            this.feedTimeFrame = 2000;
 
         }
         public void CreateRandomFollows(Account account, int nConnections)
