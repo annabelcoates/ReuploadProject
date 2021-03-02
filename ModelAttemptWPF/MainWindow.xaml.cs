@@ -55,6 +55,7 @@ namespace ModelAttemptWPF
             InitializeComponent();
             Clock.Start();
             MinClock.Start();
+            //
         }
         private void StandardFBUpdate(object sender, EventArgs e)
         {
