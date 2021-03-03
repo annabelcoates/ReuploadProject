@@ -52,7 +52,7 @@ public class Simulation
         // Distribution of personality traits for the UK
         //https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4372610/
         // divided b 5 to ensure each is on a 0-1 scale
-        double eMean = 0.648;// 3.24/5.0;
+        double eMean = 0.648;// 3.24/5.0; //!!change 
         double eStd = 0.164;// 0.82/5.0;
         double aMean = 0.748;// 3.74/5.0;
         double aStd = 0.124;// 0.62/5.0;

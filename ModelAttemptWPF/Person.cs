@@ -53,9 +53,7 @@ public class Person
         double tempFreqUse = -0.18 * this.c + 0.12 * this.e - 0.21 * this.a + 0.14 * this.n;
         double minFreqUse = -0.39; // -0.18-0.21
         double maxFreqUse = 0.26; // 0.12+0.14
-        this.freqUse = (tempFreqUse - minFreqUse)/ (2.0*(maxFreqUse - minFreqUse));
-
-        // frequencies are lowered to be roughly around 20% usin the magic number 2.0
+        this.freqUse = (tempFreqUse - minFreqUse)/ (maxFreqUse - minFreqUse);
         
 
 

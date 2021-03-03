@@ -174,16 +174,16 @@ namespace ModelAttemptWPF
             if (accountList[account.ID].HasShared(news) == false)
                 // change this so the probability of sharing decreases exponentially
             {
-                double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));
+                double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
                 double shareProb = account.person.AssesNews(news);
                 if (news.isTrue)
                 {
-                    trueShareProbs.Add(shareProb);
+                    trueShareProbs.Add(shareProb);//statistics
                 }
                 else
                 {
-                    fakeShareProbs.Add(shareProb);
+                    fakeShareProbs.Add(shareProb);//statistics
                 }
                 //Console.WriteLine(account.person.name + " assesed " + news.name +"(b=" +news.believability+", e="+news.emotionalLevel + ") as: " + assesment);
                 if (randomWeightedDouble < shareProb)
@@ -217,7 +217,7 @@ namespace ModelAttemptWPF
             {
                 foreach (Post post in followee.page)
                 {
-                    if (time - post.time <= this.feedTimeFrame & count <100)
+                    if (time - post.time <= this.feedTimeFrame)
                     {
                         currentFeed.Add(post);
                     }
@@ -299,7 +299,7 @@ namespace ModelAttemptWPF
             double randomDouble = random.NextDouble();
             foreach(Account account in this.accountList)
             {
-                if (account.person.freqUse > randomDouble)
+                if (account.person.freqUse > randomDouble)//!! consider individual randomness
                 {
                     this.ViewFeed(this.accountList[account.ID], time);
                 }
