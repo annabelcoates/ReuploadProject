@@ -61,11 +61,11 @@ namespace ModelAttemptWPF
             foreach (Person sharer in sharers)
             {
                 // big 5 personality traits
-                o += sharer.o;
-                c += sharer.c;
-                e += sharer.e;
-                a += sharer.a;
-                n += sharer.n;
+                o += sharer.opn;
+                c += sharer.con;
+                e += sharer.ext;
+                a += sharer.agr;
+                n += sharer.nrt;
                 
                 // other traits
                 onlineLiteracy += sharer.onlineLiteracy;
@@ -85,11 +85,11 @@ namespace ModelAttemptWPF
             foreach (Person viewer in viewers)
             {
                 // big 5 personality traits
-                o += viewer.o;
-                c += viewer.c;
-                e += viewer.e;
-                a += viewer.a;
-                n += viewer.n;
+                o += viewer.opn;
+                c += viewer.con;
+                e += viewer.ext;
+                a += viewer.agr;
+                n += viewer.nrt;
 
                 // other traits
                 onlineLiteracy += viewer.onlineLiteracy;

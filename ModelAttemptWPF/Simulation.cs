@@ -81,11 +81,11 @@ public class Simulation
         foreach (Person person in humanPopulation)
         {
             // big 5 personality traits
-            o += person.o;
-            c += person.c;
-            e += person.e;
-            a += person.a;
-            n += person.n;
+            o += person.opn;
+            c += person.con;
+            e += person.ext;
+            a += person.agr;
+            n += person.nrt;
 
             // other traits
             onlineLiteracy += person.onlineLiteracy;
