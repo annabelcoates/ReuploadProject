@@ -18,8 +18,6 @@ namespace ModelAttemptWPF
         private Simulation simulation;
 
         Random random = new Random();
-        public DispatcherTimer Clock { get; set; } = new DispatcherTimer();
-        private DispatcherTimer MinClock {get;set;}=new DispatcherTimer();
         Facebook facebook;
         private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
 
@@ -102,7 +100,7 @@ namespace ModelAttemptWPF
                 for (int i = 0; i < RUNS; i++)
                 {
                     //this.Activate();
-                    this.simulation = new Simulation(name, val,i+1); // create a new simulation object
+                    this.simulation = new Simulation(name, val, i+1); // create a new simulation object
                     this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
                     this.facebook = new Facebook("FacebookUK", FB_TIMEFRAME); // make a facebook object
 
