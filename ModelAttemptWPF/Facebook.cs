@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Collections.Generic;
 
 namespace ModelAttemptWPF
@@ -12,7 +13,7 @@ namespace ModelAttemptWPF
         }
         public new void CreateRandomMutualFollows(Account account, int nConnections)
         {
-            List<int> connectionIDS = new List<int>();
+            List<int> connectionIDs = new List<int>();
             bool connectionsNotFound = true;
 
             for (int i = 0; i < nConnections; i++)
@@ -21,9 +22,9 @@ namespace ModelAttemptWPF
                 while (connectionsNotFound)
                 {
                     int randomID = random.Next(0, IDCount);
-                    if ((randomID != account.ID) & (connectionIDS.Contains(randomID) == false))
+                    if ((randomID != account.ID) & (connectionIDs.Contains(randomID) == false))
                     {
-                        connectionIDS.Add(randomID); // use the list to keep track of who has already been followed
+                        connectionIDs.Add(randomID); // use the list to keep track of who has already been followed
                         Follow(accountList[account.ID], accountList[randomID]);
                         Follow(accountList[randomID], accountList[account.ID]);
                         connectionsNotFound = false;
@@ -32,7 +33,7 @@ namespace ModelAttemptWPF
             }
         }
 
-        public void generateSmallWorldNetwork(string[] args)
+        public void generateSmallWorldNetwork(string cmd, string args)
         {
             string networkGeneratorPath = @"..\..\..\FacebookUK\network_generator.py";
             string smallWorldNetworkPath = @"..\..\..\FacebookUK\small_world_network.csv.py";
@@ -50,6 +51,7 @@ namespace ModelAttemptWPF
                 }
             }
         }
+        
         public new void CreateMutualFollowsFromGraph(string filePath)
         {
             List<string[]> connections = LoadCsvFile(filePath);
@@ -57,16 +59,24 @@ namespace ModelAttemptWPF
             {
                 int followerID = Convert.ToInt16(connection[0]);
                 int followeeID = Convert.ToInt16(connection[1]);
-                // TODO: should this be bi-directionally symmetric by default? We can modify this at some point.
+                // TODO
+                // Should this be bi-directionally symmetric by default? We can modify this at some point.
                 this.Follow(accountList[followeeID], accountList[followerID]);
                 this.Follow(accountList[followerID], accountList[followeeID]);
             }
         }
+        
         public void CreateFollowsBasedOnPersonality(int defaultFollows)
-        // TODO: Change this to take a default number of follows
+        // TODO
+        // Change this to take a default number of follows 
+        // ? Is this not already done?
         {
             foreach (Account account in this.accountList)
             {
+                // TODO
+                // ? Behaviour doesn't align with descriptive comment of `largeNetwork" which claims that `largeNetwork` is "A measure of how likely someone is to have a large network group, can be greater than one".
+                // Instead, `largeNetwork` appears to be a multiplier or weighting on the default number of followers.
+                // `largeNetwork` is more like a randomly distributed variable
                 int nConnections = Convert.ToInt16(account.person.largeNetwork * defaultFollows);
                 this.CreateRandomMutualFollows(account, nConnections);
             }

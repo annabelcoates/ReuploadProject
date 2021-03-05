@@ -6,11 +6,11 @@ public class Person
     public int ID;
 
     // The 'Big 5' Personality traits
-    public double o; // Openess
-    public double c; // Conscientiousness
-    public double e; // Extraversion
-    public double a; // Agreeableness
-    public double n; // Neuroticism
+    public double opn; // Openess
+    public double con; // Conscientiousness
+    public double ext; // Extraversion
+    public double agr; // Agreeableness
+    public double nrt; // Neuroticism
 
    
 
@@ -29,28 +29,26 @@ public class Person
     public int nTrueShares;
 
     public Random random = new Random();
-    public Person(int ID,string name,double o, double c, double e, double a, double n, double politicalLeaning, double onlineLiteracy)
+    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double politicalLeaning, double onlineLiteracy)
 	{
         this.ID = ID;
         this.name = name;
-        this.o = o;
-        this.c = c;
-        this.e = e;
-        this.a = a;
-        this.n = n;
+        this.opn = opn;
+        this.con = con;
+        this.ext = ext;
+        this.agr = agr;
+        this.nrt = nrt;
 
         this.politicalLeaning = politicalLeaning;
         this.onlineLiteracy = onlineLiteracy;
         this.emotionalState = 0.5; // emotional state starts average
         this.DetermineComplexBehaviours(); // set the behavioural parameters based on the personality traits
 	}
-
     
-
     public void DetermineComplexBehaviours()
     {
         // From caci et al 2014 path analysis
-        double tempFreqUse = -0.18 * this.c + 0.12 * this.e - 0.21 * this.a + 0.14 * this.n;
+        double tempFreqUse = -0.18 * this.con + 0.12 * this.ext - 0.21 * this.agr + 0.14 * this.nrt;
         double minFreqUse = -0.39; // -0.18-0.21
         double maxFreqUse = 0.26; // 0.12+0.14
         this.freqUse = (tempFreqUse - minFreqUse)/ (maxFreqUse - minFreqUse);
@@ -59,14 +57,14 @@ public class Person
 
 
         //double tempSL = -0.16 * this.c + 0.24 * e + 0.14 * this.n+0.5;
-        double tempSL = -0.16 * this.c + 0.24 * e + 0.14 * this.n;
+        double tempSL = -0.16 * this.con + 0.24 * ext + 0.14 * this.nrt;
         double minSL = -0.16; // -0.16
         double maxSL = 0.38;//
         this.sessionLength = (tempSL - minSL) / (maxSL - minSL);
  
-        this.largeNetwork = Math.Max(0,(0.24 * this.o - 0.28 * this.c + 0.47 * this.e - 0.28 * this.a)); // can be larger than 1
+        this.largeNetwork = Math.Max(0,(0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr)); // can be larger than 1
         // research on likelihood of sharing from amichai- vitinzsky
-        this.sharingFreq = this.e * this.n;
+        this.sharingFreq = this.ext * this.nrt;
     }
 
 
@@ -78,7 +76,7 @@ public class Person
         double poldist = news.politicalLeaning - this.politicalLeaning;
         double politicalFactor = Math.Max(0.4 - 0.4*Math.Abs(poldist), 1-5*poldist*poldist); //if poldist is close, then we care strongly about how close -- if it's far, probability is small
         // how much the news appeals emotionally increases with the person's emotional level and how emotional the news is
-        double emotionalFactor = this.n * news.emotionalLevel;
+        double emotionalFactor = this.nrt * news.emotionalLevel;
 
         double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
         //believabilityFactor = 1 - onlineLiteracy;
