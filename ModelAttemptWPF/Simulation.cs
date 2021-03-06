@@ -20,6 +20,7 @@ public class Simulation
 
     // whatever is being changed in each simulation run
     public double value;
+    private const double OL_STD = 0.15;
 
     public Simulation(string versionName,double value,int runNumber)
 	{
@@ -52,22 +53,21 @@ public class Simulation
         // Distribution of personality traits for the UK
         //https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4372610/
         // divided b 5 to ensure each is on a 0-1 scale
-        double eMean = 0.648;// 3.24/5.0; //!!change 
-        double eStd = 0.164;// 0.82/5.0;
-        double aMean = 0.748;// 3.74/5.0;
-        double aStd = 0.124;// 0.62/5.0;
-        double cMean = 0.73;// 3.65/5.0;
-        double cStd = 0.14;// 0.7/5.0;
-        double nMean = 0.594;// this.nMean;// 2.97/5.0;
-        double nStd = 0.16;// 0.81 / 5.0;
-        double oMean = 0.734;// 3.67 / 5.0;
-        double oStd = 0.128;// 0.64 / 5.0;
+        double eMean = 0.560;// (3.24-1.0)/4.0;
+        double eStd = 0.205;// 0.82/4.0;
+        double aMean = 0.685;// (3.74-1.0)/4.0;
+        double aStd = 0.155;// 0.62/4.0;
+        double cMean = 0.6625;// (3.65-1.0)/4.0;
+        double cStd = 0.175;// 0.7/4.0;
+        double nMean = 0.4925;// this.nMean;// (2.97-1.0)/4.0;
+        double nStd = 0.135;// 0.81 / 4.0;
+        double oMean = 0.6675;// (3.67 - 1.0) / 4.0;
+        double oStd = 0.16;// 0.64 / 4.0;
         for (int i = 0; i < n; i++)
         {
             // assign OCEAN values according to a normal distribution
-            double OL = NormalDistribution(this.value, 0.1);
            CreatePerson(NormalDistribution(oMean,oStd), NormalDistribution(cMean, cStd), NormalDistribution(eMean, eStd), NormalDistribution(aMean, aStd),
-               NormalDistribution(nMean, nStd), NormalDistribution(0.5,0.4), OL);
+               NormalDistribution(nMean, nStd), random.NextDouble(), NormalDistribution(this.value, OL_STD));
         }
     }
     
