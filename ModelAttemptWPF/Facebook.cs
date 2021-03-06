@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ModelAttemptWPF
 {
@@ -33,30 +34,49 @@ namespace ModelAttemptWPF
             }
         }
 
-        public void generateSmallWorldNetwork(string cmd, string args)
+        public void GenerateSmallWorldNetwork()
         {
-            string networkGeneratorPath = @"..\..\..\FacebookUK\network_generator.py";
-            string smallWorldNetworkPath = @"..\..\..\FacebookUK\small_world_network.csv.py";
+            List<double> connectivityList = new List<double>();
+            string python_script = @"..\..\..\FacebookUK\network_generator.py";
+            // TODO
+            // ! WARNING: Hardcoded values
+            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]";
+
+            foreach (Account account in this.accountList)
+            {
+                connectivityList.Add(account.person.connectivity);
+            }
+
+            File.WriteAllLines(
+            @"..\..\..\FacebookUK\connectivity_list.txt",
+            connectivityList.Select(d => d.ToString("G17")));
+
             ProcessStartInfo start = new ProcessStartInfo();
-            start.FileName = "my/full/path/to/python.exe";
-            start.Arguments = string.Format("{0} {1}", cmd, args);
+            // TODO
+            // ! WARNING: Hardcoded value
+            // ! NOTE: You MUST change the following path to point to the location of your Python3 executable
+            start.FileName = @"D:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\python.exe";
+            start.Arguments = string.Format("{0} {1}", python_script, python_args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
-            using(Process process = Process.Start(start))
+            using (Process process = Process.Start(start))
             {
-                using(StreamReader reader = process.StandardOutput)
+                using (StreamReader reader = process.StandardOutput)
                 {
                     string result = reader.ReadToEnd();
-                    Console.Write(result);
+                    // Console.Write(result);
                 }
             }
         }
         
         public new void CreateMutualFollowsFromGraph(string filePath)
         {
+            GenerateSmallWorldNetwork();
             List<string[]> connections = LoadCsvFile(filePath);
             foreach (string[] connection in connections)
             {
+                // TODO
+                // Fix this for the new CSV
                 int followerID = Convert.ToInt16(connection[0]);
                 int followeeID = Convert.ToInt16(connection[1]);
                 // TODO
@@ -74,10 +94,10 @@ namespace ModelAttemptWPF
             foreach (Account account in this.accountList)
             {
                 // TODO
-                // ? Behaviour doesn't align with descriptive comment of `largeNetwork" which claims that `largeNetwork` is "A measure of how likely someone is to have a large network group, can be greater than one".
-                // Instead, `largeNetwork` appears to be a multiplier or weighting on the default number of followers.
-                // `largeNetwork` is more like a randomly distributed variable
-                int nConnections = Convert.ToInt16(account.person.largeNetwork * defaultFollows);
+                // ? Behaviour doesn't align with descriptive comment of `~largeNetwork~ connectivity` which claims that `~largeNetwork~ connectivity` is "A measure of how likely someone is to have a large network group, can be greater than one".
+                // Instead, `~largeNetwork~ connectivity` appears to be a multiplier or weighting on the default number of followers.
+                // `~largeNetwork~ connectivity` is more like a randomly distributed variable
+                int nConnections = Convert.ToInt16(account.person.connectivity * defaultFollows);
                 this.CreateRandomMutualFollows(account, nConnections);
             }
         }

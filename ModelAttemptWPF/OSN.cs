@@ -231,6 +231,8 @@ namespace ModelAttemptWPF
             }
         }
 
+        // TODO
+        // ? Why are there two implementations of LoadCsvFile (the other being in MainWindow.xaml.cs)
         public List<string[]> LoadCsvFile(string filePath)
         {
             var reader = new StreamReader(File.OpenRead(filePath));
@@ -238,10 +240,9 @@ namespace ModelAttemptWPF
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine(); // ignore the line of labels
-                if (line!= ",source,target")
+                if (line != "source,target")
                 {
-                    char[] seperator = new char[] { ',' };
-                    string[] lineList = line.Split(seperator);
+                    string[] lineList = line.Split(',');
                     searchList.Add(lineList);
                 }
             }
@@ -288,7 +289,7 @@ namespace ModelAttemptWPF
         {
             foreach (Account account in this.accountList)
             {
-                int nConnections = Convert.ToInt16(account.person.largeNetwork * defaultFollows);
+                int nConnections = Convert.ToInt16(account.person.connectivity * defaultFollows);
                 this.CreateRandomMutualFollows(account, nConnections);
             }
         }

@@ -16,7 +16,7 @@ public class Person
 
     public double freqUse; // A measure of how likely a user is to check social media in a 15 min timeslot, 0-1
     public double sessionLength; // A measure of how many posts a person sees in 1 view of their feed, 0-1, Maybe should be int?
-    public double largeNetwork; // A measure of how likely someone is to have a large network group, can be greater than one
+    public double connectivity; // A measure of how likely someone is to have a large network group, can be greater than one
 
     public double emotionalState; // Represents how emotional someone feels, 0-1
     public double politicalLeaning; // 0 represents 'the left', 1 represents 'the right'
@@ -62,7 +62,7 @@ public class Person
         double maxSL = 0.38;//
         this.sessionLength = (tempSL - minSL) / (maxSL - minSL);
  
-        this.largeNetwork = Math.Max(0,(0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr)); // can be larger than 1
+        this.connectivity = Math.Max(0,(0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr)); // can be larger than 1
         // research on likelihood of sharing from amichai- vitinzsky
         this.sharingFreq = this.ext * this.nrt;
     }

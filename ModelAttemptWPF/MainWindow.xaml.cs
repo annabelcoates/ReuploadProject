@@ -21,7 +21,7 @@ namespace ModelAttemptWPF
         public DispatcherTimer Clock { get; set; } = new DispatcherTimer();
         private DispatcherTimer MinClock {get;set;}=new DispatcherTimer();
         Facebook facebook;
-        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
+        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_network.csv";
 
 
         // define fixed settings 
@@ -30,6 +30,8 @@ namespace ModelAttemptWPF
         public const int fixedNFake = 100;
         public const int fixedNTrue = 200;
         public const int RUNS = 3;
+        // TODO
+        // ? Should this be 0.5
         public const double DEFAULT_FRAC_FOLLOWS = 0.5;
         public const int RUNTIME = 100;
         public const int FB_TIMEFRAME = 150;
@@ -140,11 +142,9 @@ namespace ModelAttemptWPF
                 osn.CreateNewsRandomPoster("TrueNews", true, timeOfNews, e, b,nPostsPerTrue);
             }
         }
-      
-      
 
-
-
+        // TODO
+        // ? Why are there two implementations of LoadCsvFile (the other being in OSN.cs)
         private List<string[]> LoadCsvFile(string filePath)
         {
             var reader = new StreamReader(File.OpenRead(filePath));
@@ -152,10 +152,9 @@ namespace ModelAttemptWPF
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine(); // ignore the line of labels
-                if (line != ",source,target")
+                if (line != "source,target")
                 {
-                    char[] seperator = new char[] { ',' };
-                    string[] lineList = line.Split(seperator);
+                    string[] lineList = line.Split(',');
                     searchList.Add(lineList);
                 }
             }
