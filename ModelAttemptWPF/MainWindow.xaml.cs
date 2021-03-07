@@ -23,11 +23,12 @@ namespace ModelAttemptWPF
 
 
         // define fixed settings 
-        public const int fixedN = 1000;
-        public const int fixedK = 100;
-        public const int fixedNFake = 100;
-        public const int fixedNTrue = 200;
-        public const int RUNS = 3;
+        public const int fixedN = 1000; // the fixed number of people in the simulation
+        public const int fixedK = 100; // the fixed k-value of the network (how many in each clique)
+        public const int fixedNFake = 100; // number of fake news articles in the experiment
+        public const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
+        public const double onlineLit = 0.4; //mean online literacy
+        public const int RUNS = 1;
         // TODO
         // ? Should this be 0.5
         public const double DEFAULT_FRAC_FOLLOWS = 0.5;
@@ -38,14 +39,15 @@ namespace ModelAttemptWPF
 
         public MainWindow()
         {
-            //this.fixedN = 1000; // the fixed number of people in the simulation
-            //this.fixedK = 100; // the fixed k-value of the network (how many in each clique)
-            //this.fixedNFake = 100; // number of fake news articles in the experiment
-            //this.fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
-            this.values = new List<double> { 0.4 ,0.6};//,0.6,0.8,0.9};
+            int variable = 1;
+            // instructions for variable:
+            // 1 means that the onlineLit is variable
+            // 2 means the ratio between initial true and fake news is variable
+            // 3 means ...
 
-            this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, values); // start the simulation with these parameters
+            double[] values = { 0.4, 0.6 };
+            this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.Close();
             //this.RunLoop(100);
         }
@@ -95,14 +97,14 @@ namespace ModelAttemptWPF
             }
         }*/
 
-        private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, List<double> nMeans)
+        private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double nMean, int runtime, int variable, double[] values)
         {
-            foreach (double val in nMeans)
+            foreach (double val in values)
             {
                 for (int i = 0; i < RUNS; i++)
                 {
                     //this.Activate();
-                    this.simulation = new Simulation(name, val, i+1); // create a new simulation object
+                    this.simulation = new Simulation(name, (variable == 1 ? val : nMean), i+1); // create a new simulation object
                     this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
                     this.facebook = new Facebook("FacebookUK", FB_TIMEFRAME); // make a facebook object
 
@@ -113,9 +115,9 @@ namespace ModelAttemptWPF
                     this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
 
                     // Create some news to be shared
-                    AddDistributedNews(nFake, nTrue, this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
+                    AddDistributedNews((variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
                     //SetClockFunctions(); // Start the clock
-                    facebook.RunFor(RUNTIME);
+                    facebook.RunFor(runtime);
                     
                     SimulationEnd();
                 }
@@ -143,7 +145,7 @@ namespace ModelAttemptWPF
 
         // TODO
         // ? Why are there two implementations of LoadCsvFile (the other being in OSN.cs)
-        private List<string[]> LoadCsvFile(string filePath)
+        /*private List<string[]> LoadCsvFile(string filePath)
         {
             var reader = new StreamReader(File.OpenRead(filePath));
             List<string[]> searchList = new List<string[]>();
@@ -158,7 +160,7 @@ namespace ModelAttemptWPF
             }
             return searchList;
 
-        }
+        }*/
 
 
 

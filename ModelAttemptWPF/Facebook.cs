@@ -55,7 +55,7 @@ namespace ModelAttemptWPF
             // TODO
             // ! WARNING: Hardcoded value
             // ! NOTE: You MUST change the following path to point to the location of your Python3 executable
-            start.FileName = @"D:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\python.exe";
+            start.FileName = @"C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\python.exe";
             start.Arguments = string.Format("{0} {1}", python_script, python_args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;

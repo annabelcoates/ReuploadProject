@@ -62,7 +62,7 @@ public class Person
         double maxSL = 0.38;//
         this.sessionLength = (tempSL - minSL) / (maxSL - minSL);
  
-        this.connectivity = Math.Max(0,(0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr)); // can be larger than 1
+        this.connectivity = 0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble(); // can be larger than 1
         // research on likelihood of sharing from amichai- vitinzsky
         this.sharingFreq = this.ext * this.nrt;
     }
