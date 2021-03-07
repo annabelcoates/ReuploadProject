@@ -48,7 +48,7 @@ namespace ModelAttemptWPF
         {
             this.name = name;
             feedTimeFrame = ftf;
-            followCSV.AppendLine("key,source,target");
+            followCSV.AppendLine("source,target");
         }
 
         public Account NewAccount(Person person)

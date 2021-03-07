@@ -36,20 +36,10 @@ namespace ModelAttemptWPF
 
         public void GenerateSmallWorldNetwork()
         {
-            List<double> connectivityList = new List<double>();
             string python_script = @"..\..\..\FacebookUK\network_generator.py";
             // TODO
             // ! WARNING: Hardcoded values
             string python_args = "connected_watts_strogatz_graph [1000,50,0.3]";
-
-            foreach (Account account in this.accountList)
-            {
-                connectivityList.Add(account.person.connectivity);
-            }
-
-            File.WriteAllLines(
-            @"..\..\..\FacebookUK\connectivity_list.txt",
-            connectivityList.Select(d => d.ToString("G17")));
 
             ProcessStartInfo start = new ProcessStartInfo();
             // TODO
@@ -59,18 +49,20 @@ namespace ModelAttemptWPF
             start.Arguments = string.Format("{0} {1}", python_script, python_args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
+
             using (Process process = Process.Start(start))
             {
                 using (StreamReader reader = process.StandardOutput)
                 {
                     string result = reader.ReadToEnd();
-                    // Console.Write(result);
+                    Console.Write(result);
                 }
             }
         }
         
         public new void CreateMutualFollowsFromGraph(string filePath)
         {
+            accountList = accountList.OrderBy(o => o.person.connectivity).ToList();
             GenerateSmallWorldNetwork();
             List<string[]> connections = LoadCsvFile(filePath);
             foreach (string[] connection in connections)
@@ -93,6 +85,18 @@ namespace ModelAttemptWPF
         {
             foreach (Account account in this.accountList)
             {
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine(account.person.connectivity);
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
+                Console.WriteLine("AAAAAAAHHHHH!!!");
                 // TODO
                 // ? Behaviour doesn't align with descriptive comment of `~largeNetwork~ connectivity` which claims that `~largeNetwork~ connectivity` is "A measure of how likely someone is to have a large network group, can be greater than one".
                 // Instead, `~largeNetwork~ connectivity` appears to be a multiplier or weighting on the default number of followers.
