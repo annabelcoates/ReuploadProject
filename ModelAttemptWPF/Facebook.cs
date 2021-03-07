@@ -6,8 +6,11 @@ using System.Linq;
 
 namespace ModelAttemptWPF
 {
+
+
     public class Facebook : OSN
     {
+        private const String pythonRel = @"\FacebookUK\network_generator.py";
         public Facebook(string name, int ftf):base(name, ftf)
         {
 
@@ -36,7 +39,7 @@ namespace ModelAttemptWPF
 
         public void GenerateSmallWorldNetwork()
         {
-            string python_script = @"..\..\..\FacebookUK\network_generator.py";
+            string python_script = MainWindow.globalLoc + pythonRel;
             // TODO
             // ! WARNING: Hardcoded values
             string python_args = "connected_watts_strogatz_graph [1000,50,0.3]";

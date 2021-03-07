@@ -19,7 +19,11 @@ namespace ModelAttemptWPF
 
         Random random = new Random();
         Facebook facebook;
-        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_network.csv";
+        //private string smallWorldPath = @"..\..\..\FacebookUK\small_world_network.csv";
+        public static string globalLoc;
+        private string smallWorldPath;
+
+        private const string smallWorldPathRel = @"\FacebookUK\small_world_network.csv";
 
 
         // define fixed settings 
@@ -39,6 +43,8 @@ namespace ModelAttemptWPF
 
         public MainWindow()
         {
+            globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
+            smallWorldPath = globalLoc + smallWorldPathRel;
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
             int variable = 1;
             // instructions for variable:
