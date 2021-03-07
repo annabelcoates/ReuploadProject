@@ -15,27 +15,30 @@ namespace ModelAttemptWPF
         {
 
         }
-        public new void CreateRandomMutualFollows(Account account, int nConnections)
-        {
-            List<int> connectionIDs = new List<int>();
-            bool connectionsNotFound = true;
+        
+        // TODO
+        // ! Dead code
+        //public new void CreateRandomMutualFollows(Account account, int nConnections)
+        //{
+        //    List<int> connectionIDs = new List<int>();
+        //    bool connectionsNotFound = true;
 
-            for (int i = 0; i < nConnections; i++)
-            {
-                connectionsNotFound = true;
-                while (connectionsNotFound)
-                {
-                    int randomID = random.Next(0, IDCount);
-                    if ((randomID != account.ID) & (connectionIDs.Contains(randomID) == false))
-                    {
-                        connectionIDs.Add(randomID); // use the list to keep track of who has already been followed
-                        Follow(accountList[account.ID], accountList[randomID]);
-                        Follow(accountList[randomID], accountList[account.ID]);
-                        connectionsNotFound = false;
-                    }
-                }
-            }
-        }
+        //    for (int i = 0; i < nConnections; i++)
+        //    {
+        //        connectionsNotFound = true;
+        //        while (connectionsNotFound)
+        //        {
+        //            int randomID = random.Next(0, IDCount);
+        //            if ((randomID != account.ID) & (connectionIDs.Contains(randomID) == false))
+        //            {
+        //                connectionIDs.Add(randomID); // use the list to keep track of who has already been followed
+        //                Follow(accountList[account.ID], accountList[randomID]);
+        //                Follow(accountList[randomID], accountList[account.ID]);
+        //                connectionsNotFound = false;
+        //            }
+        //        }
+        //    }
+        //}
 
         public void GenerateSmallWorldNetwork()
         {
@@ -48,7 +51,15 @@ namespace ModelAttemptWPF
             // TODO
             // ! WARNING: Hardcoded value
             // ! NOTE: You MUST change the following path to point to the location of your Python3 executable
-            start.FileName = @"C:\Program Files (x86)\Microsoft Visual Studio\Shared\Python37_64\python.exe";
+            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\FacebookUK\pythonSource.txt");
+            start.FileName = file.ReadLine();
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
+            Console.WriteLine(start.FileName);
             start.Arguments = string.Format("{0} {1}", python_script, python_args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
@@ -81,32 +92,34 @@ namespace ModelAttemptWPF
             }
         }
         
-        public void CreateFollowsBasedOnPersonality(int defaultFollows)
         // TODO
-        // Change this to take a default number of follows 
-        // ? Is this not already done?
-        {
-            foreach (Account account in this.accountList)
-            {
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine(account.person.connectivity);
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                Console.WriteLine("AAAAAAAHHHHH!!!");
-                // TODO
-                // ? Behaviour doesn't align with descriptive comment of `~largeNetwork~ connectivity` which claims that `~largeNetwork~ connectivity` is "A measure of how likely someone is to have a large network group, can be greater than one".
-                // Instead, `~largeNetwork~ connectivity` appears to be a multiplier or weighting on the default number of followers.
-                // `~largeNetwork~ connectivity` is more like a randomly distributed variable
-                int nConnections = Convert.ToInt16(account.person.connectivity * defaultFollows);
-                this.CreateRandomMutualFollows(account, nConnections);
-            }
-        }
+        // ! 
+        //public void CreateFollowsBasedOnPersonality(int defaultFollows)
+        //// TODO
+        //// Change this to take a default number of follows 
+        //// ? Is this not already done?
+        //{
+        //    foreach (Account account in this.accountList)
+        //    {
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine(account.person.connectivity);
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        Console.WriteLine("AAAAAAAHHHHH!!!");
+        //        // TODO
+        //        // ? Behaviour doesn't align with descriptive comment of `~largeNetwork~ connectivity` which claims that `~largeNetwork~ connectivity` is "A measure of how likely someone is to have a large network group, can be greater than one".
+        //        // Instead, `~largeNetwork~ connectivity` appears to be a multiplier or weighting on the default number of followers.
+        //        // `~largeNetwork~ connectivity` is more like a randomly distributed variable
+        //        int nConnections = Convert.ToInt16(account.person.connectivity * defaultFollows);
+        //        this.CreateRandomMutualFollows(account, nConnections);
+        //    }
+        //}
     }
 }
