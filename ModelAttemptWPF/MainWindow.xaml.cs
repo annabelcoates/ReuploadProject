@@ -97,14 +97,14 @@ namespace ModelAttemptWPF
             }
         }*/
 
-        private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double nMean, int runtime, int variable, double[] values)
+        private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double ol, int runtime, int variable, double[] values)
         {
             foreach (double val in values)
             {
                 for (int i = 0; i < RUNS; i++)
                 {
                     //this.Activate();
-                    this.simulation = new Simulation(name, (variable == 1 ? val : nMean), i+1); // create a new simulation object
+                    this.simulation = new Simulation(name, val, i+1); // create a new simulation object
                     this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
                     this.facebook = new Facebook("FacebookUK", FB_TIMEFRAME); // make a facebook object
 
@@ -115,7 +115,7 @@ namespace ModelAttemptWPF
                     // TODO
                     // Delete this method
                     // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
-
+                    this.simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
                     // Create some news to be shared
                     AddDistributedNews((variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
                     //SetClockFunctions(); // Start the clock

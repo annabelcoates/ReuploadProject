@@ -20,6 +20,9 @@ public class Simulation
 
     // whatever is being changed in each simulation run
     public double value;
+    private const double ES_MEAN = 0.5;
+    private const double ES_STD = 0.1;
+    private const int N_SEED = 5;
     private const double OL_STD = 0.15;
 
     public Simulation(string versionName,double value,int runNumber)
@@ -30,22 +33,22 @@ public class Simulation
 	}
 
 
-    public Person CreatePerson(double o, double c, double e, double a, double n, double PL, double OL)
+    public Person CreatePerson(double o, double c, double e, double a, double n)
     {
         string name = nameList[random.Next(nameList.Count)];
-        Person newPerson = new Person(IDCount, name, o, c, e, a, n, PL, OL);
+        Person newPerson = new Person(IDCount, name, o, c, e, a, n);
         IDCount++;
         humanPopulation.Add(newPerson);
         return newPerson;
     }
-    public void RandomPopulate(int n)
+    /*public void RandomPopulate(int n)
     {
         for (int i = 0; i < n; i++)
         {
             // randomly assign OCEAN values between 0 and 1
-            CreatePerson(random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(),random.NextDouble(),random.NextDouble());
+            CreatePerson(random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble(), random.NextDouble());
         }
-    }
+    }*/
 
     public void DistributionPopulate(int n)
     {
@@ -67,10 +70,46 @@ public class Simulation
         {
             // assign OCEAN values according to a normal distribution
            CreatePerson(NormalDistribution(oMean,oStd), NormalDistribution(cMean, cStd), NormalDistribution(eMean, eStd), NormalDistribution(aMean, aStd),
-               NormalDistribution(nMean, nStd), random.NextDouble(), NormalDistribution(this.value, OL_STD));
+               NormalDistribution(nMean, nStd));
         }
     }
-    
+    public void GraphBasedDistribute(OSN o, double onlineLit)
+    {
+        System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+        timer.Start();
+        List<Account> unspec = new List<Account>(IDCount);
+        for(int i = 0; i < IDCount; i++)
+        {
+            unspec.Add(o.accountList[i]);
+        }
+        for (int i = 0; i < N_SEED; i++)
+        {
+            Account a = unspec[random.Next(IDCount-i)];
+            a.person.SetEnvironmentDetermined(random.NextDouble(), NormalDistribution(onlineLit, OL_STD), NormalDistribution(ES_MEAN, ES_STD));
+            unspec.Remove(a);
+        }
+        while (unspec.Count > 0)
+        {
+            Account a = unspec[random.Next(unspec.Count)];
+            List<Account> fs = a.following;
+            List<Account> rs = new List<Account>();
+            foreach (Account ft in fs)
+            {
+                if (ft.person.isSet)
+                {
+                    rs.Add(ft);
+                }
+            }
+            if (rs.Count > 0)
+            {
+                Account f = rs[random.Next(rs.Count)];
+                a.person.SetEnvironmentDetermined(NormalDistribution(f.person.politicalLeaning, OL_STD), NormalDistribution(f.person.onlineLiteracy, OL_STD), NormalDistribution(f.person.emotionalState, ES_STD));
+                unspec.Remove(a);
+            }
+        }
+        timer.Stop();
+        Console.WriteLine("GBD in " + timer.ElapsedMilliseconds);
+    }
  
 
     public List<double> CalculateAverages()

@@ -27,9 +27,10 @@ public class Person
     public string name;
     public int nFakeShares;
     public int nTrueShares;
+    public Boolean isSet = false;
 
     public Random random = new Random();
-    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double politicalLeaning, double onlineLiteracy)
+    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt)
 	{
         this.ID = ID;
         this.name = name;
@@ -39,12 +40,21 @@ public class Person
         this.agr = agr;
         this.nrt = nrt;
 
+        //this.politicalLeaning = politicalLeaning;
+        //this.onlineLiteracy = onlineLiteracy;
+        //this.emotionalState = 0.5; // emotional state starts average
+        //this.DetermineComplexBehaviours(); // set the behavioural parameters based on the personality traits
+	}
+
+    public void SetEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emontionalState)
+    {
         this.politicalLeaning = politicalLeaning;
         this.onlineLiteracy = onlineLiteracy;
         this.emotionalState = 0.5; // emotional state starts average
-        this.DetermineComplexBehaviours(); // set the behavioural parameters based on the personality traits
-	}
-    
+        DetermineComplexBehaviours();
+        this.isSet = true;
+    }
+
     public void DetermineComplexBehaviours()
     {
         // From caci et al 2014 path analysis
