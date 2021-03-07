@@ -110,7 +110,9 @@ namespace ModelAttemptWPF
                     int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
                     this.facebook.PopulateFromPeople(n, k, simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
                     this.facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
-                    this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
+                    // TODO
+                    // Delete this method
+                    // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
 
                     // Create some news to be shared
                     AddDistributedNews(nFake, nTrue, this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
