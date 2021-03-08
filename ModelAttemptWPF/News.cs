@@ -24,9 +24,9 @@ namespace ModelAttemptWPF
 
         // Statistics
         public int nShared = 0;
-        public List<int> nSharedList = new List<int>() { 0 };
+        public List<int> nSharedList = new List<int>() { };
         public int nViewed = 0;
-        public List<int> nViewedList = new List<int>() { 0 };
+        public List<int> nViewedList = new List<int>() { };
        
 
         public Random random = new Random();
