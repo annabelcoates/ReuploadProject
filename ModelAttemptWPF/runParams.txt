@@ -1,0 +1,10 @@
+# nRuns 
+1
+# population 
+1000
+# nTrue 
+200
+# nFake 
+100
+# values
+40,60
