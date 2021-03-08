@@ -1,7 +1,8 @@
+clear;
 close all
 
 script_path = fileparts(mfilename('fullpath'));
-cd (script_path)
+cd (script_path);
 
 nFake=100;
 nTrue=200;
@@ -82,7 +83,7 @@ histogram(nFollowers_all,50,'Normalization','pdf')
 ylabel('Probability density')
 xlabel('Number of connections')
 %%
-close all
+% close all
 nBins=50;
 figure()
 histogram(e_all,nBins,'Normalization','pdf');
@@ -125,19 +126,19 @@ plotScatter(e_all,ratio_all,'Extroversion','Ratio of fake to true shares')
 plotScatter(a_all,ratio_all,'Agreeableness','Ratio of fake to true shares')
 plotScatter(n_all,ratio_all,'Neuroticism','Ratio of fake to true shares')
 %%
-close all
+% close all
 plotScatter(c_all,freqUse_all,'Conscientiousness','Frequeny of use')
 plotScatter(e_all,freqUse_all,'Extroversion','Frequency of use')
 plotScatter(a_all,freqUse_all,'Agreeableness','Frequency of use')
 plotScatter(n_all,freqUse_all,'Neuroticism','Frequency of use')
 %%
-close all
+% close all
 plotScatter(c_all,sessionLength_all,'Conscientiousness','Frequeny of use')
 plotScatter(e_all,freqUse_all,'Extroversion','Frequency of use')
 plotScatter(a_all,freqUse_all,'Agreeableness','Frequency of use')
 plotScatter(n_all,freqUse_all,'Neuroticism','Frequency of use')
 %%
-close all
+% close all
 plotScatter(c_all,fakeShares_all,'Conscientiousness','Number of fake shares')
 hold on
 plotScatter(e_all,fakeShares_all,'Extroversion','Number of fake shares')
@@ -145,13 +146,13 @@ hold on
 plotScatter(a_all,fakeShares_all,'Agreeableness','Number of fake shares')
 plotScatter(n_all,fakeShares_all,'Neuroticism','Number of fake shares')
 %%
-close all
+% close all
 plotScatter(c_all,sessionLength_all,'Conscientiousness','Session length (number of news posts)')
 
 plotScatter(e_all,sessionLength_all,'Extroversion','Session length (number of news posts)')
 plotScatter(n_all,sessionLength_all,'Neuroticism','Session length (number of news posts)')
 %%
-close all
+% close all
 plotScatter(freqUse_all,fakeShares_all,'Frequency of use','Number of fake shares')
 
 figure()
@@ -161,7 +162,7 @@ hold off
 %xlabel('Session length (number of news posts)')
 %ylabel('Probability')
 %%
-close all
+% close all
 [e_all, indices]=sort(e_all);
 ratio_all=ratio_all(indices);
 fakeShares_all=fakeShares_all(indices);
@@ -170,12 +171,12 @@ scatter(e_all,fakeShares_all,4)
 xlabel('Extroversion')
 ylabel('Number of shares of fake news')
 %%
-close all
+% close all
 plotScatter(sessionLength_all,fakeShares_all,'Session length (number of news posts)','Number of fake shares');
 plotScatter(sessionLength_all,ratio_all,'Session length (number of news posts)','Ratio of fake to true news');
 plotScatter(shareFreq_all,ratio_all,'Share frequency','Number of fake shares')
 %%
-close all
+% close all
 plotScatter(c_all,sessionLength_all,'Conscientiousness','Session length (number of news posts)')
 hold on
 cFit= -6.021.*c_all+10.12;
@@ -220,7 +221,7 @@ hold off
 %        p2 =       3.983  (3.945, 4.021)
 
 %%
-close all
+% close all
 plotScatter(o_all,fakeShares_all,'o','n fake shares')
 plotScatter(c_all,fakeShares_all,'c','n fake shares')
 plotScatter(n_all,ratio_all,'n','ratio')
@@ -229,7 +230,7 @@ plotScatter(e_all,fakeShares_all,'e','number of fake shares')
  
 %%
 %heatmap
-close all
+% close all
 figure()
 scatter(e_all,OL_all,10,fakeShares_all.^0.5,'filled');
 xlabel('Extroversion')
@@ -240,14 +241,14 @@ scatter(n_all,fakeShares_all)
 
 %%
 %heatmap
-close all
+% close all
 figure()
 scatter(e_all,n_all,10,fakeShares_all,'filled');
 xlabel('Extroversion')
 ylabel('Conscientiousness')
 
 %%
-close all
+% close all
 [e_all, indices]=sort(e_all);
 nFollowers_all=nFollowers_all(indices);
 scatter(e_all,nFollowers_all,4)

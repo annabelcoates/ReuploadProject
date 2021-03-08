@@ -157,7 +157,7 @@ namespace ModelAttemptWPF
             }
         }
         
-        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
+        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanBFake, double meanETrue, double meanBTrue)
         {
             int nPostsPerTrue = 1; // used to vary the number of posts created per true news story
             int timeOfNews = 0;
