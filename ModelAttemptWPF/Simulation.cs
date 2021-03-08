@@ -22,8 +22,9 @@ public class Simulation
     public double value;
     private const double ES_MEAN = 0.5;
     private const double ES_STD = 0.1;
-    private const int N_SEED = 5;
+    private const int N_SEED = 20;
     private const double OL_STD = 0.15;
+    private const double OL_STD2 = 0.03;
     private const double PL_STD = 0.15;
 
     public Simulation(string versionName,double value,int runNumber)
@@ -104,7 +105,7 @@ public class Simulation
             if (rs.Count > 0)
             {
                 Account f = rs[random.Next(rs.Count)];
-                a.person.SetEnvironmentDetermined(NormalDistribution(f.person.politicalLeaning, PL_STD), NormalDistribution(f.person.onlineLiteracy, OL_STD), NormalDistribution(f.person.emotionalState, ES_STD));
+                a.person.SetEnvironmentDetermined(NormalDistribution(f.person.politicalLeaning, PL_STD), NormalDistribution(f.person.onlineLiteracy, OL_STD2), NormalDistribution(f.person.emotionalState, ES_STD));
                 unspec.Remove(a);
             }
         }
