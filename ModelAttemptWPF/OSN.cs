@@ -144,7 +144,8 @@ namespace ModelAttemptWPF
         {
             Post post = new Post(news, time, poster);
             accountList[poster.ID].page.Add(post);
-            this.newsList[news.ID].sharers.Add(poster.person);
+            //this.newsList[news.ID].sharers.Add(poster.person);
+            news.personShares(poster.person);
             if (news.isTrue == false)
             {
                 this.nSharedFakeNews++;
@@ -161,7 +162,7 @@ namespace ModelAttemptWPF
 
         public News CreateNewsRandomPoster(string name, bool isTrue,int time,double emotionalLevel,double believability,int nPosts=1)
         {
-            News news = new News(this.newsCount,name+newsCount, isTrue,emotionalLevel,believability);
+            News news = new News(this.newsCount,name+newsCount, isTrue,emotionalLevel,believability, this);
             this.newsList.Add(news);
             for (int i = 0; i < nPosts; i++)
             {
@@ -178,7 +179,7 @@ namespace ModelAttemptWPF
             if (accountList[account.ID].HasShared(news) == false)
                 // change this so the probability of sharing decreases exponentially
             {
-                double randomWeightedDouble = random.NextDouble() *(Math.Exp(- news.NumberOfTimesViewed(account.person)));//!!consider different distributions
+                double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
                 double shareProb = account.person.AssesNews(news);
                 if (news.isTrue)
@@ -192,29 +193,37 @@ namespace ModelAttemptWPF
                 //Console.WriteLine(account.person.name + " assesed " + news.name +"(b=" +news.believability+", e="+news.emotionalLevel + ") as: " + assesment);
                 if (randomWeightedDouble < shareProb)
                 {
-                    //Console.WriteLine(account.person.name + " shared " + news.name);
+                    //Console.WriteLine(account.person.name + " shared " + news.name + " with prob " + shareProb);
                     this.ShareNews(news, account, time);
                 }
                 if (news.HasSeen(account) == false)
                 {
                     newsList[news.ID].nViewed++;
-                    newsList[news.ID].viewers.Add(account.person);
-                    news.nViews.Add(1);
+                    //newsList[news.ID].viewers.Add(account.person);
+                    //news.nViews.Add(1);
+                    news.personViews(account.person);
                     accountList[account.ID].seen.Add(news);
                 }
                 else
                 {
-                    int key = news.viewers.IndexOf(account.person);
+                    //int key = news.viewers.IndexOf(account.person);
                     // Find the index of the viewer in the viewers list for the person that is currently viewing the news
-                    int key2 = news.viewers.FindIndex(viewer => viewer.ID == account.person.ID);
-                    newsList[news.ID].nViews[key2] += 1;
+                    //int key2 = news.viewers.FindIndex(viewer => viewer.ID == account.person.ID);
+                    //newsList[news.ID].nViews[key2] += 1;
+                    news.personViews(account.person);
                 }
             }
         }
 
+
+        System.Diagnostics.Stopwatch vfaTimer = new System.Diagnostics.Stopwatch();
+        System.Diagnostics.Stopwatch vfbTimer = new System.Diagnostics.Stopwatch();
+        System.Diagnostics.Stopwatch vfcTimer = new System.Diagnostics.Stopwatch();
+
         public void ViewFeed(Account account, int time)
         {
             // Create a list of all the posts within the last 30 mins (up to 100) (2 timeslots)
+            vfaTimer.Start();
             List<Post> currentFeed = new List<Post>();
             foreach (Account followee in account.following)
             {
@@ -226,12 +235,19 @@ namespace ModelAttemptWPF
                     }
                 }
             }
+            //Console.WriteLine(account.person.ID + ", " + currentFeed.Count);
+            vfaTimer.Stop();
+            vfbTimer.Start();
             currentFeed.Shuffle(random);
+            vfbTimer.Stop();
+            vfcTimer.Start();
             int nPostsToView = Convert.ToInt16(Math.Ceiling(Convert.ToDecimal(account.person.sessionLength * SESSION_LENGTH_MOD)));
             foreach (Post post in currentFeed.Take(nPostsToView))
             {
                 this.ViewNews(account, post.news, time);
             }
+            vfcTimer.Stop();
+
         }
 
         // TODO
@@ -303,10 +319,11 @@ namespace ModelAttemptWPF
         public void TimeSlotPasses(int time)
         {
             // Determine which users will check their news feed in this time slot
-            double randomDouble = random.NextDouble();
+            //double randomDouble = random.NextDouble();
             foreach(Account account in this.accountList)
             {
-                if (account.person.freqUse > randomDouble)//!! consider individual randomness
+                double randomDouble = random.NextDouble();
+                if (account.person.freqUse > randomDouble)
                 {
                     this.ViewFeed(this.accountList[account.ID], time);
                 }
@@ -315,14 +332,18 @@ namespace ModelAttemptWPF
             this.UpdateStatistics();
         }
 
+        System.Diagnostics.Stopwatch statTimer = new System.Diagnostics.Stopwatch();
+
         private void UpdateStatistics()
         {
+            statTimer.Start();
             this.nSharedFakeNewsList.Add(this.nSharedFakeNews);
             foreach( News news in newsList)
             {
                 news.nSharedList.Add(news.nShared);
                 news.nViewedList.Add(news.nViewed);
             }
+            statTimer.Stop();
         }
         private void WriteConnectionToCSV(int from, int to)
         {
@@ -351,6 +372,14 @@ namespace ModelAttemptWPF
 
             timer.Stop();
             Console.WriteLine("This run took " + timer.ElapsedMilliseconds);
+            Console.WriteLine("Viewfeed part 1 took " + vfaTimer.ElapsedMilliseconds);
+            vfaTimer.Reset();
+            Console.WriteLine("Viewfeed part 2 took " + vfbTimer.ElapsedMilliseconds);
+            vfbTimer.Reset();
+            Console.WriteLine("Viewfeed part 3 took " + vfcTimer.ElapsedMilliseconds);
+            vfcTimer.Reset();
+            Console.WriteLine("Keeping statistics took " + statTimer.ElapsedMilliseconds);
+            statTimer.Reset();
         }
     }
 }

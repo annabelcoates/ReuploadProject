@@ -30,6 +30,9 @@ public class Person
     public bool isSet = false;
 
     public Random random = new Random();
+
+    private double SHARING_FREQ_FACTOR = 0.25;
+
     public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt)
 	{
         this.ID = ID;
@@ -74,7 +77,7 @@ public class Person
  
         this.connectivity = (0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble()) * usePsych + random.NextDouble() * (1-usePsych);
         // research on likelihood of sharing from amichai- vitinzsky
-        this.sharingFreq = ((this.ext + this.nrt)/2) * usePsych + random.NextDouble() * (1-usePsych);
+        this.sharingFreq = ((this.ext + this.nrt)/2 * usePsych + random.NextDouble() * (1-usePsych)) * SHARING_FREQ_FACTOR;
     }
 
 
@@ -95,8 +98,8 @@ public class Person
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 
-        double shareProb = Math.Min(1,this.sharingFreq *believabilityFactor*(politicalFactor +emotionalFactor));
-        //Console.WriteLine(this.name+" probability of sharing "+news.name+": "  shareProb);
+        double shareProb = Math.Min(1,this.sharingFreq * (believabilityFactor+0.1) * (politicalFactor+0.2) * (emotionalFactor + 0.2));
+        //Console.WriteLine(this.sharingFreq + ", " + believabilityFactor + ", " + politicalFactor + ", " + emotionalFactor + ", " + shareProb);
         // return the likelihood that someone will share the news
         return shareProb;
 

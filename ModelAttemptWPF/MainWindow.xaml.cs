@@ -42,8 +42,8 @@ namespace ModelAttemptWPF
         // TODO
         // ? Should this be 0.5
         //public const double DEFAULT_FRAC_FOLLOWS = 0.5;
-        public const int RUNTIME = 1000;
-        public const int FB_TIMEFRAME = 150;
+        public const int RUNTIME = 300;
+        public const int FB_TIMEFRAME = 50;
 
         public List<double> values;
 
@@ -204,8 +204,8 @@ namespace ModelAttemptWPF
 
 
                 // Write a list of everyone who has shared each news article     
-                csvSharers.Append(string.Join(",", news.sharers.Select(x => string.Join(",", x.ID))) + "\n");
-                csvViewers.Append(string.Join(",", news.viewers.Select(x => string.Join(",", x.ID))) + "\n");
+                csvSharers.Append(string.Join(",", news.sharers().Select(x => string.Join(",", x.ID))) + "\n");
+                csvViewers.Append(string.Join(",", news.viewers().Select(x => string.Join(",", x.ID))) + "\n");
                 
 
 
