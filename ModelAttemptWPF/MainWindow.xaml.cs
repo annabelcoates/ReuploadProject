@@ -135,7 +135,17 @@ namespace ModelAttemptWPF
                     // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
                     this.simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
                     // Create some news to be shared
-                    AddDistributedNews((variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), this.facebook, (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1+val) + 0.5 : MEAN_EMO_FAKE_NEWS), MEAN_BEL_FAKE_NEW, (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS), MEAN_BEL_TRUE_NEWS); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
+                    // TODO
+                    // ! These parameters appear to be input the wrong way around
+                    AddDistributedNews(
+                        (variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), 
+                        (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), 
+                        this.facebook, 
+                        (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1+val) + 0.5 : MEAN_EMO_FAKE_NEWS), 
+                        MEAN_BEL_FAKE_NEW, 
+                        (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS), 
+                        MEAN_BEL_TRUE_NEWS
+                    ); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
                                       
                     timer.Stop();
                     Console.WriteLine("Initialising run " + i + " for value " + val + " took " + timer.ElapsedMilliseconds);
@@ -219,6 +229,8 @@ namespace ModelAttemptWPF
               //  csv2.AppendLine(newLine2);
 
             }
+            // TODO
+            // ? Change "nSharesAll" to "nSharedAll"
             File.WriteAllText(generalPath + "nSharesAll.csv", csvNShared.ToString());
             File.WriteAllText(generalPath + "nViewsAll.csv", csvNViewed.ToString());
             File.WriteAllText(generalPath + "sharersAll.csv", csvSharers.ToString());
@@ -272,7 +284,7 @@ namespace ModelAttemptWPF
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
                 csv.AppendLine(line);
             }
-            File.WriteAllText(generalPath+"NsharesPopulation.csv", csv.ToString());
+            File.WriteAllText(generalPath+"nSharesPopulation.csv", csv.ToString());
 
         }
     }
