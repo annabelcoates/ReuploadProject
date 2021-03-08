@@ -11,6 +11,7 @@ namespace ModelAttemptWPF
     public class Facebook : OSN
     {
         private const String pythonRel = @"\FacebookUK\network_generator.py";
+        private const String pythonSrcFile = @"\FacebookUK\pythonSource.txt";
         public Facebook(string name, int ftf):base(name, ftf)
         {
 
@@ -51,25 +52,20 @@ namespace ModelAttemptWPF
             // TODO
             // ! WARNING: Hardcoded value
             // ! NOTE: You MUST change the following path to point to the location of your Python3 executable
-            System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\FacebookUK\pythonSource.txt");
-            start.FileName = file.ReadLine();
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            start.Arguments = string.Format("{0} {1}", python_script, python_args);
-            start.UseShellExecute = false;
-            start.RedirectStandardOutput = true;
-
-            using (Process process = Process.Start(start))
+            using (System.IO.StreamReader file = new System.IO.StreamReader(MainWindow.globalLoc + pythonSrcFile))
             {
-                using (StreamReader reader = process.StandardOutput)
+                start.FileName = file.ReadLine();
+                start.Arguments = string.Format("{0} {1}", python_script, python_args);
+                start.UseShellExecute = false;
+                start.RedirectStandardOutput = true;
+
+                using (Process process = Process.Start(start))
                 {
-                    string result = reader.ReadToEnd();
-                    Console.Write(result);
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        string result = reader.ReadToEnd();
+                        Console.Write(result);
+                    }
                 }
             }
         }

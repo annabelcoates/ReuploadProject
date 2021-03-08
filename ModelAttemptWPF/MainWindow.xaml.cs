@@ -19,12 +19,11 @@ namespace ModelAttemptWPF
 
         Random random = new Random();
         Facebook facebook;
-        //private string smallWorldPath = @"..\..\..\FacebookUK\small_world_network.csv";
         public static string globalLoc;
         private string smallWorldPath;
 
-        private const string smallWorldPathRel = @"\FacebookUK\small_world_network.csv";
-
+        private const string smallWorldPathRel = @"\FacebookUK\small_world_graph.csv";
+        private const string pythonSource = @"\FacebookUK\pythonSource.txt";
 
         // define fixed settings 
         public const int fixedN = 1000; // the fixed number of people in the simulation
@@ -52,6 +51,8 @@ namespace ModelAttemptWPF
             // 2 means the ratio between initial true and fake news is variable
             // 3 means ...
 
+            // TODO
+            // ? This is where OL40 and OL60 come from, I believe
             double[] values = { 0.4, 0.6 };
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.Close();
@@ -189,7 +190,6 @@ namespace ModelAttemptWPF
             File.WriteAllLines(generalPath + "nSharedFakeNews.csv", this.facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
             File.WriteAllLines(generalPath + "newsInfo.csv", this.facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel)));
-
 
             var csv = new StringBuilder();
             var csv2 = new StringBuilder();

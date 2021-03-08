@@ -26,8 +26,7 @@ edge_list = [
     s + '\n'
     for s in nx.generate_edgelist(g, delimiter=',', data=False)
 ] 
-edge_file_path = os.path.join(sys.path[0], "small_world_network.csv")
-assert os.path.isfile(edge_file_path)
+edge_file_path = os.path.join(sys.path[0], "small_world_graph.csv")
 with open(edge_file_path, "w") as f:
     f.write("source,target\n")
 with open(edge_file_path, "a") as f:

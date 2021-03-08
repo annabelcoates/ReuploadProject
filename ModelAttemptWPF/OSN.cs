@@ -239,19 +239,20 @@ namespace ModelAttemptWPF
         // ? Why are there two implementations of LoadCsvFile (the other being in MainWindow.xaml.cs)
         public List<string[]> LoadCsvFile(string filePath)
         {
-            var reader = new StreamReader(File.OpenRead(filePath));
-            List<string[]> searchList = new List<string[]>();
-            while (!reader.EndOfStream)
+            using (var reader = new StreamReader(File.OpenRead(filePath)))
             {
-                string line = reader.ReadLine(); // ignore the line of labels
-                if (line != "source,target")
+                List<string[]> searchList = new List<string[]>();
+                while (!reader.EndOfStream)
                 {
-                    string[] lineList = line.Split(',');
-                    searchList.Add(lineList);
+                    string line = reader.ReadLine(); // ignore the line of labels
+                    if (line != "source,target")
+                    {
+                        string[] lineList = line.Split(',');
+                        searchList.Add(lineList);
+                    }
                 }
+                return searchList;
             }
-            return searchList;
-                       
         }
 
         private void CreateGraphCSV(string n, string k)
