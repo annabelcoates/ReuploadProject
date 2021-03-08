@@ -52,7 +52,7 @@ namespace ModelAttemptWPF
             return false;
         }
 
-        public List<double> CalculateSharerAverages()
+        /*public List<double> CalculateSharerAverages()
         {
          
             double o = 0; double c = 0; double e = 0; double a = 0; double n = 0;
@@ -75,8 +75,9 @@ namespace ModelAttemptWPF
             onlineLiteracy /= nSharers; politicalLeaning /= nSharers;
             List<double> averages = new List<double>() { o, c, e, a, n, onlineLiteracy, politicalLeaning };
             return averages;
-        }
-        public List<double> CalculateViewerAverages()
+        }*/
+
+        /*public List<double> CalculateViewerAverages()
         {
 
             double o = 0; double c = 0; double e = 0; double a = 0; double n = 0;
@@ -99,7 +100,7 @@ namespace ModelAttemptWPF
             onlineLiteracy /= nViewers; politicalLeaning /= nViewers;
             List<double> averages = new List<double>() { o, c, e, a, n, onlineLiteracy, politicalLeaning };
             return averages;
-        }
+        }*/
 
         public int NumberOfTimesViewed(Person person)
         {

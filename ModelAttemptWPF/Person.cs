@@ -12,7 +12,7 @@ public class Person
     public double agr; // Agreeableness
     public double nrt; // Neuroticism
 
-   
+    public double usePsych = 1.0; //!!
 
     public double freqUse; // A measure of how likely a user is to check social media in a 15 min timeslot, 0-1
     public double sessionLength; // A measure of how many posts a person sees in 1 view of their feed, 0-1, Maybe should be int?
@@ -27,7 +27,7 @@ public class Person
     public string name;
     public int nFakeShares;
     public int nTrueShares;
-    public Boolean isSet = false;
+    public bool isSet = false;
 
     public Random random = new Random();
     public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt)
@@ -61,7 +61,7 @@ public class Person
         double tempFreqUse = -0.18 * this.con + 0.12 * this.ext - 0.21 * this.agr + 0.14 * this.nrt;
         double minFreqUse = -0.39; // -0.18-0.21
         double maxFreqUse = 0.26; // 0.12+0.14
-        this.freqUse = (tempFreqUse - minFreqUse)/ (maxFreqUse - minFreqUse);
+        this.freqUse = ((tempFreqUse - minFreqUse)/ (maxFreqUse - minFreqUse)) * usePsych + random.NextDouble() * (1-usePsych);
         
 
 
@@ -70,11 +70,11 @@ public class Person
         double tempSL = -0.16 * this.con + 0.24 * ext + 0.14 * this.nrt;
         double minSL = -0.16; // -0.16
         double maxSL = 0.38;//
-        this.sessionLength = (tempSL - minSL) / (maxSL - minSL);
+        this.sessionLength = ((tempSL - minSL) / (maxSL - minSL)) * usePsych + random.NextDouble() * (1-usePsych);
  
-        this.connectivity = 0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble(); // can be larger than 1
+        this.connectivity = (0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble()) * usePsych + random.NextDouble() * (1-usePsych);
         // research on likelihood of sharing from amichai- vitinzsky
-        this.sharingFreq = this.ext * this.nrt;
+        this.sharingFreq = ((this.ext + this.nrt)/2) * usePsych + random.NextDouble() * (1-usePsych);
     }
 
 
@@ -86,7 +86,7 @@ public class Person
         double poldist = news.politicalLeaning - this.politicalLeaning;
         double politicalFactor = Math.Max(0.4 - 0.4*Math.Abs(poldist), 1-5*poldist*poldist); //if poldist is close, then we care strongly about how close -- if it's far, probability is small
         // how much the news appeals emotionally increases with the person's emotional level and how emotional the news is
-        double emotionalFactor = this.nrt * news.emotionalLevel;
+        double emotionalFactor = (this.nrt * news.emotionalLevel) * usePsych + news.emotionalLevel * (1-usePsych);
 
         double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
         //believabilityFactor = 1 - onlineLiteracy;

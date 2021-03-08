@@ -21,6 +21,7 @@ namespace ModelAttemptWPF
         //private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
         public string followCSVPath = @"..\..\..\FacebookUK\follows";
         private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
+        private const int SESSION_LENGTH_MOD = 20;
 
 
         public List<Account> accountList = new List<Account>();
@@ -42,7 +43,6 @@ namespace ModelAttemptWPF
         public List<int> nSharedFakeNewsList = new List<int>() { 0 }; // at t=0, 0 people have seen fake news
         public List<double> fakeShareProbs = new List<double>();
         public List<double> trueShareProbs = new List<double>();
-        
 
         public OSN(string name, int ftf)
         {
@@ -67,11 +67,11 @@ namespace ModelAttemptWPF
         }
 
 
-        public void PopulateFromPeople(int n, int k, List<Person> population)
+        public void PopulateFromPeople(List<Person> population)
         {
            
             // Choose n people from the population to make accounts
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < population.Count; i++)
             {
                 // Pick the next person (there is no pattern to the order of people in the population so this is effectively random)
                 Person person = population[i];
@@ -178,7 +178,7 @@ namespace ModelAttemptWPF
             if (accountList[account.ID].HasShared(news) == false)
                 // change this so the probability of sharing decreases exponentially
             {
-                double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));//!!consider different distributions
+                double randomWeightedDouble = random.NextDouble() *(Math.Exp(- news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
                 double shareProb = account.person.AssesNews(news);
                 if (news.isTrue)
@@ -216,19 +216,18 @@ namespace ModelAttemptWPF
         {
             // Create a list of all the posts within the last 30 mins (up to 100) (2 timeslots)
             List<Post> currentFeed = new List<Post>();
-            int count = 0;
             foreach (Account followee in account.following)
             {
                 foreach (Post post in followee.page)
                 {
-                    if (time - post.time <= this.feedTimeFrame)
+                    if (post.time <= time && time - post.time <= this.feedTimeFrame)
                     {
                         currentFeed.Add(post);
                     }
                 }
             }
             currentFeed.Shuffle(random);
-            int nPostsToView = Convert.ToInt16(Math.Ceiling(Convert.ToDecimal(account.person.sessionLength * 20)));
+            int nPostsToView = Convert.ToInt16(Math.Ceiling(Convert.ToDecimal(account.person.sessionLength * SESSION_LENGTH_MOD)));
             foreach (Post post in currentFeed.Take(nPostsToView))
             {
                 this.ViewNews(account, post.news, time);
@@ -341,10 +340,17 @@ namespace ModelAttemptWPF
 
         public void RunFor(int runtime)
         {
+
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+
             for (int j = 0; j < runtime; j++)
             {
                 TimeSlotPasses(j);
             }
+
+            timer.Stop();
+            Console.WriteLine("This run took " + timer.ElapsedMilliseconds);
         }
     }
 }
