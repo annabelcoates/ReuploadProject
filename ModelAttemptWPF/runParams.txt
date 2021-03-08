@@ -6,5 +6,5 @@
 200
 # nFake 
 100
-# values
+# variable parameters
 40,60
