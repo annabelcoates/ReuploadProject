@@ -5,14 +5,29 @@ cd (script_path)
 
 nFake=100;
 nTrue=200;
-nRuns=50;
+nRuns=1;
 population=1000;
 OL=zeros(nRuns,population);
+paramVals = {'OL40_', 'OL60_'};
 fakeShares=zeros(nRuns,population);
 nFollowers=zeros(nRuns,population);
 
+paramVals_size = size(paramVals);
+resultsPaths = cell(nRuns, paramVals_size(2));
+
+for i = 1:nRuns
+    for j = 1:paramVals_size(2)
+        tempPath = fullfile(...
+        '..','Results', {['OL40_' int2str(i)], ...
+        ['OL60_' int2str(i)]});
+        resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
+    end
+end
+
 for i=1:nRuns
-    nSharesPop=csvread('..\Results\OL40_'+int2str (i)+"\NSharesPopulation.csv",1,1);
+    % TODO
+    % Doesn't account for OL60 etc
+    nSharesPop=csvread(resultsPaths{1,1},1,1);
     OL(i,:)=nSharesPop(:,7);
     fakeShares(i,:)=nSharesPop(:,9);
     o(i,:)=nSharesPop(:,2);

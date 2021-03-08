@@ -5,7 +5,7 @@ cd (script_path)
 
 nFake=100;
 nTrue=200;
-nRuns=50;
+nRuns=1;
 population=1000;
 nNews=300;
 OL=zeros(nRuns,population);
@@ -13,10 +13,11 @@ fakeShares=zeros(nRuns,population);
 nFollowers=zeros(nRuns,population);
 
 for i=1:nRuns
-    newsInfo=csvread('..\Results\OL40_'+int2str (i)+"\newsInfo.csv");
+    newsInfo=csvread(['..\Results\OL40_' int2str(i) '\newsInfo.csv']);
     newsB(i,:)=newsInfo(:,1);
     newsE(i,:)= newsInfo(:,2);
-    nSharesAll=csvread('..\Results\OL40_'+int2str (i)+"\nSharesAll.csv");
+    nSharesAll=csvread(['..\Results\OL40_' int2str(i) '\nSharesAll.csv']);
+    disp (size(nSharesAll));
     nShares(i,:)=nSharesAll(:,1000);
     
 end
@@ -42,8 +43,8 @@ xlabel('Believability')
 ylabel('Number of shares')
 %%
 function []=plotScatter(x,y,xtitle,ytitle)
-  %  [x, indices]=sort(x);
-  %   y=y(indices);
+    %  [x, indices]=sort(x);
+    %   y=y(indices);
     figure()
     scatter(x,y,5,'o','filled','MarkerFaceAlpha',0.2)
     xlabel(xtitle)

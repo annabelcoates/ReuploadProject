@@ -261,3 +261,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/ModelAttemptWPF/Analysis/octave-workspace
+/ModelAttemptWPF/Results/OL60_1/.~lock.nSharesAll.csv#

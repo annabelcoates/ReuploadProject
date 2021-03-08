@@ -154,22 +154,21 @@ public class Simulation
         return randNormal;
     }
 
-    public void AddDistributedNews(int nFake, int nTrue, OSN osn, double meanEFake = 0.75, double meanETrue = 0.5, double meanBFake = 0.25, double meanBTrue = 0.75)
-    {
-        double std = 0.1;
-        int nPostsPerTrue = 2;
-        for (int i = 0; i < nFake; i++)
-        {
-            double e = NormalDistribution(meanEFake, std);
-            double b = NormalDistribution(meanBFake, std);
-            osn.CreateNewsRandomPoster("FakeNews", false, time, e, b);
-        }
-        for (int j = nFake; j < nFake + nTrue; j++)
-        {
-            double e = NormalDistribution(meanETrue, std);
-            double b = NormalDistribution(meanBTrue, std);
-            osn.CreateNewsRandomPoster("TrueNews", true, time, e, b, nPostsPerTrue);
-        }
-    }
-
+    //public void AddDistributedNews(int nFake, int nTrue, OSN osn, double meanEFake = 0.75, double meanETrue = 0.5, double meanBFake = 0.25, double meanBTrue = 0.75)
+    //{
+    //    double std = 0.1;
+    //    int nPostsPerTrue = 2;
+    //    for (int i = 0; i < nFake; i++)
+    //    {
+    //        double e = NormalDistribution(meanEFake, std);
+    //        double b = NormalDistribution(meanBFake, std);
+    //        osn.CreateNewsRandomPoster("FakeNews", false, time, e, b);
+    //    }
+    //    for (int j = nFake; j < nFake + nTrue; j++)
+    //    {
+    //        double e = NormalDistribution(meanETrue, std);
+    //        double b = NormalDistribution(meanBTrue, std);
+    //        osn.CreateNewsRandomPoster("TrueNews", true, time, e, b, nPostsPerTrue);
+    //    }
+    //}
 }
