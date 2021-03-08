@@ -3,7 +3,7 @@ clear;
 script_path = fileparts(mfilename('fullpath'));
 cd (script_path);
 
-runParamsInputFileName = fullfile('..', 'runParamsInput.txt');
+runParamsInputFileName = fullfile('..', 'runParams.txt');
 runParamsInputFile = fopen(runParamsInputFileName, 'r');
 runParamsInput = textscan(runParamsInputFile, '%s', 'CommentStyle', '#');
 runParamsInput = runParamsInput{1};
@@ -38,6 +38,45 @@ end
 
 %%
 
+for varIdx = 1:varParamVals_len
+    for i=1:nRuns
+        fileName = resultsPaths{i, varIdx};
+        disp(fileName)
+        varParam = [varParamVals{varIdx} int2str(i)];
+        nSharesPop=csvread(fileName,1,1);
+        nFollowers(i,:)=nSharesPop(:,1);
+        o(i,:)=nSharesPop(:,2);
+        c(i,:)=nSharesPop(:,3);
+        e(i,:)=nSharesPop(:,4);
+        a(i,:)=nSharesPop(:,5);
+        n(i,:)=nSharesPop(:,6);
+        OL(i,:)=nSharesPop(:,7);
+        trueShares(i,:)=nSharesPop(:,8);
+        fakeShares(i,:)=nSharesPop(:,9);
+        ratio(i,:)=nSharesPop(:,10);
+        freqUse(i,:)=nSharesPop(:,11);
+        sessionLength(i,:)=20.*(nSharesPop(:,12));
+        shareFreq(i,:)=nSharesPop(:,13);
+    end
+    runParamsStruct.varParam.nFollowers=reshape(nFollowers,[1,nRuns*population]);
+    runParamsStruct.varParam.o=reshape(o,[1,nRuns*population]);
+    runParamsStruct.varParam.c=reshape(c,[1,nRuns*population]);
+    runParamsStruct.varParam.e=reshape(e,[1,nRuns*population]);
+    runParamsStruct.varParam.a=reshape(a,[1,nRuns*population]);
+    runParamsStruct.varParam.n=reshape(n,[1,nRuns*population]);
+    runParamsStruct.varParam.OL=reshape(OL,[1,nRuns.*population]);
+    runParamsStruct.varParam.trueShares=reshape(trueShares,[1,nRuns*population]);
+    runParamsStruct.varParam.fakeShares=reshape(fakeShares,[1,nRuns*population]);
+    runParamsStruct.varParam.ratio=reshape(ratio,[1,nRuns*population]);
+    runParamsStruct.varParam.freqUse=reshape(freqUse,[1,nRuns*population]);
+    runParamsStruct.varParam.sessionLength=reshape(sessionLength,[1,nRuns*population]);
+    % // TODO 
+    % ? Should this be a ceiling function
+    runParamsStruct.varParam.roundSL=ceil(runParamsStruct.sessionLength);
+    runParamsStruct.varParam.shareFreq=reshape(shareFreq,[1,nRuns*population]);
+end
+%%
+
 plotParamsFileName = fullfile('..', 'plotParams.txt');
 plotParamsFile = fopen(plotParamsFileName, 'r');
 plotParamsString = textscan(plotParamsFile, '%s', 'CommentStyle', '#');
@@ -56,51 +95,12 @@ end
 
 %%
 
-for i=1:nRuns
-    fileName = resultsPaths{i, fileIndex};
-    disp(fileName)
-    varParam = [varParamVals{fileIndex} int2str(i)];
-    nSharesPop=csvread(fileName,1,1);
-    nFollowers(i,:)=nSharesPop(:,1);
-    o(i,:)=nSharesPop(:,2);
-    c(i,:)=nSharesPop(:,3);
-    e(i,:)=nSharesPop(:,4);
-    a(i,:)=nSharesPop(:,5);
-    n(i,:)=nSharesPop(:,6);
-    OL(i,:)=nSharesPop(:,7);
-    trueShares(i,:)=nSharesPop(:,8);
-    fakeShares(i,:)=nSharesPop(:,9);
-    ratio(i,:)=nSharesPop(:,10);
-    freqUse(i,:)=nSharesPop(:,11);
-    sessionLength(i,:)=20.*(nSharesPop(:,12));
-    shareFreq(i,:)=nSharesPop(:,13);
-end
-plotVars.nFollowers=reshape(nFollowers,[1,nRuns*population]);
-plotVars.o=reshape(o,[1,nRuns*population]);
-plotVars.c=reshape(c,[1,nRuns*population]);
-plotVars.e=reshape(e,[1,nRuns*population]);
-plotVars.a=reshape(a,[1,nRuns*population]);
-plotVars.n=reshape(n,[1,nRuns*population]);
-plotVars.OL=reshape(OL,[1,nRuns.*population]);
-plotVars.trueShares=reshape(trueShares,[1,nRuns*population]);
-plotVars.fakeShares=reshape(fakeShares,[1,nRuns*population]);
-plotVars.ratio=reshape(ratio,[1,nRuns*population]);
-plotVars.freqUse=reshape(freqUse,[1,nRuns*population]);
-plotVars.sessionLength=reshape(sessionLength,[1,nRuns*population]);
-% // TODO 
-% ? Should this be a ceiling function
-plotVars.roundSL=ceil(plotVars.sessionLength);
-plotVars.shareFreq=reshape(shareFreq,[1,nRuns*population]);
-
-%%
-
 
 
 %%
 
-function []=plotScatter(x,y,xtitle,ytitle)
-    %  [x, indices]=sort(x);
-    %   y=y(indices);
+function []=myPlot(x,y,xtitle,ytitle)
+    
     figure()
     scatter(x,y,3)
     xlabel(xtitle)
