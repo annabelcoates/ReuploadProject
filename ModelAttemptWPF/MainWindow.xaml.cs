@@ -27,16 +27,23 @@ namespace ModelAttemptWPF
 
 
         // define fixed settings 
-        public const int fixedN = 1000; // the fixed number of people in the simulation
-        public const int fixedK = 100; // the fixed k-value of the network (how many in each clique)
-        public const int fixedNFake = 100; // number of fake news articles in the experiment
-        public const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
-        public const double onlineLit = 0.4; //mean online literacy
-        public const int RUNS = 1;
+        private const int fixedN = 1000; // the fixed number of people in the simulation
+        private const int fixedK = 100; // the fixed k-value of the network (how many in each clique)
+        private const int fixedNFake = 100; // number of fake news articles in the experiment
+        private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
+        private const double onlineLit = 0.4; //mean online literacy
+        private const int RUNS = 1;
+
+        private const double MEAN_EMO_FAKE_NEWS = 0.66;
+        private const double MEAN_BEL_FAKE_NEW = 0.33;
+        private const double MEAN_EMO_TRUE_NEWS = 0.33;
+        private const double MEAN_BEL_TRUE_NEWS = 0.66;
+        private const double EMO_STD = 0.15;
+        private const double BEL_STD = 0.15;
         // TODO
         // ? Should this be 0.5
-        public const double DEFAULT_FRAC_FOLLOWS = 0.5;
-        public const int RUNTIME = 100;
+        //public const double DEFAULT_FRAC_FOLLOWS = 0.5;
+        public const int RUNTIME = 1000;
         public const int FB_TIMEFRAME = 150;
 
         public List<double> values;
@@ -50,7 +57,8 @@ namespace ModelAttemptWPF
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
-            // 3 means ...
+            // 3 means the timefrime is variable
+            // 4 means diminishing/exaggerating emotional level of news
 
             double[] values = { 0.4, 0.6 };
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
@@ -109,22 +117,28 @@ namespace ModelAttemptWPF
             {
                 for (int i = 0; i < RUNS; i++)
                 {
+                    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+                    timer.Start();
+
                     //this.Activate();
                     this.simulation = new Simulation(name, val, i+1); // create a new simulation object
                     this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
-                    this.facebook = new Facebook("FacebookUK", FB_TIMEFRAME); // make a facebook object
+                    this.facebook = new Facebook("FacebookUK", (variable == 3 ? (int) val : FB_TIMEFRAME)); // make a facebook object
 
                     // Give facebook a small initial population
-                    int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
-                    this.facebook.PopulateFromPeople(n, k, simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
+                    //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
+                    this.facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
                     this.facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
                     // TODO
                     // Delete this method
                     // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
                     this.simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
                     // Create some news to be shared
-                    AddDistributedNews((variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), this.facebook); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
-                    //SetClockFunctions(); // Start the clock
+                    AddDistributedNews((variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), this.facebook, (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1+val) + 0.5 : MEAN_EMO_FAKE_NEWS), MEAN_BEL_FAKE_NEW, (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS), MEAN_BEL_TRUE_NEWS); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
+                                      
+                    timer.Stop();
+                    Console.WriteLine("Initialising run " + i + " for value " + val + " took " + timer.ElapsedMilliseconds);
+
                     facebook.RunFor(runtime);
                     
                     SimulationEnd();
@@ -132,50 +146,29 @@ namespace ModelAttemptWPF
             }
         }
         
-        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake=0.75, double meanETrue=0.5, double meanBFake=0.25,double meanBTrue = 0.75)
+        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
         {
-            double std = 0.1; // standard deviation for e and b
             int nPostsPerTrue = 1; // used to vary the number of posts created per true news story
             int timeOfNews = 0;
             for (int i = 0; i < nFake; i++)
             {
-                double e = simulation.NormalDistribution(meanEFake, std); // generate an e value from normal dist
-                double b = simulation.NormalDistribution(meanBFake, std); // generate a b value from normal dist
+                double e = simulation.NormalDistribution(meanEFake, EMO_STD); // generate an e value from normal dist
+                double b = simulation.NormalDistribution(meanBFake, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("FakeNews", false, timeOfNews, e, b);
             }
             for (int j =nFake; j< nFake+nTrue; j++)
             {
-                double e = simulation.NormalDistribution(meanETrue, std); // generate an e value from normal dist
-                double b = simulation.NormalDistribution(meanBTrue, std); // generate a b value from normal dist
+                double e = simulation.NormalDistribution(meanETrue, EMO_STD); // generate an e value from normal dist
+                double b = simulation.NormalDistribution(meanBTrue, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("TrueNews", true, timeOfNews, e, b,nPostsPerTrue);
             }
         }
 
-        // TODO
-        // ? Why are there two implementations of LoadCsvFile (the other being in OSN.cs)
-        /*private List<string[]> LoadCsvFile(string filePath)
-        {
-            var reader = new StreamReader(File.OpenRead(filePath));
-            List<string[]> searchList = new List<string[]>();
-            while (!reader.EndOfStream)
-            {
-                string line = reader.ReadLine(); // ignore the line of labels
-                if (line != "source,target")
-                {
-                    string[] lineList = line.Split(',');
-                    searchList.Add(lineList);
-                }
-            }
-            return searchList;
-
-        }*/
-
-
-
-  
        
         private void SimulationEnd()
         {
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
 
             double newValue = simulation.value;
             string endFileName = Convert.ToInt64((newValue * 100)).ToString();
@@ -237,7 +230,9 @@ namespace ModelAttemptWPF
             CreateNSharesCSV(generalPath);
 
             //MakeNextSimulation(simulation);
-            
+            timer.Stop();
+            Console.WriteLine("Writing output of run took " + timer.ElapsedMilliseconds);
+
         }
 
         /*private void MakeNextSimulation(Simulation currentSimulation)

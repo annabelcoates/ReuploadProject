@@ -54,12 +54,6 @@ namespace ModelAttemptWPF
             System.IO.StreamReader file = new System.IO.StreamReader(@"..\..\..\FacebookUK\pythonSource.txt");
             start.FileName = file.ReadLine();
             Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
-            Console.WriteLine(start.FileName);
             start.Arguments = string.Format("{0} {1}", python_script, python_args);
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
