@@ -88,35 +88,10 @@ namespace ModelAttemptWPF
                     int runCountCurrent = 1;
                     runCountCurrent += i;
                     System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent));
-                    Console.WriteLine("");
-                    Console.WriteLine("********");
-                    Console.WriteLine("NEW THREAD BEING CREATED WITH THESE PARAMETERS:");
-                    Console.WriteLine(val);
-                    Console.WriteLine(i);
-                    Console.WriteLine("********");
-                    Console.WriteLine("");
                     t.Start();
                     //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent);
-                    Console.WriteLine("");
-                    Console.WriteLine("********");
-                    Console.WriteLine("THREAD BEING CLOSED WITH THESE PARAMETERS:");
-                    Console.WriteLine(val);
-                    Console.WriteLine(i);
-                    Console.WriteLine("********");
-                    Console.WriteLine("");
                 }
-                Console.WriteLine("");
-                Console.WriteLine("********");
-                Console.WriteLine("FINISHED RUNS FOR VAL:");
-                Console.WriteLine(val);
-                Console.WriteLine("********");
-                Console.WriteLine("");
             }
-            Console.WriteLine("");
-            Console.WriteLine("********");
-            Console.WriteLine("FINISHED FOR ALL VALS");
-            Console.WriteLine("********");
-            Console.WriteLine("");
         }
 
         private void innerSim(string name, int n, int k, int nFake, int nTrue, double ol, int runtime, int variable, double val, int i)
@@ -190,15 +165,7 @@ namespace ModelAttemptWPF
             string endFileName = Convert.ToInt64((newValue * 100)).ToString();
 
             string generalPath = resultsPath + simulation.versionName + endFileName +"_"+simulation.runNumber+@"\"; //!! set to local results folder
-            Console.WriteLine("");
-            Console.WriteLine("********");
-            Console.WriteLine("SAVING STUFF WITH THE FOLLOW PARAMETERS:");
-            Console.WriteLine(endFileName);
-            Console.WriteLine(simulation.runNumber);
-            Console.WriteLine("********");
-            Console.WriteLine("");
             Directory.CreateDirectory(generalPath);
-            Console.WriteLine(generalPath);
 
             facebook.SaveFollowCSV(generalPath, followsPathThread, smallWorldPathThread);
 
