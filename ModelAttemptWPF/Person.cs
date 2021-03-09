@@ -75,8 +75,8 @@ public class Person
         double tempSL = -0.16 * this.con + 0.24 * ext + 0.14 * this.nrt;
         double minSL = -0.16; // -0.16
         double maxSL = 0.38;//
-        this.sessionLength = ((tempSL - minSL) / (maxSL - minSL)) * usePsych + simulation.NormalDistribution(9.5, 3) * (1 - usePsych); // av 9.5, between 0 and 17
- 
+        this.sessionLength = ((tempSL - minSL) / (maxSL - minSL)) * usePsych + simulation.NormalDistribution(0.475, 0.14) * (1 - usePsych); // av 9.5, between 0 and 17
+        
         this.connectivity = (0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble()) * usePsych + random.NextDouble() * (1-usePsych);
         // research on likelihood of sharing from amichai- vitinzsky
         this.sharingFreq = ((this.ext + this.nrt) / 2 * usePsych + simulation.NormalDistribution(0.5,0.33) * (1-usePsych)) * SHARING_FREQ_FACTOR; // av 0.125, between 0 and 0.25 (with SFF of 0.25) -> so 0.5, and between 0 and 1
