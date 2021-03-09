@@ -22,7 +22,7 @@ namespace ModelAttemptWPF
         public static string globalLoc;
         private string smallWorldPath;
 
-        private double runCount;
+        private int runCount;
 
         private const string smallWorldPathRel = @"\FacebookUK\small_world_graph_";
         private const string pythonSource = @"\FacebookUK\pythonSource.txt";
@@ -51,7 +51,7 @@ namespace ModelAttemptWPF
 
         public MainWindow()
         {
-            
+            runCount = 0;
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
             smallWorldPath = globalLoc + smallWorldPathRel;
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
@@ -68,6 +68,11 @@ namespace ModelAttemptWPF
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             //this.Close();
             //this.RunLoop(100);
+            Console.WriteLine("");
+            Console.WriteLine("********");
+            Console.WriteLine("COMPLETO");
+            Console.WriteLine("********");
+            Console.WriteLine("");
         }
 
 
@@ -87,19 +92,41 @@ namespace ModelAttemptWPF
                     Console.WriteLine("");
                     t.Start();
                     //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i);
+                    Console.WriteLine("");
+                    Console.WriteLine("********");
+                    Console.WriteLine("THREAD BEING CLOSED WITH THESE PARAMETERS:");
+                    Console.WriteLine(val);
+                    Console.WriteLine(i);
+                    Console.WriteLine("********");
+                    Console.WriteLine("");
                 }
+                Console.WriteLine("");
+                Console.WriteLine("********");
+                Console.WriteLine("FINISHED RUNS FOR VAL:");
+                Console.WriteLine(val);
+                Console.WriteLine("********");
+                Console.WriteLine("");
             }
+            Console.WriteLine("");
+            Console.WriteLine("********");
+            Console.WriteLine("FINISHED FOR ALL VALS");
+            Console.WriteLine("********");
+            Console.WriteLine("");
         }
 
         private void innerSim(string name, int n, int k, int nFake, int nTrue, double ol, int runtime, int variable, double val, int i)
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
+            int runCountCurrent = 0;
+            runCountCurrent += runCount;
+            runCount += 1;
+
             Console.WriteLine("");
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: START");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             //this.Activate();
@@ -107,7 +134,7 @@ namespace ModelAttemptWPF
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: SIMULATION");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             Simulation simulation = new Simulation(name, val, i + 1); // create a new simulation object
@@ -115,7 +142,7 @@ namespace ModelAttemptWPF
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: DISTRIBUTION");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
@@ -123,7 +150,7 @@ namespace ModelAttemptWPF
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: FACEBOOK");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
@@ -134,18 +161,18 @@ namespace ModelAttemptWPF
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: POPULATE");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
             string varParamString = Convert.ToInt64((val * 100)).ToString();
-            string runNumberString = i.ToString();
+            string runNumberString = runCountCurrent.ToString();
             string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
             Console.WriteLine("");
             Console.WriteLine("########");
             Console.WriteLine("RUN PARAMETER CHECK: FOLLOWS");
             Console.WriteLine(val);
-            Console.WriteLine(i);
+            Console.WriteLine(runCountCurrent);
             Console.WriteLine("########");
             Console.WriteLine("");
             facebook.CreateMutualFollowsFromGraph(smallWorldPathThread, varParamString, runNumberString); // Create follows as defined by the network graph
