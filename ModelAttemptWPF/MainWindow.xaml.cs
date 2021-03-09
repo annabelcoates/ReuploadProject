@@ -171,7 +171,7 @@ namespace ModelAttemptWPF
 
             File.WriteAllLines(generalPath + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
-            File.WriteAllLines(generalPath + "newsInfo.csv", facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel)));
+            File.WriteAllLines(generalPath + "newsInfo.csv", facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel, x.politicalLeaning)));
 
             var csv = new StringBuilder();
             var csv2 = new StringBuilder();
