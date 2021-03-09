@@ -149,10 +149,14 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
             saveas(gcf, [savePath '.png']);
         else
             figure();
+            hold on;
+            xax = runParamsStruct.(varParam).([x '_flat']);
+            yax = runParamsStruct.(varParam).([y '_flat']);
             scatter(...
-                runParamsStruct.(varParam).([x '_flat']),...
-                runParamsStruct.(varParam).([y '_flat']),...
+                xax,...
+                yax,...
                 3);
+            lsline;
             xlabel([x '\_flat']);
             ylabel([y '\_flat']);
             figName = [varParam ' Scatter plot of ' [x '\_flat'] ' against ' [y '\_flat']];
@@ -160,6 +164,7 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
             savePath = fullfile(folderName, [saveName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
+            hold off;
         end
     end
 end

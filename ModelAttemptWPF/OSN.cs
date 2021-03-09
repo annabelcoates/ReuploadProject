@@ -180,14 +180,15 @@ namespace ModelAttemptWPF
                 double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
                 double shareProb = account.person.AssesNews(news);
-                if (news.isTrue)
+                //if we want to know the probabilities with which things would be shared
+                /*if (news.isTrue)
                 {
                     trueShareProbs.Add(shareProb);//statistics
                 }
                 else
                 {
                     fakeShareProbs.Add(shareProb);//statistics
-                }
+                }*/
                 //Console.WriteLine(account.person.name + " assesed " + news.name +"(b=" +news.believability+", e="+news.emotionalLevel + ") as: " + assesment);
                 if (randomWeightedDouble < shareProb)
                 {
