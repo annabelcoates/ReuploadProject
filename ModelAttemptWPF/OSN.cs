@@ -20,6 +20,7 @@ namespace ModelAttemptWPF
         //public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\follows";
         //private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
         private const int SESSION_LENGTH_MOD = 20;
+        private const double BASE_DECAY = 1.33;
 
 
         public List<Account> accountList = new List<Account>();
@@ -160,7 +161,7 @@ namespace ModelAttemptWPF
 
         public News CreateNewsRandomPoster(string name, bool isTrue,int time,double emotionalLevel,double believability,int nPosts=1)
         {
-            News news = new News(this.newsCount,name+newsCount, isTrue,emotionalLevel,believability, this);
+            News news = new News(this.newsCount,name+newsCount, isTrue,emotionalLevel,believability,random.NextDouble(), this);
             this.newsList.Add(news);
             for (int i = 0; i < nPosts; i++)
             {
@@ -177,7 +178,7 @@ namespace ModelAttemptWPF
             if (accountList[account.ID].HasShared(news) == false)
                 // change this so the probability of sharing decreases exponentially
             {
-                double randomWeightedDouble = random.NextDouble() *(Math.Exp(news.NumberOfTimesViewed(account.person)));//!!consider different distributions
+                double randomWeightedDouble = random.NextDouble() *(Math.Pow(BASE_DECAY,news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
                 double shareProb = account.person.AssesNews(news);
                 //if we want to know the probabilities with which things would be shared

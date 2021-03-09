@@ -27,19 +27,17 @@ namespace ModelAttemptWPF
         public List<int> nSharedList = new List<int>() { };
         public int nViewed = 0;
         public List<int> nViewedList = new List<int>() { };
-       
 
-        public Random random = new Random();
-
-        public News(int ID,string name, bool isTrue, double emotionalLevel,double believability, OSN o)
+        public News(int ID,string name, bool isTrue, double emotionalLevel,double believability, double politicalLeaning, OSN o)
         {
             this.ID = ID;
             this.name=name;
             this.isTrue = isTrue;
-            this.politicalLeaning = random.NextDouble();
+            this.politicalLeaning = politicalLeaning;
             this.emotionalLevel = emotionalLevel;
             this.believability = believability;
             this.o = o;
+            Console.WriteLine(politicalLeaning);
             vs = new int[o.IDCount];
             ss = new int[o.IDCount];
         }
