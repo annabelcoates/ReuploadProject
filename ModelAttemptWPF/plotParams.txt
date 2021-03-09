@@ -1,5 +1,8 @@
 # opn,frqUse
 # nFollowers,
-# OL,
-ratioShares,
-OL,ratioShares
+OL,
+# ratioShares,
+# OL,ratioShares
+frqUse,
+sesLen,
+shareFreq,
