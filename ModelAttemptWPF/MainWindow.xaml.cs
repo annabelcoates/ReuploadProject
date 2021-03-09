@@ -15,10 +15,10 @@ namespace ModelAttemptWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Simulation simulation;
+        //private Simulation simulation;
 
         Random random = new Random();
-        Facebook facebook;
+        //Facebook facebook;
         public static string globalLoc;
         private string smallWorldPath;
 
@@ -31,14 +31,14 @@ namespace ModelAttemptWPF
         private const int fixedNFake = 100; // number of fake news articles in the experiment
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.4; //mean online literacy
-        private const int RUNS = 1;
+        private const int RUNS = 2;
 
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
-        private const double MEAN_BEL_FAKE_NEW = 0.33;
+        private const double MEAN_BEL_FAKE_NEW = 0.1;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
-        private const double MEAN_BEL_TRUE_NEWS = 0.66;
-        private const double EMO_STD = 0.15;
-        private const double BEL_STD = 0.15;
+        private const double MEAN_BEL_TRUE_NEWS = 0.9;
+        private const double EMO_STD = 0.3;
+        private const double BEL_STD = 0.1;
         // TODO
         // ? Should this be 0.5
         //public const double DEFAULT_FRAC_FOLLOWS = 0.5;
@@ -61,56 +61,12 @@ namespace ModelAttemptWPF
 
             // TODO
             // ? This is where OL40 and OL60 come from, I believe
-            double[] values = { 0.4, 0.6 };
+            double[] values = { 0.3, 0.5, 0.7 };
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
-            this.Close();
+            //this.Close();
             //this.RunLoop(100);
         }
 
-        /*private void SetClockFunctions()
-        {
-            Clock.Interval = TimeSpan.FromMilliseconds(150f / simulation.runSpeed);
-            Clock.Tick += StandardFBUpdate;
-
-            InitializeComponent();
-            Clock.Start();
-            MinClock.Start();
-        }*/
-        /*private Boolean StandardFBUpdate()
-        {
-            this.facebook.TimeSlotPasses(simulation.time);
-
-            if (simulation.time == 1000)
-            {
-                // prevent timer based functions firing during the next simulation being made
-                this.Clock = new DispatcherTimer();
-                this.MinClock = new DispatcherTimer();
-
-                SimulationEnd(this.simulation);
-            }
-            else if (simulation.time % 100 == 0)
-            {
-             //   this.AddDistributedNews(0, 1, this.facebook);
-            }
-            simulation.time++;
-            return (simulation.time > RUNTIME);
-        }*/
-
-        /*private void RunLoop(int iterations=1000)
-        {
-            for (int timestep = 0; timestep < iterations; timestep++)
-            {
-                this.facebook.TimeSlotPasses(timestep);
-                if (timestep == 1000)
-                {
-                    // prevent timer based functions firing during the next simulation being made
-                    this.Clock = new DispatcherTimer();
-                    this.MinClock = new DispatcherTimer();
-
-                    SimulationEnd(this.simulation);
-                }
-            }
-        }*/
 
         private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double ol, int runtime, int variable, double[] values)
         {
@@ -118,46 +74,54 @@ namespace ModelAttemptWPF
             {
                 for (int i = 0; i < RUNS; i++)
                 {
-                    System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
-                    timer.Start();
-
-                    //this.Activate();
-                    this.simulation = new Simulation(name, val, i+1); // create a new simulation object
-                    this.simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
-                    this.facebook = new Facebook("FacebookUK", (variable == 3 ? (int) val : FB_TIMEFRAME)); // make a facebook object
-
-                    // Give facebook a small initial population
-                    //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
-                    this.facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
-                    this.facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
-                    // TODO
-                    // Delete this method
-                    // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
-                    this.simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
-                    // Create some news to be shared
-                    // TODO
-                    // ! These parameters appear to be input the wrong way around
-                    AddDistributedNews(
-                        (variable == 2 ? (int) ((nFake + nTrue) * val) : nFake), 
-                        (variable == 2 ? (int) ((nFake + nTrue) * val) : nTrue), 
-                        this.facebook, 
-                        (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1+val) + 0.5 : MEAN_EMO_FAKE_NEWS), 
-                        MEAN_BEL_FAKE_NEW, 
-                        (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS), 
-                        MEAN_BEL_TRUE_NEWS
-                    ); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
-                                      
-                    timer.Stop();
-                    Console.WriteLine("Initialising run " + i + " for value " + val + " took " + timer.ElapsedMilliseconds);
-
-                    facebook.RunFor(runtime);
-                    
-                    SimulationEnd();
+                    System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i));
+                    t.Start();
+                    //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i);
                 }
             }
         }
+
+        private void innerSim(string name, int n, int k, int nFake, int nTrue, double ol, int runtime, int variable, double val, int i)
+        {
+            System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
+            timer.Start();
+
+            //this.Activate();
+            Simulation simulation = new Simulation(name, val, i + 1); // create a new simulation object
+            simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
+            Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
+
+            // Give facebook a small initial population
+            //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
+            facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
+            facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
+                                                                        // TODO
+                                                                        // Delete this method
+                                                                        // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
+            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
+            // Create some news to be shared
+            // TODO
+            // ! These parameters appear to be input the wrong way around
+            AddDistributedNews(
+                (variable == 2 ? (int)((nFake + nTrue) * val) : nFake),
+                (variable == 2 ? (int)((nFake + nTrue) * val) : nTrue),
+                simulation,
+                facebook,
+                (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_FAKE_NEWS),
+                MEAN_BEL_FAKE_NEW,
+                (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS),
+                MEAN_BEL_TRUE_NEWS
+            ); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
+
+            timer.Stop();
+            Console.WriteLine("Initialising run " + i + " for value " + val + " took " + timer.ElapsedMilliseconds);
+
+            facebook.RunFor(runtime);
+
+            SimulationEnd(simulation, facebook);
+        }
         
-        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
+        private void AddDistributedNews(int nFake,int nTrue, Simulation simulation, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
         {
             int nPostsPerTrue = 1; // used to vary the number of posts created per true news story
             int timeOfNews = 0;
@@ -176,7 +140,7 @@ namespace ModelAttemptWPF
         }
 
        
-        private void SimulationEnd()
+        private void SimulationEnd(Simulation simulation, OSN facebook)
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
@@ -190,9 +154,9 @@ namespace ModelAttemptWPF
 
             facebook.SaveFollowCSV(generalPath);
 
-            File.WriteAllLines(generalPath + "nSharedFakeNews.csv", this.facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
+            File.WriteAllLines(generalPath + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
-            File.WriteAllLines(generalPath + "newsInfo.csv", this.facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel)));
+            File.WriteAllLines(generalPath + "newsInfo.csv", facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel)));
 
             var csv = new StringBuilder();
             var csv2 = new StringBuilder();
@@ -239,43 +203,15 @@ namespace ModelAttemptWPF
            // File.WriteAllText(generalPath + "viewerPersonalityAverages.csv", csv2.ToString());
 
 
-            CreateNSharesCSV(generalPath);
-
+            CreateNSharesCSV(generalPath, facebook);
+            
             //MakeNextSimulation(simulation);
             timer.Stop();
             Console.WriteLine("Writing output of run took " + timer.ElapsedMilliseconds);
 
         }
-
-        /*private void MakeNextSimulation(Simulation currentSimulation)
-        {
-
-            if (currentSimulation.runNumber == currentSimulation.nRuns) // if all the runs of one data point have been done
-            {
-                this.dpNumber++;
-                
-                if (this.dpNumber<values.Count)
-                {
-                    double newValue = values[this.dpNumber];
-                    string endFileName = Convert.ToInt64((newValue * 100)).ToString();
-                    string newName = currentSimulation.versionName.Remove(currentSimulation.versionName.Length - 2) + endFileName;
-                    this.UKDistributionSimulation(newName, fixedN, fixedK, fixedNFake, fixedNTrue, newValue);
-                }
-                else // if all the desired setting values have been simulated
-                {
-                    this.Close();
-                }
-            }
-            else
-            {
-                this.UKDistributionSimulation(currentSimulation.versionName, fixedN, fixedK, fixedNFake, fixedNTrue, currentSimulation.value);
-                this.simulation.runNumber = currentSimulation.runNumber + 1;
-            }
-            
-
-        }*/
     
-        public void CreateNSharesCSV(string generalPath)
+        public void CreateNSharesCSV(string generalPath, OSN facebook)
         {
             var csv = new StringBuilder();
             csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings

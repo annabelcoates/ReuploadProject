@@ -381,6 +381,7 @@ namespace ModelAttemptWPF
             Console.WriteLine("Keeping statistics took " + statTimer.ElapsedMilliseconds);
             statTimer.Reset();
         }
+
     }
 }
 
