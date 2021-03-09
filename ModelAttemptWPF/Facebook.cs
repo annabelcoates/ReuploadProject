@@ -41,17 +41,21 @@ namespace ModelAttemptWPF
         //    }
         //}
 
-        public void GenerateSmallWorldNetwork()
+        public void GenerateSmallWorldNetwork(string varParamString, string runNumberString)
         {
             string python_script = MainWindow.globalLoc + pythonRel;
             // TODO
             // ! WARNING: Hardcoded values
-            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]";
-
+               Console.WriteLine("");
+                    Console.WriteLine("********");
+                    Console.WriteLine("PREPARING TO RUN PYTHON SCRIPT WITH THESE PARAMETERS:");
+                    Console.WriteLine(varParamString);
+                    Console.WriteLine(runNumberString);
+                    Console.WriteLine("********");
+                    Console.WriteLine("");
+            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]" + " " + varParamString + "_" + runNumberString;
             ProcessStartInfo start = new ProcessStartInfo();
-            // TODO
-            // ! WARNING: Hardcoded value
-            // ! NOTE: You MUST change the following path to point to the location of your Python3 executable
+            // ! NOTE: You MUST store the path string of your Python3 executable in the python source file
             using (System.IO.StreamReader file = new System.IO.StreamReader(MainWindow.globalLoc + pythonSrcFile))
             {
                 start.FileName = file.ReadLine();
@@ -70,52 +74,20 @@ namespace ModelAttemptWPF
             }
         }
         
-        public new void CreateMutualFollowsFromGraph(string filePath)
+        // TODO
+        // ? Should we have the `new` keyword set or should we remove it
+        public new void CreateMutualFollowsFromGraph(string filePath, string varParamString, string runNumberString)
         {
             accountList = accountList.OrderBy(o => o.person.connectivity).ToList();
-            GenerateSmallWorldNetwork();
+            GenerateSmallWorldNetwork(varParamString, runNumberString);
             List<string[]> connections = LoadCsvFile(filePath);
             foreach (string[] connection in connections)
             {
-                // TODO
-                // Fix this for the new CSV
                 int followerID = Convert.ToInt16(connection[0]);
                 int followeeID = Convert.ToInt16(connection[1]);
-                // TODO
-                // Should this be bi-directionally symmetric by default? We can modify this at some point.
                 this.Follow(accountList[followeeID], accountList[followerID]);
                 this.Follow(accountList[followerID], accountList[followeeID]);
             }
         }
-        
-        // TODO
-        // ! 
-        //public void CreateFollowsBasedOnPersonality(int defaultFollows)
-        //// TODO
-        //// Change this to take a default number of follows 
-        //// ? Is this not already done?
-        //{
-        //    foreach (Account account in this.accountList)
-        //    {
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine(account.person.connectivity);
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        Console.WriteLine("AAAAAAAHHHHH!!!");
-        //        // TODO
-        //        // ? Behaviour doesn't align with descriptive comment of `~largeNetwork~ connectivity` which claims that `~largeNetwork~ connectivity` is "A measure of how likely someone is to have a large network group, can be greater than one".
-        //        // Instead, `~largeNetwork~ connectivity` appears to be a multiplier or weighting on the default number of followers.
-        //        // `~largeNetwork~ connectivity` is more like a randomly distributed variable
-        //        int nConnections = Convert.ToInt16(account.person.connectivity * defaultFollows);
-        //        this.CreateRandomMutualFollows(account, nConnections);
-        //    }
-        //}
     }
 }

@@ -22,7 +22,9 @@ namespace ModelAttemptWPF
         public static string globalLoc;
         private string smallWorldPath;
 
-        private const string smallWorldPathRel = @"\FacebookUK\small_world_graph.csv";
+        private double runCount;
+
+        private const string smallWorldPathRel = @"\FacebookUK\small_world_graph_";
         private const string pythonSource = @"\FacebookUK\pythonSource.txt";
 
         // define fixed settings 
@@ -49,6 +51,7 @@ namespace ModelAttemptWPF
 
         public MainWindow()
         {
+            
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
             smallWorldPath = globalLoc + smallWorldPathRel;
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
@@ -75,6 +78,13 @@ namespace ModelAttemptWPF
                 for (int i = 0; i < RUNS; i++)
                 {
                     System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i));
+                    Console.WriteLine("");
+                    Console.WriteLine("********");
+                    Console.WriteLine("NEW THREAD BEING CREATED WITH THESE PARAMETERS:");
+                    Console.WriteLine(val);
+                    Console.WriteLine(i);
+                    Console.WriteLine("********");
+                    Console.WriteLine("");
                     t.Start();
                     //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i);
                 }
@@ -85,19 +95,63 @@ namespace ModelAttemptWPF
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
-
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: START");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
             //this.Activate();
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: SIMULATION");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
             Simulation simulation = new Simulation(name, val, i + 1); // create a new simulation object
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: DISTRIBUTION");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: FACEBOOK");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
 
             // Give facebook a small initial population
             //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: POPULATE");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
             facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
-            facebook.CreateMutualFollowsFromGraph(smallWorldPath); // Create follows as defined by the network graph
-                                                                        // TODO
-                                                                        // Delete this method
-                                                                        // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
+            string varParamString = Convert.ToInt64((val * 100)).ToString();
+            string runNumberString = i.ToString();
+            string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
+            Console.WriteLine("");
+            Console.WriteLine("########");
+            Console.WriteLine("RUN PARAMETER CHECK: FOLLOWS");
+            Console.WriteLine(val);
+            Console.WriteLine(i);
+            Console.WriteLine("########");
+            Console.WriteLine("");
+            facebook.CreateMutualFollowsFromGraph(smallWorldPathThread, varParamString, runNumberString); // Create follows as defined by the network graph
+            // TODO
+            // Delete this method
+            // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
             simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
             // Create some news to be shared
             // TODO
