@@ -11,8 +11,8 @@ fclose(runParamsInputFile);
 
 nRuns = str2num(runParamsInput{1});
 population = str2num(runParamsInput{2});
-nTrue = str2num(runParamsInput{3});
-nFake = str2num(runParamsInput{4});
+nFake = str2num(runParamsInput{3});
+nTrue = str2num(runParamsInput{4});
 fakeShares=zeros(nRuns,population);
 nFollowers=zeros(nRuns,population);
 
@@ -30,8 +30,8 @@ resultsPaths = cell(nRuns, varParamVals_len);
 for i = 1:nRuns
     for j = 1:varParamVals_len
         tempPath = fullfile(...
-        '..','Results', {['OL40_' int2str(i)], ...
-        ['OL60_' int2str(i)]});
+        '..','Results', {['OL30_' int2str(i)], ...
+        ['OL50_' int2str(i)], ['OL70_' int2str(i)]});
         resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
     end
 end

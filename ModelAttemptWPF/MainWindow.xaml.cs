@@ -21,11 +21,13 @@ namespace ModelAttemptWPF
         //Facebook facebook;
         public static string globalLoc;
         private string smallWorldPath;
-
-        private int runCount;
+        private string followsPath;
+        private string resultsPath;
 
         private const string smallWorldPathRel = @"\FacebookUK\small_world_graph_";
         private const string pythonSource = @"\FacebookUK\pythonSource.txt";
+        private const string followsPathRel = @"\FacebookUK\follows";
+        private const string resultsPathRel = @"\ModelAttemptWPF\Results\";
 
         // define fixed settings 
         private const int fixedN = 1000; // the fixed number of people in the simulation
@@ -51,9 +53,10 @@ namespace ModelAttemptWPF
 
         public MainWindow()
         {
-            runCount = 0;
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
             smallWorldPath = globalLoc + smallWorldPathRel;
+            followsPath = globalLoc + followsPathRel;
+            resultsPath = globalLoc + resultsPathRel;
             //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
             int variable = 1;
             // instructions for variable:
@@ -65,16 +68,14 @@ namespace ModelAttemptWPF
             // TODO
             // ? This is where OL40 and OL60 come from, I believe
             double[] values = { 0.3, 0.5, 0.7 };
+            // TODO
+            // ! Multithreading
+            //List<int> runCountList = new List<int>();
+            //foreach()
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
-            //this.Close();
-            //this.RunLoop(100);
-            Console.WriteLine("");
-            Console.WriteLine("********");
-            Console.WriteLine("COMPLETO");
-            Console.WriteLine("********");
-            Console.WriteLine("");
+            this.SaveRunParams(values);
+            this.Close();
         }
-
 
         private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double ol, int runtime, int variable, double[] values)
         {
@@ -82,7 +83,11 @@ namespace ModelAttemptWPF
             {
                 for (int i = 0; i < RUNS; i++)
                 {
-                    System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i));
+                    // TODO
+                    // ! Multithreading fix: dummy variable
+                    int runCountCurrent = 1;
+                    runCountCurrent += i;
+                    System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent));
                     Console.WriteLine("");
                     Console.WriteLine("********");
                     Console.WriteLine("NEW THREAD BEING CREATED WITH THESE PARAMETERS:");
@@ -91,7 +96,7 @@ namespace ModelAttemptWPF
                     Console.WriteLine("********");
                     Console.WriteLine("");
                     t.Start();
-                    //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, i);
+                    //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent);
                     Console.WriteLine("");
                     Console.WriteLine("********");
                     Console.WriteLine("THREAD BEING CLOSED WITH THESE PARAMETERS:");
@@ -118,63 +123,18 @@ namespace ModelAttemptWPF
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
-            int runCountCurrent = 0;
-            runCountCurrent += runCount;
-            runCount += 1;
-
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: START");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
+            string varParamString = Convert.ToInt64((val * 100)).ToString();
+            string runNumberString = i.ToString();
+            string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
+            string followsPathThread = smallWorldPath + varParamString + "_" + runNumberString + "_";
             //this.Activate();
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: SIMULATION");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
-            Simulation simulation = new Simulation(name, val, i + 1); // create a new simulation object
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: DISTRIBUTION");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
+            Simulation simulation = new Simulation(name, val, i); // create a new simulation object
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: FACEBOOK");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
 
             // Give facebook a small initial population
             //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: POPULATE");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
             facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
-            string varParamString = Convert.ToInt64((val * 100)).ToString();
-            string runNumberString = runCountCurrent.ToString();
-            string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
-            Console.WriteLine("");
-            Console.WriteLine("########");
-            Console.WriteLine("RUN PARAMETER CHECK: FOLLOWS");
-            Console.WriteLine(val);
-            Console.WriteLine(runCountCurrent);
-            Console.WriteLine("########");
-            Console.WriteLine("");
             facebook.CreateMutualFollowsFromGraph(smallWorldPathThread, varParamString, runNumberString); // Create follows as defined by the network graph
             // TODO
             // Delete this method
@@ -199,7 +159,7 @@ namespace ModelAttemptWPF
 
             facebook.RunFor(runtime);
 
-            SimulationEnd(simulation, facebook);
+            SimulationEnd(simulation, facebook, followsPathThread, smallWorldPathThread);
         }
         
         private void AddDistributedNews(int nFake,int nTrue, Simulation simulation, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
@@ -221,7 +181,7 @@ namespace ModelAttemptWPF
         }
 
        
-        private void SimulationEnd(Simulation simulation, OSN facebook)
+        private void SimulationEnd(Simulation simulation, OSN facebook, string followsPathThread, string smallWorldPathThread)
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
@@ -229,11 +189,18 @@ namespace ModelAttemptWPF
             double newValue = simulation.value;
             string endFileName = Convert.ToInt64((newValue * 100)).ToString();
 
-            string generalPath = @"..\..\Results\" + simulation.versionName + endFileName +"_"+simulation.runNumber+@"\"; //!! set to local results folder
-           Directory.CreateDirectory(generalPath);
+            string generalPath = resultsPath + simulation.versionName + endFileName +"_"+simulation.runNumber+@"\"; //!! set to local results folder
+            Console.WriteLine("");
+            Console.WriteLine("********");
+            Console.WriteLine("SAVING STUFF WITH THE FOLLOW PARAMETERS:");
+            Console.WriteLine(endFileName);
+            Console.WriteLine(simulation.runNumber);
+            Console.WriteLine("********");
+            Console.WriteLine("");
+            Directory.CreateDirectory(generalPath);
             Console.WriteLine(generalPath);
 
-            facebook.SaveFollowCSV(generalPath);
+            facebook.SaveFollowCSV(generalPath, followsPath, smallWorldPathThread);
 
             File.WriteAllLines(generalPath + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
@@ -303,6 +270,28 @@ namespace ModelAttemptWPF
             }
             File.WriteAllText(generalPath+"nSharesPopulation.csv", csv.ToString());
 
+        }
+
+        private void SaveRunParams(double[] values)
+        {
+            List<string> runParams = new List<string>();
+            runParams.Add(RUNS.ToString() + " # nRuns");
+            runParams.Add(fixedN.ToString() + " # population");
+            runParams.Add(fixedNFake.ToString() + " # nFake");
+            runParams.Add(fixedNTrue.ToString() + " # nTrue");
+            string varParams = "";
+            foreach (double val in values)
+            {
+                varParams += Convert.ToInt64((val * 100)).ToString() + ",";
+            }
+            varParams = varParams.Remove(varParams.Length - 1);
+            runParams.Add(varParams + " # variable parameters");
+            string writeFilePath = @"\ModelAttemptWPF\runParams.txt";
+            writeFilePath = globalLoc + writeFilePath;
+            File.WriteAllLines(
+                writeFilePath,
+                runParams
+            );
         }
     }
 }

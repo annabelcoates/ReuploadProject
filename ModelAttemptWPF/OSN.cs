@@ -19,8 +19,6 @@ namespace ModelAttemptWPF
         private Process process = null; // for python connection
         //public string followCSVPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\follows";
         //private string smallWorldPath = @"C:\Users\ancoa\Documents\Proj\ReuploadProject\FacebookUK\small_world_graph.csv";
-        public string followCSVPath = @"..\..\..\FacebookUK\follows";
-        private string smallWorldPath = @"..\..\..\FacebookUK\small_world_graph.csv";
         private const int SESSION_LENGTH_MOD = 20;
 
 
@@ -270,40 +268,6 @@ namespace ModelAttemptWPF
             }
         }
 
-        private void CreateGraphCSV(string n, string k)
-        {
-            // Currently not used as a fixed graph generated previously is used each time (from the FacebookUK folder)
-            process = new Process();
-            //process.StartInfo.WorkingDirectory = @"C:\Users\ancoa\Documents\Proj\ReuploadProject"; //set this to the folder that the .sln file is in
-            process.StartInfo.WorkingDirectory = @"..\..\..\"; //set this to the folder that the .sln file is in
-            process.OutputDataReceived += (sender, e) => Console.WriteLine($"Recieved:\t{e.Data}");
-            process.ErrorDataReceived += (sender, e) => Console.WriteLine($"ERROR:\t {e.Data}");
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.UseShellExecute = false;
-
-            process.StartInfo.FileName = @"C:\Users\Anni\AppData\Local\Programs\Python\Python37\python.exe"; //set this to the location of python.exe on your device
-            /// python exe @"C:\Users\Anni\PycharmProjects\NetworkGraphs\tester_wheel_graph.py";
-            process.StartInfo.Arguments = "tester_wheel_graph.py --n " + n + " --k " + k;
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-        }
-        
-        public void CreateMutualFollowsFromGraph(string filePath)
-        {
-            List<string[]> connections = LoadCsvFile(filePath);
-            foreach( string[] connection in connections)
-            {
-                // string[0] is the key and isn't necesary
-                int followerID = Convert.ToInt16(connection[1]);
-                int followeeID = Convert.ToInt16(connection[2]);
-                this.Follow(accountList[followeeID], accountList[followerID]);
-                this.Follow(accountList[followerID], accountList[followeeID]);
-            }
-        }
-
         // TODO
         // ! Dead code
         //public void CreateFollowsFromPersonality(int defaultFollows)
@@ -347,15 +311,17 @@ namespace ModelAttemptWPF
         }
         private void WriteConnectionToCSV(int from, int to)
         {
-            var line = String.Format("{0},{1},{2}", 0, from, to); // so that the columns match from smallworld path
+            // TODO
+            // ! Hardcoded values (kind of)
+            var line = String.Format("{0},{1}", from, to); // so that the columns match from smallworld path
             followCSV.AppendLine(line);
         }
-        public void SaveFollowCSV(string generalPath)
+        public void SaveFollowCSV(string resultsPath, string followsPath, string smallWorldPath)
         {
             string[] lines = followCSV.ToString().Split(Environment.NewLine.ToCharArray());
-            File.WriteAllLines(followCSVPath+this.name+".csv", lines);
+            File.WriteAllLines(followsPath+this.name+".csv", lines);
             string[] allSmallWorld = File.ReadAllLines(smallWorldPath);
-            File.AppendAllLines(generalPath+"follows.csv", allSmallWorld);
+            File.AppendAllLines(resultsPath+"follows.csv", allSmallWorld);
 
         }
 
