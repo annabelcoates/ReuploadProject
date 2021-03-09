@@ -22,6 +22,8 @@ public class Person
     public double emotionalState; // Represents how emotional someone feels, 0-1
     public double politicalLeaning; // 0 represents 'the left', 1 represents 'the right'
     public double onlineLiteracy; // how likely someone is to believe fake news
+    // TODO
+    // ! Dead code
     public bool informationLiterate;
     public double sharingFreq;
 
