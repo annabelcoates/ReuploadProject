@@ -40,7 +40,7 @@ namespace ModelAttemptWPF
         // Statistics
         public int nSharedFakeNews = 0;
         public int nSeenFakeNews = 0;
-        public List<int> nSharedFakeNewsList = new List<int>() { 0 }; // at t=0, 0 people have seen fake news
+        public List<int> nSharedFakeNewsList = new List<int>() {}; // at t=0, 0 people have seen fake news
         public List<double> fakeShareProbs = new List<double>();
         public List<double> trueShareProbs = new List<double>();
 

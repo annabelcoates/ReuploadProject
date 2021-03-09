@@ -1,2 +1,5 @@
-opn,frqUse
-nFollowers,
+# opn,frqUse
+# nFollowers,
+# OL,
+ratioShares,
+OL,ratioShares

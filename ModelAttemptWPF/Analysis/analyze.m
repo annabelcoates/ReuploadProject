@@ -49,14 +49,17 @@ for varIdx = 1:varParamVals_len
         agr(i,:)=nSharesPop(:,5);
         nrt(i,:)=nSharesPop(:,6);
         OL(i,:)=nSharesPop(:,7);
-        trueShares(i,:)=nSharesPop(:,8);
+        pol(i,:)=nSharesPop(:,8); % Political
         fakeShares(i,:)=nSharesPop(:,9);
-        ratio(i,:)=nSharesPop(:,10);
+        trueShares(i,:)=nSharesPop(:,10); % True
         frqUse(i,:)=nSharesPop(:,11);
         sesLen(i,:)=20.*(nSharesPop(:,12));
         shareFreq(i,:)=nSharesPop(:,13);
     end
     varParam = erase(varParamVals{varIdx}, '_');
+
+%%
+% Plot Parameters Names
     runParamsStruct.(varParam).nFollowers=reshape(nFollowers,[1,nRuns*population]);
     runParamsStruct.(varParam).opn=reshape(opn,[1,nRuns*population]);
     runParamsStruct.(varParam).con=reshape(con,[1,nRuns*population]);
@@ -64,9 +67,11 @@ for varIdx = 1:varParamVals_len
     runParamsStruct.(varParam).agr=reshape(agr,[1,nRuns*population]);
     runParamsStruct.(varParam).nrt=reshape(nrt,[1,nRuns*population]);
     runParamsStruct.(varParam).OL=reshape(OL,[1,nRuns.*population]);
-    runParamsStruct.(varParam).trueShares=reshape(trueShares,[1,nRuns*population]);
+    runParamsStruct.(varParam).pol=reshape(pol,[1,nRuns*population]);
     runParamsStruct.(varParam).fakeShares=reshape(fakeShares,[1,nRuns*population]);
-    runParamsStruct.(varParam).ratio=reshape(ratio,[1,nRuns*population]);
+    runParamsStruct.(varParam).trueShares=reshape(trueShares,[1,nRuns*population]);
+    tempRatio = runParamsStruct.(varParam).trueShares + runParamsStruct.(varParam).fakeShares;
+    runParamsStruct.(varParam).ratioShares = runParamsStruct.(varParam).fakeShares ./ tempRatio;
     runParamsStruct.(varParam).frqUse=reshape(frqUse,[1,nRuns*population]);
     runParamsStruct.(varParam).sesLen=reshape(sesLen,[1,nRuns*population]);
     % // TODO 
@@ -103,14 +108,11 @@ mkdir(folderName);
 
 for idx = 1:plotParamsString_len
     disp(idx)
-    myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, nRuns, folderName)
+    myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, folderName)
 end
 %%
 
-function []=myPlot(x, y, runParamsStruct, varParamVals, nRuns, folderName)
-    disp(x)
-    disp(y)
-    disp(isempty(y))
+function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
     for varIdx = 1:varParamVals_len
@@ -119,10 +121,10 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, nRuns, folderName)
             figure();
             histogram(...
                 runParamsStruct.(varParam).(x),...
-                50,'Normalization','pdf');
+                100,'Normalization','pdf');
             xlabel(x);
             ylabel('PDF');
-            figName = [varParam 'Histogram plot of ' x];
+            figName = [varParam ' Histogram plot of ' x];
             savePath = fullfile(folderName, [figName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
@@ -134,7 +136,7 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, nRuns, folderName)
                 3);
             xlabel(x);
             ylabel(y);
-            figName = [varParam 'Scatter plot of ' x ' against ' y];
+            figName = [varParam ' Scatter plot of ' x ' against ' y];
             savePath = fullfile(folderName, [figName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
