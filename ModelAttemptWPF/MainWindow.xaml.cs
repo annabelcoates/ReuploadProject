@@ -34,9 +34,9 @@ namespace ModelAttemptWPF
         private const int fixedK = 100; // the fixed k-value of the network (how many in each clique)
         private const int fixedNFake = 100; // number of fake news articles in the experiment
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
-        private const double onlineLit = 0.4; //mean online literacy
-        private const int RUNS = 10;
-
+        private const double onlineLit = 0.5; //default mean online literacy
+        private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
+        private const int RUNS = 4;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEW = 0.1;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -49,6 +49,7 @@ namespace ModelAttemptWPF
         public const int RUNTIME = 300;
         public const int FB_TIMEFRAME = 50;
 
+
         public List<double> values;
 
         public MainWindow()
@@ -57,21 +58,17 @@ namespace ModelAttemptWPF
             smallWorldPath = globalLoc + smallWorldPathRel;
             followsPath = globalLoc + followsPathRel;
             resultsPath = globalLoc + resultsPathRel;
-            //this.values = new List<int> { 1, 2, 4, 6, 8, 10, 12 };
-            int variable = 1;
+            
+            int variable = 5;
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
             // 3 means the timefrime is variable
             // 4 means diminishing/exaggerating emotional level of news
+            // 5 mean varying whether or not to use psych
 
-            // TODO
-            // ? This is where OL40 and OL60 come from, I believe
-            double[] values = { 0.3, 0.5, 0.7 };
-            // TODO
-            // ! Multithreading
-            //List<int> runCountList = new List<int>();
-            //foreach()
+            double[] values = { 0,0.5,1 };
+
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(values);
             this.Close();
@@ -103,7 +100,7 @@ namespace ModelAttemptWPF
             string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
             string followsPathThread = followsPath + varParamString + "_" + runNumberString + "_";
             //this.Activate();
-            Simulation simulation = new Simulation(name, val, i); // create a new simulation object
+            Simulation simulation = new Simulation(name, val, i,(variable == 5 ? val : usePsych)); // create a new simulation object
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
 
@@ -121,7 +118,6 @@ namespace ModelAttemptWPF
             AddDistributedNews(
                 (variable == 2 ? (int)((nFake + nTrue) * val) : nFake),
                 (variable == 2 ? (int)((nFake + nTrue) * val) : nTrue),
-                simulation,
                 facebook,
                 (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_FAKE_NEWS),
                 MEAN_BEL_FAKE_NEW,
@@ -137,20 +133,20 @@ namespace ModelAttemptWPF
             SimulationEnd(simulation, facebook, followsPathThread, smallWorldPathThread);
         }
         
-        private void AddDistributedNews(int nFake,int nTrue, Simulation simulation, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
+        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
         {
             int nPostsPerTrue = 1; // used to vary the number of posts created per true news story
             int timeOfNews = 0;
             for (int i = 0; i < nFake; i++)
             {
-                double e = simulation.NormalDistribution(meanEFake, EMO_STD); // generate an e value from normal dist
-                double b = simulation.NormalDistribution(meanBFake, BEL_STD); // generate a b value from normal dist
+                double e = Simulation.NormalDistribution(meanEFake, EMO_STD); // generate an e value from normal dist
+                double b = Simulation.NormalDistribution(meanBFake, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("FakeNews", false, timeOfNews, e, b);
             }
             for (int j =nFake; j< nFake+nTrue; j++)
             {
-                double e = simulation.NormalDistribution(meanETrue, EMO_STD); // generate an e value from normal dist
-                double b = simulation.NormalDistribution(meanBTrue, BEL_STD); // generate a b value from normal dist
+                double e = Simulation.NormalDistribution(meanETrue, EMO_STD); // generate an e value from normal dist
+                double b = Simulation.NormalDistribution(meanBTrue, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("TrueNews", true, timeOfNews, e, b,nPostsPerTrue);
             }
         }
@@ -229,7 +225,7 @@ namespace ModelAttemptWPF
         public void CreateNSharesCSV(string generalPath, OSN facebook)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq,emoState"); // column headings
+            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings
             foreach (Account account in facebook.accountList)
             {
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
