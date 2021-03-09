@@ -100,7 +100,7 @@ end
 
 folderName = datestr(datetime('now'));
 folderName = strrep(folderName,':','-');
-folderName = [folderName ' Analysis'];
+folderName = ['AnalysisResults ' folderName ];
 mkdir(folderName);
 
 %%

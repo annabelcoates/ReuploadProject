@@ -126,7 +126,7 @@ namespace ModelAttemptWPF
             string varParamString = Convert.ToInt64((val * 100)).ToString();
             string runNumberString = i.ToString();
             string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
-            string followsPathThread = smallWorldPath + varParamString + "_" + runNumberString + "_";
+            string followsPathThread = followsPath + varParamString + "_" + runNumberString + "_";
             //this.Activate();
             Simulation simulation = new Simulation(name, val, i); // create a new simulation object
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution

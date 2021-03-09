@@ -8,6 +8,12 @@
 *.sln.docstates
 pythonSource.txt
 thing.py
+ModelAttemptWPF/Results*
+ModelAttemptWPF/Analysis/AnalysisResults*
+ModelAttemptWPF/Analysis/test.m
+octave-workspace
+FacebookUK/small_world_graph*
+FacebookUK/follows*
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
