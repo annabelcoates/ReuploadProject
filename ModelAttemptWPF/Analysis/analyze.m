@@ -54,6 +54,7 @@ for varIdx = 1:varParamVals_len
         frqUse(i,:)=nSharesPop(:,11);
         sesLen(i,:)=20.*(nSharesPop(:,12));
         shareFreq(i,:)=nSharesPop(:,13);
+        emoState(i,:)=nSharesPop(:,14);
     end
     varParam = erase(varParamVals{varIdx}, '_');
 
@@ -77,6 +78,7 @@ for varIdx = 1:varParamVals_len
     % ? Should this be a ceiling function
     runParamsStruct.(varParam).roundSL_flat=ceil(runParamsStruct.(varParam).sesLen_flat);
     runParamsStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
+    runParamsStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
 
     runParamsStruct.(varParam).nFollowers_mat=nFollowers;
     runParamsStruct.(varParam).opn_mat=opn;
@@ -96,6 +98,7 @@ for varIdx = 1:varParamVals_len
     % ? Should this be a ceiling function
     runParamsStruct.(varParam).roundSL_mat=ceil(runParamsStruct.(varParam).sesLen_mat);
     runParamsStruct.(varParam).shareFreq_mat=shareFreq;
+    runParamsStruct.(varParam).emoState_mat=emoState;
 
 end
 %%
