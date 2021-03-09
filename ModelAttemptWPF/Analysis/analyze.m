@@ -59,24 +59,44 @@ for varIdx = 1:varParamVals_len
 
 %%
 % Plot Parameters Names
-    runParamsStruct.(varParam).nFollowers=reshape(nFollowers,[1,nRuns*population]);
-    runParamsStruct.(varParam).opn=reshape(opn,[1,nRuns*population]);
-    runParamsStruct.(varParam).con=reshape(con,[1,nRuns*population]);
-    runParamsStruct.(varParam).ext=reshape(ext,[1,nRuns*population]);
-    runParamsStruct.(varParam).agr=reshape(agr,[1,nRuns*population]);
-    runParamsStruct.(varParam).nrt=reshape(nrt,[1,nRuns*population]);
-    runParamsStruct.(varParam).OL=reshape(OL,[1,nRuns.*population]);
-    runParamsStruct.(varParam).pol=reshape(pol,[1,nRuns*population]);
-    runParamsStruct.(varParam).fakeShares=reshape(fakeShares,[1,nRuns*population]);
-    runParamsStruct.(varParam).trueShares=reshape(trueShares,[1,nRuns*population]);
-    tempRatio = runParamsStruct.(varParam).trueShares + runParamsStruct.(varParam).fakeShares;
-    runParamsStruct.(varParam).ratioShares = runParamsStruct.(varParam).fakeShares ./ tempRatio;
-    runParamsStruct.(varParam).frqUse=reshape(frqUse,[1,nRuns*population]);
-    runParamsStruct.(varParam).sesLen=reshape(sesLen,[1,nRuns*population]);
+    runParamsStruct.(varParam).nFollowers_flat=reshape(nFollowers,[1,nRuns*population]);
+    runParamsStruct.(varParam).opn_flat=reshape(opn,[1,nRuns*population]);
+    runParamsStruct.(varParam).con_flat=reshape(con,[1,nRuns*population]);
+    runParamsStruct.(varParam).ext_flat=reshape(ext,[1,nRuns*population]);
+    runParamsStruct.(varParam).agr_flat=reshape(agr,[1,nRuns*population]);
+    runParamsStruct.(varParam).nrt_flat=reshape(nrt,[1,nRuns*population]);
+    runParamsStruct.(varParam).OL_flat=reshape(OL,[1,nRuns.*population]);
+    runParamsStruct.(varParam).pol_flat=reshape(pol,[1,nRuns*population]);
+    runParamsStruct.(varParam).fakeShares_flat=reshape(fakeShares,[1,nRuns*population]);
+    runParamsStruct.(varParam).trueShares_flat=reshape(trueShares,[1,nRuns*population]);
+    tempRatio_flat = runParamsStruct.(varParam).trueShares_flat + runParamsStruct.(varParam).fakeShares_flat;
+    runParamsStruct.(varParam).ratioShares_flat = runParamsStruct.(varParam).fakeShares_flat ./ tempRatio_flat;
+    runParamsStruct.(varParam).frqUse_flat=reshape(frqUse,[1,nRuns*population]);
+    runParamsStruct.(varParam).sesLen_flat=reshape(sesLen,[1,nRuns*population]);
     % // TODO 
     % ? Should this be a ceiling function
-    runParamsStruct.(varParam).roundSL=ceil(runParamsStruct.(varParam).sesLen);
-    runParamsStruct.(varParam).shareFreq=reshape(shareFreq,[1,nRuns*population]);
+    runParamsStruct.(varParam).roundSL_flat=ceil(runParamsStruct.(varParam).sesLen_flat);
+    runParamsStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
+
+    runParamsStruct.(varParam).nFollowers_mat=nFollowers;
+    runParamsStruct.(varParam).opn_mat=opn;
+    runParamsStruct.(varParam).con_mat=con;
+    runParamsStruct.(varParam).ext_mat=ext;
+    runParamsStruct.(varParam).agr_mat=agr;
+    runParamsStruct.(varParam).nrt_mat=nrt;
+    runParamsStruct.(varParam).OL_mat=OL;
+    runParamsStruct.(varParam).pol_mat=pol;
+    runParamsStruct.(varParam).fakeShares_mat=fakeShares;
+    runParamsStruct.(varParam).trueShares_mat=trueShares;
+    tempRatio_mat = runParamsStruct.(varParam).trueShares_mat + runParamsStruct.(varParam).fakeShares_mat;
+    runParamsStruct.(varParam).ratioShares_mat = runParamsStruct.(varParam).fakeShares_mat ./ tempRatio_mat;
+    runParamsStruct.(varParam).frqUse_mat=frqUse;
+    runParamsStruct.(varParam).sesLen_mat=sesLen;
+    % // TODO 
+    % ? Should this be a ceiling function
+    runParamsStruct.(varParam).roundSL_mat=ceil(runParamsStruct.(varParam).sesLen_mat);
+    runParamsStruct.(varParam).shareFreq_mat=shareFreq;
+
 end
 %%
 
@@ -106,7 +126,6 @@ mkdir(folderName);
 %%
 
 for idx = 1:plotParamsString_len
-    disp(idx)
     myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, folderName)
 end
 %%
@@ -119,24 +138,26 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
         if isempty(y)
             figure();
             histogram(...
-                runParamsStruct.(varParam).(x),...
+                runParamsStruct.(varParam).([x '_flat']),...
                 100,'Normalization','pdf');
-            xlabel(x);
+            xlabel([x '\_flat']);
             ylabel('PDF');
-            figName = [varParam ' Histogram plot of ' x];
-            savePath = fullfile(folderName, [figName '.png']);
+            figName = [varParam ' Histogram plot of ' [x '\_flat']];
+            saveName = [varParam ' Histogram plot of ' [x '_flat']];
+            savePath = fullfile(folderName, [saveName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
         else
             figure();
             scatter(...
-                runParamsStruct.(varParam).(x),...
-                runParamsStruct.(varParam).(y),...
+                runParamsStruct.(varParam).([x '_flat']),...
+                runParamsStruct.(varParam).([y '_flat']),...
                 3);
-            xlabel(x);
-            ylabel(y);
-            figName = [varParam ' Scatter plot of ' x ' against ' y];
-            savePath = fullfile(folderName, [figName '.png']);
+            xlabel([x '\_flat']);
+            ylabel([y '\_flat']);
+            figName = [varParam ' Scatter plot of ' [x '\_flat'] ' against ' [y '\_flat']];
+            saveName = [varParam ' Scatter plot of ' [x '_flat'] ' against ' [y '_flat']];
+            savePath = fullfile(folderName, [saveName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
         end
