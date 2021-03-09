@@ -1,5 +1,4 @@
 clear;
-
 script_path = fileparts(mfilename('fullpath'));
 cd (script_path);
 
@@ -29,9 +28,9 @@ end
 resultsPaths = cell(nRuns, varParamVals_len);
 for i = 1:nRuns
     for j = 1:varParamVals_len
+        tempVarParamVals = strcat(varParamVals, int2str(i));
         tempPath = fullfile(...
-        '..','Results', {['OL30_' int2str(i)], ...
-        ['OL50_' int2str(i)], ['OL70_' int2str(i)]});
+        '..','Results', tempVarParamVals);
         resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
     end
 end

@@ -35,7 +35,7 @@ namespace ModelAttemptWPF
         private const int fixedNFake = 100; // number of fake news articles in the experiment
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.4; //mean online literacy
-        private const int RUNS = 2;
+        private const int RUNS = 10;
 
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEW = 0.1;
@@ -200,7 +200,7 @@ namespace ModelAttemptWPF
             Directory.CreateDirectory(generalPath);
             Console.WriteLine(generalPath);
 
-            facebook.SaveFollowCSV(generalPath, followsPath, smallWorldPathThread);
+            facebook.SaveFollowCSV(generalPath, followsPathThread, smallWorldPathThread);
 
             File.WriteAllLines(generalPath + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
