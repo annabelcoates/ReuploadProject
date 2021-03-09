@@ -23,10 +23,11 @@ public class Simulation
     private double usePsych;
     private const double ES_MEAN = 0.5;
     private const double ES_STD = 0.1;
-    private const int N_SEED = 20;
+    private const int N_SEED = 40;
     private const double OL_STD = 0.15;
     private const double OL_STD2 = 0.03;
-    private const double PL_STD = 0.15;
+    private const double PL_STD2 = 0.06;
+    private const double ES_STD2 = 0.08;
 
     public Simulation(string versionName,double value,int runNumber,double usePsych)
 	{
@@ -77,7 +78,7 @@ public class Simulation
                NormalDistribution(nMean, nStd));
         }
     }
-    public void GraphBasedDistribute(OSN o, double onlineLit)
+    public void GraphBasedDistribute(OSN o, double onlineLit, double doesAffect)
     {
         System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
         timer.Start();
@@ -107,7 +108,10 @@ public class Simulation
             if (rs.Count > 0)
             {
                 Account f = rs[random.Next(rs.Count)];
-                a.person.SetEnvironmentDetermined(NormalDistribution(f.person.politicalLeaning, PL_STD), NormalDistribution(f.person.onlineLiteracy, OL_STD2), NormalDistribution(f.person.emotionalState, ES_STD));
+                double TPL = NormalDistribution(f.person.politicalLeaning, PL_STD2) * doesAffect + random.NextDouble() * (1-doesAffect);
+                double TOL = NormalDistribution(f.person.onlineLiteracy, OL_STD2) * doesAffect + NormalDistribution(onlineLit, OL_STD+OL_STD2) * (1-doesAffect); //adding the two variances, to account for the variance of a random walk
+                double TES = NormalDistribution(f.person.emotionalState, ES_STD2) * doesAffect + NormalDistribution(ES_MEAN, ES_STD+ES_STD2) * (1-doesAffect);
+                a.person.SetEnvironmentDetermined(TPL, TOL, TES);
                 unspec.Remove(a);
             }
         }

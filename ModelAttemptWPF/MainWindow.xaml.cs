@@ -36,6 +36,7 @@ namespace ModelAttemptWPF
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.5; //default mean online literacy
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
+        private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
         private const int RUNS = 1;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.1;
@@ -59,15 +60,16 @@ namespace ModelAttemptWPF
             followsPath = globalLoc + followsPathRel;
             resultsPath = globalLoc + resultsPathRel;
             
-            int variable = 5;
+            int variable = 6;
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
             // 3 means the timefrime is variable
             // 4 means diminishing/exaggerating emotional level of news
-            // 5 mean varying whether or not to use psych
+            // 5 means varying whether or not to use personality
+            // 6 means varying whether or not derived traits spread via the network
 
-            double[] values = { 0 };
+            double[] values = { 0, 0.5, 1 };
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(values);
@@ -112,7 +114,7 @@ namespace ModelAttemptWPF
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
             
-            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
+            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : 1));
             // Create some news to be shared
             // TODO
             // ! These parameters appear to be input the wrong way around
