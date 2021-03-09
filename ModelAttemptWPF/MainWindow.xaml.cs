@@ -35,7 +35,7 @@ namespace ModelAttemptWPF
         private const int fixedNFake = 100; // number of fake news articles in the experiment
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.4; //mean online literacy
-        private const int RUNS = 3;
+        private const int RUNS = 10;
 
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEW = 0.1;
@@ -229,7 +229,7 @@ namespace ModelAttemptWPF
         public void CreateNSharesCSV(string generalPath, OSN facebook)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings
+            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq,emoState"); // column headings
             foreach (Account account in facebook.accountList)
             {
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
