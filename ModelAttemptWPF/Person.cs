@@ -14,6 +14,7 @@ public class Person
 
     private double usePsych;
 
+    private Simulation simulation;
     public double freqUse; // A measure of how likely a user is to check social media in a 15 min timeslot, 0-1
     public double sessionLength; // A measure of how many posts a person sees in 1 view of their feed, 0-1, Maybe should be int?
     public double connectivity; // A measure of how likely someone is to have a large network group, can be greater than one
@@ -33,7 +34,7 @@ public class Person
 
     private double SHARING_FREQ_FACTOR = 0.25;
 
-    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double usePsych)
+    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double usePsych, Simulation simulation)
 	{
         this.ID = ID;
         this.name = name;
@@ -43,7 +44,7 @@ public class Person
         this.agr = agr;
         this.nrt = nrt;
         this.usePsych = usePsych;
-
+        this.simulation = simulation;
         //this.politicalLeaning = politicalLeaning;
         //this.onlineLiteracy = onlineLiteracy;
         //this.emotionalState = 0.5; // emotional state starts average
@@ -65,7 +66,7 @@ public class Person
         double tempFreqUse = -0.18 * this.con + 0.12 * this.ext - 0.21 * this.agr + 0.14 * this.nrt;
         double minFreqUse = -0.39; // -0.18-0.21
         double maxFreqUse = 0.26; // 0.12+0.14
-        this.freqUse = ((tempFreqUse - minFreqUse)/ (maxFreqUse - minFreqUse)) * usePsych + Simulation.NormalDistribution(0.4,0.06) * (1-usePsych); // av 0.4, between 0.2 and 0.6
+        this.freqUse = ((tempFreqUse - minFreqUse) / (maxFreqUse - minFreqUse)) * usePsych + simulation.NormalDistribution(0.4,0.06) * (1-usePsych); // av 0.4, between 0.2 and 0.6
         
 
 
@@ -74,11 +75,11 @@ public class Person
         double tempSL = -0.16 * this.con + 0.24 * ext + 0.14 * this.nrt;
         double minSL = -0.16; // -0.16
         double maxSL = 0.38;//
-        this.sessionLength = ((tempSL - minSL) / (maxSL - minSL)) * usePsych + Simulation.NormalDistribution(9.5, 3) * (1 - usePsych); // av 9.5, between 0 and 17
+        this.sessionLength = ((tempSL - minSL) / (maxSL - minSL)) * usePsych + simulation.NormalDistribution(9.5, 3) * (1 - usePsych); // av 9.5, between 0 and 17
  
         this.connectivity = (0.24 * this.opn - 0.28 * this.con + 0.47 * this.ext - 0.28 * this.agr + 0.2*random.NextDouble()) * usePsych + random.NextDouble() * (1-usePsych);
         // research on likelihood of sharing from amichai- vitinzsky
-        this.sharingFreq = ((this.ext + this.nrt)/2 * usePsych + Simulation.NormalDistribution(0.5,0.33) * (1-usePsych)) * SHARING_FREQ_FACTOR; // av 0.125, between 0 and 0.25 (with SFF of 0.25) -> so 0.5, and between 0 and 1
+        this.sharingFreq = (this.ext + this.nrt) / 2 * usePsych + simulation.NormalDistribution(0.5,0.33) * (1-usePsych) * SHARING_FREQ_FACTOR; // av 0.125, between 0 and 0.25 (with SFF of 0.25) -> so 0.5, and between 0 and 1
     }
 
 

@@ -36,7 +36,7 @@ namespace ModelAttemptWPF
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.5; //default mean online literacy
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
-        private const int RUNS = 4;
+        private const int RUNS = 1;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEW = 0.1;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -67,7 +67,7 @@ namespace ModelAttemptWPF
             // 4 means diminishing/exaggerating emotional level of news
             // 5 mean varying whether or not to use psych
 
-            double[] values = { 0,0.5,1 };
+            double[] values = { 0};
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(values);
@@ -111,6 +111,7 @@ namespace ModelAttemptWPF
             // TODO
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
+            
             simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol));
             // Create some news to be shared
             // TODO
@@ -118,6 +119,7 @@ namespace ModelAttemptWPF
             AddDistributedNews(
                 (variable == 2 ? (int)((nFake + nTrue) * val) : nFake),
                 (variable == 2 ? (int)((nFake + nTrue) * val) : nTrue),
+                simulation,
                 facebook,
                 (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_FAKE_NEWS),
                 MEAN_BEL_FAKE_NEW,
@@ -133,20 +135,20 @@ namespace ModelAttemptWPF
             SimulationEnd(simulation, facebook, followsPathThread, smallWorldPathThread);
         }
         
-        private void AddDistributedNews(int nFake,int nTrue, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
+        private void AddDistributedNews(int nFake,int nTrue, Simulation simulation, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
         {
             int nPostsPerTrue = 1; // used to vary the number of posts created per true news story
             int timeOfNews = 0;
             for (int i = 0; i < nFake; i++)
             {
-                double e = Simulation.NormalDistribution(meanEFake, EMO_STD); // generate an e value from normal dist
-                double b = Simulation.NormalDistribution(meanBFake, BEL_STD); // generate a b value from normal dist
+                double e = simulation.NormalDistribution(meanEFake, EMO_STD); // generate an e value from normal dist
+                double b = simulation.NormalDistribution(meanBFake, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("FakeNews", false, timeOfNews, e, b);
             }
             for (int j =nFake; j< nFake+nTrue; j++)
             {
-                double e = Simulation.NormalDistribution(meanETrue, EMO_STD); // generate an e value from normal dist
-                double b = Simulation.NormalDistribution(meanBTrue, BEL_STD); // generate a b value from normal dist
+                double e = simulation.NormalDistribution(meanETrue, EMO_STD); // generate an e value from normal dist
+                double b = simulation.NormalDistribution(meanBTrue, BEL_STD); // generate a b value from normal dist
                 osn.CreateNewsRandomPoster("TrueNews", true, timeOfNews, e, b,nPostsPerTrue);
             }
         }
