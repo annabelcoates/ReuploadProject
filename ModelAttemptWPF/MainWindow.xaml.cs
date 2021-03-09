@@ -38,7 +38,7 @@ namespace ModelAttemptWPF
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
         private const int RUNS = 1;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
-        private const double MEAN_BEL_FAKE_NEW = 0.1;
+        private const double MEAN_BEL_FAKE_NEWS = 0.1;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
         private const double MEAN_BEL_TRUE_NEWS = 0.9;
         private const double EMO_STD = 0.3;
@@ -122,7 +122,7 @@ namespace ModelAttemptWPF
                 simulation,
                 facebook,
                 (variable == 4 ? (MEAN_EMO_FAKE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_FAKE_NEWS),
-                MEAN_BEL_FAKE_NEW,
+                MEAN_BEL_FAKE_NEWS,
                 (variable == 4 ? (MEAN_EMO_TRUE_NEWS - 0.5) * (1 + val) + 0.5 : MEAN_EMO_TRUE_NEWS),
                 MEAN_BEL_TRUE_NEWS
             ); // Add true and fake news into Facebook, that's e and b values are generated from a distribution
