@@ -1,34 +1,32 @@
-clear;
 script_path = fileparts(mfilename('fullpath'));
-cd (script_path);
+cd (script_path)
 
 nFake=100;
 nTrue=200;
 nRuns=50;
-runTime=300;
+runTime=101;
 fakeShares=zeros(nRuns,runTime);
 fakeViews= zeros(nRuns,runTime);
 trueShares=zeros(nRuns,runTime);
 trueViews=zeros(nRuns,runTime);
-fileExtensions={'OL40_1','OL60_1'};
+fileExtensions=['OL40','OL60'];
 values=[40,60];
 
 for a=1:length(values)
-    filename=fileExtensions{a};
+    filename=fileExtensions(a);
     for i=1:nRuns
         % TODO
         % ! Hardcoded values
-        sFilename=['..\Results\' filename '\nSharesAll.csv'];
-        vFilename=['..\Results\' filename '\nViewsAll.csv'];
+        sFilename=['..\Results\' 'OL40_1' '\nSharesAll.csv'];
+        vFilename=['..\Results\' 'OL60_1' '\nViewsAll.csv'];
         sharesData=csvread(sFilename);
         viewsData=csvread(vFilename);
-        fakeShares(i,:)=mean(sharesData(1:nFake,1:runTime));
-        fakeViews(i,:)= mean(viewsData(1:nFake,1:runTime));
-        trueShares(i,:)=mean(sharesData(nFake+1:(nTrue+nFake),1:runTime));
-        trueViews(i,:)=mean(viewsData(nFake+1:(nTrue+nFake),1:runTime));
+        fakeShares(i,:)=mean(sharesData(1:nFake,1:101));
+        fakeViews(i,:)= mean(viewsData(1:nFake,1:101));
+        trueShares(i,:)=mean(sharesData(nFake+1:(nTrue+nFake),1:101));
+        trueViews(i,:)=mean(viewsData(nFake+1:(nTrue+nFake),1:101));
     end
-    meanFakeSpread=mean(fakeShares);
-    sFakeSpread(a,:)=meanFakeSpread;
+    sFakeSpread(a,:)=mean(fakeShares);
     sTrueSpread(a,:)=mean(trueShares);
     vFakeSpread(a,:)=mean(fakeViews);
     vTrueSpread(a,:)=mean(trueViews);
@@ -37,7 +35,7 @@ end
 % %% Can't remember what this is doing
 % fNotFound=1;
 % tNotFound=1;
-% for i=1:runTime
+% for i=1:101
 %     if (fNotFound) & (sFakeSpread(i)>= max(sFakeSpread)*0.90)
 %         fakePT=i;
 %         fNotFound=0;
@@ -70,9 +68,9 @@ for a=1:length(values)
     
     % create a floating point average
     radius=20;
-    for k=1:runTime
+    for k=1:101
         startVal=max(1,k-radius);
-        endVal=min(runTime,k+radius);
+        endVal=min(101,k+radius);
         fakeGradFloat(k)=mean(gradFake(startVal:endVal));
         trueGradFloat(k)=mean(gradTrue(startVal:endVal));
     end
@@ -85,7 +83,7 @@ for a=1:length(values)
     fNotFound=1;
     tNotFound=1;
     
-    for i=1:runTime
+    for i=1:101
         % // TODO
         % Never goes to truePT case
         if (fNotFound) & (fakeGradFloat(i)-min(fakeGradFloat)<=0.05*maxGradFake)
@@ -93,7 +91,6 @@ for a=1:length(values)
             fNotFound=0;
         end
         if (tNotFound) & (trueGradFloat(i)-min(fakeGradFloat)<=0.05*maxGradTrue)
-            disp('True Case')
             truePT(a)=i;
             tNotFound=0;
         end
@@ -118,7 +115,7 @@ for a=1:length(values)
     hold on
     plot(fakePT(a),sFakeSpread(a,fakePT(a)),'o','MarkerSize',10)
     plot(sTrueSpread(a,:),'LineWidth',2)
-    plot(truePT(a),sTrueSpread(a,truePT(a)),'o','MarkerSize',10)
+    %plot(truePT(a),sTrueSpread(a,truePT(a)),'o','MarkerSize',10)
     ylabel('Number of shares')
     xlabel('Time')
     xticks([])
@@ -126,7 +123,7 @@ for a=1:length(values)
 end
 
 %% // TODO
-figure()
-ratio=(truePT./fakePT);
-plot(values,ratio,'x','MarkerSize',10)
-ylabel('Ratio of fake plateau time to true plateau time')
+%figure()
+%ratio=(truePT./fakePT);
+%plot(values,ratio,'x','MarkerSize',10)
+%ylabel('Ratio of fake plateau time to true plateau time')

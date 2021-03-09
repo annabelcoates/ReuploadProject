@@ -1,13 +1,12 @@
-clear;
 close all
 
 script_path = fileparts(mfilename('fullpath'));
-cd (script_path);
+cd (script_path)
 
 nFake=100;
 nTrue=200;
 nRuns=1;
-population=300;
+population=1000;
 nNews=300;
 OL=zeros(nRuns,population);
 fakeShares=zeros(nRuns,population);
@@ -18,7 +17,8 @@ for i=1:nRuns
     newsB(i,:)=newsInfo(:,1);
     newsE(i,:)= newsInfo(:,2);
     nSharesAll=csvread(['..\Results\OL40_' int2str(i) '\nSharesAll.csv']);
-    nShares(i,:)=nSharesAll(:,300);
+    disp (size(nSharesAll));
+    nShares(i,:)=nSharesAll(:,1000);
     
 end
 newsB_all=reshape(newsB,[1,nNews.*nRuns]);
@@ -46,7 +46,7 @@ function []=plotScatter(x,y,xtitle,ytitle)
     %  [x, indices]=sort(x);
     %   y=y(indices);
     figure()
-    scatter(x,y,5,'o','filled') % ,'MarkerFaceAlpha',0.2)
+    scatter(x,y,5,'o','filled','MarkerFaceAlpha',0.2)
     xlabel(xtitle)
     ylabel(ytitle)
 end
