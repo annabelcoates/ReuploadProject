@@ -70,7 +70,7 @@ function csvStruct=import(csvFileName)
             csvStruct.(varParam)(i,:,:) = csvInput;
         end
     end
-    csvStruct.timeOfRun = timeOfRun;
-    csvStruct.varParamVals = varParamVals;
-    csvStruct.varParamVals_len = varParamVals_len;
+    csvStruct.extra.timeOfRun = timeOfRun;
+    csvStruct.extra.varParamVals = varParamVals;
+    csvStruct.extra.varParamVals_len = varParamVals_len;
 end

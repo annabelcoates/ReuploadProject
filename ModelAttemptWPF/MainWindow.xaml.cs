@@ -56,7 +56,7 @@ namespace ModelAttemptWPF
         public MainWindow()
         {
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
-            timeString = DateTime.Now.ToString(@"yyyy\-dd\-yyyy\-hh\-mm\-ss");
+            timeString = DateTime.Now.ToString(@"yyyy\-dd\-hh\-mm\-ss");
             resultsPath = globalLoc + resultsPathRel + @"\" + timeString;
             pythonScriptPath = globalLoc + pythonScriptPathRel;
             Directory.CreateDirectory(resultsPath);

@@ -13,7 +13,7 @@ saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
 
 sharedFakeNewsStruct = importCSV('nSharedFakeNews');
 populationStruct = nSharesPopulationFunc();
-sharesAllstruct = importCSV('nSharesAll')
+sharesAllstruct = importCSV('nSharesAll');
 % 
 % figure();
 % hold on;

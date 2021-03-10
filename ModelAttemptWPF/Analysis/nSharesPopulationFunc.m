@@ -129,7 +129,7 @@ function nSharedPopulationStruct=nSharedPopulation(scriptPath)
         nSharedPopulationStruct.(varParam).trueViews_mat=trueViews;
         nSharedPopulationStruct.(varParam).totalViews_mat=totalViews;
     end
-    nSharedPopulationStruct.timeOfRun = timeOfRun;
-    nSharedPopulationStruct.varParamVals = varParamVals;
-    nSharedPopulationStruct.varParamVals_len = varParamVals_len;
+    nSharedPopulationStruct.extra.timeOfRun = timeOfRun;
+    nSharedPopulationStruct.extra.varParamVals = varParamVals;
+    nSharedPopulationStruct.extra.varParamVals_len = varParamVals_len;
 end
