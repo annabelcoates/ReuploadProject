@@ -32,7 +32,7 @@ public class Person
     public int nTrueShares;
     public bool isSet = false;
 
-    //public Random random = new Random();
+    public Random random = new Random();
 
     private double SHARING_FREQ_FACTOR = 0.25;
 
@@ -64,7 +64,7 @@ public class Person
     public void AdjustEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emotionalState, double doesAffect)
     {
         //this.politicalLeaning = doesAffect * this.politicalLeaning + (1-doesAffect) * politicalLeaning;
-        this.politicalLeaning = simulation.NormalDistribution(politicalLeaning, (1 - doesAffect) / 2.5;
+        this.politicalLeaning = simulation.NormalDistribution(politicalLeaning, (1 - doesAffect) / 2.5);
         this.onlineLiteracy = doesAffect * this.onlineLiteracy + (1 - doesAffect) * onlineLiteracy;
         this.emotionalState = doesAffect * this.emotionalState + (1 - doesAffect) * emotionalState; // emotional state starts average
         DetermineComplexBehaviours();
