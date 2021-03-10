@@ -61,12 +61,12 @@ public class Person
         //DetermineComplexBehaviours();
         this.isSet = true;
     }
-    public void AdjustEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emotionalState, double doesAffect)
+    public void AdjustEnvironmentDetermined(double politicalLeaning, double plStd, double onlineLiteracy, double olStd, double emotionalState, double esSTD, double doesAffect)
     {
         //this.politicalLeaning = doesAffect * this.politicalLeaning + (1-doesAffect) * politicalLeaning;
-        this.politicalLeaning = simulation.NormalDistribution(politicalLeaning, (1 - doesAffect) / 2.5);
-        this.onlineLiteracy = doesAffect * this.onlineLiteracy + (1 - doesAffect) * onlineLiteracy;
-        this.emotionalState = doesAffect * this.emotionalState + (1 - doesAffect) * emotionalState; // emotional state starts average
+        this.politicalLeaning = simulation.NormalDistribution(this.politicalLeaning * doesAffect + politicalLeaning * (1-doesAffect), (1 - doesAffect) *plStd); // 1/1.25
+        this.onlineLiteracy = simulation.NormalDistribution(this.onlineLiteracy * doesAffect + onlineLiteracy * (1 - doesAffect), (1 - doesAffect) * olStd); // 1/5
+        this.emotionalState = simulation.NormalDistribution(this.emotionalState * doesAffect + emotionalState * (1 - doesAffect), (1 - doesAffect) *esSTD); // 1/10
         DetermineComplexBehaviours();
         //this.isSet = true;
     }

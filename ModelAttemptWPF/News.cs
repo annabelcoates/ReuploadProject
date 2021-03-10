@@ -37,7 +37,6 @@ namespace ModelAttemptWPF
             this.emotionalLevel = emotionalLevel;
             this.believability = believability;
             this.o = o;
-            Console.WriteLine(politicalLeaning);
             vs = new int[o.IDCount];
             ss = new int[o.IDCount];
         }

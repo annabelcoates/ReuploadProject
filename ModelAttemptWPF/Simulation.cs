@@ -24,8 +24,8 @@ public class Simulation
     private const double ES_MEAN = 0.5;
     private const double ES_STD = 0.1;
     private const int N_SEED = 40;
-    private const double OL_STD = 0.15;
-    private const double OL_STD2 = 0.03;
+    private const double OL_STD = 0.2;
+    private const double OL_STD2 = 0.06;
     private const double PL_STD2 = 0.06;
     private const double ES_STD2 = 0.08;
 
@@ -117,7 +117,7 @@ public class Simulation
         }
         foreach(Account a in o.accountList)
         {
-            a.person.AdjustEnvironmentDetermined(random.NextDouble(), NormalDistribution(onlineLit, OL_STD + OL_STD2), NormalDistribution(ES_MEAN, ES_STD + ES_STD2), doesAffect);
+            a.person.AdjustEnvironmentDetermined(0.5, 0.8, onlineLit, OL_STD + OL_STD2, ES_MEAN, ES_STD + ES_STD2, doesAffect);
         }
         Console.WriteLine("GBD in " + timer.ElapsedMilliseconds);
     }
@@ -149,6 +149,7 @@ public class Simulation
 
     public double NormalDistribution(double mean,double std)
     {
+        if (std < 0.0001) return mean;
         // generates a random number between 0 and 1 from a normal distribution
         double randNormal=1.1;
         while (randNormal < 0 | randNormal > 1)
