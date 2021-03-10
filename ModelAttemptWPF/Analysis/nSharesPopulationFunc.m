@@ -1,4 +1,4 @@
-function nSharedPopulationStruct=nSharedPopulation(scriptPath)
+function returnStruct=nSharedPopulation(scriptPath)
     scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
     timesList = loadTimes(scriptPath);
@@ -55,7 +55,6 @@ function nSharedPopulationStruct=nSharedPopulation(scriptPath)
 
 
     for varIdx = 1:varParamVals_len
-        varParam = erase(varParamVals{varIdx}, '_');
         for i=1:nRuns
             fileName = resultsPaths{i, varIdx};
             nSharesPop=csvread(fileName,1,1);
@@ -73,62 +72,51 @@ function nSharedPopulationStruct=nSharedPopulation(scriptPath)
             sesLen(i,:)=20.*(nSharesPop(:,12));
             shareFreq(i,:)=nSharesPop(:,13);
             emoState(i,:)=nSharesPop(:,14);
-            fakeViews(i,:)=nSharesPop(:,15);
-            trueViews(i,:)=nSharesPop(:,16);
-            totalViews(i,:)=nSharesPop(:,17);
         end
+        varParam = erase(varParamVals{varIdx}, '_');
 
     %%
     % Plot Parameters Names
-        nSharedPopulationStruct.(varParam).nFollowers_flat=reshape(nFollowers,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).opn_flat=reshape(opn,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).con_flat=reshape(con,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).ext_flat=reshape(ext,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).agr_flat=reshape(agr,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).nrt_flat=reshape(nrt,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).OL_flat=reshape(OL,[1,nRuns.*population]);
-        nSharedPopulationStruct.(varParam).pol_flat=reshape(pol,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).fakeShares_flat=reshape(fakeShares,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).trueShares_flat=reshape(trueShares,[1,nRuns*population]);
-        tempRatio_flat = nSharedPopulationStruct.(varParam).trueShares_flat + nSharedPopulationStruct.(varParam).fakeShares_flat;
-        nSharedPopulationStruct.(varParam).ratioShares_flat = nSharedPopulationStruct.(varParam).fakeShares_flat ./ tempRatio_flat;
-        nSharedPopulationStruct.(varParam).frqUse_flat=reshape(frqUse,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).sesLen_flat=reshape(sesLen,[1,nRuns*population]);
+        returnStruct.(varParam).nFollowers_flat=reshape(nFollowers,[1,nRuns*population]);
+        returnStruct.(varParam).opn_flat=reshape(opn,[1,nRuns*population]);
+        returnStruct.(varParam).con_flat=reshape(con,[1,nRuns*population]);
+        returnStruct.(varParam).ext_flat=reshape(ext,[1,nRuns*population]);
+        returnStruct.(varParam).agr_flat=reshape(agr,[1,nRuns*population]);
+        returnStruct.(varParam).nrt_flat=reshape(nrt,[1,nRuns*population]);
+        returnStruct.(varParam).OL_flat=reshape(OL,[1,nRuns.*population]);
+        returnStruct.(varParam).pol_flat=reshape(pol,[1,nRuns*population]);
+        returnStruct.(varParam).fakeShares_flat=reshape(fakeShares,[1,nRuns*population]);
+        returnStruct.(varParam).trueShares_flat=reshape(trueShares,[1,nRuns*population]);
+        tempRatio_flat = returnStruct.(varParam).trueShares_flat + returnStruct.(varParam).fakeShares_flat;
+        returnStruct.(varParam).ratioShares_flat = returnStruct.(varParam).fakeShares_flat ./ tempRatio_flat;
+        returnStruct.(varParam).frqUse_flat=reshape(frqUse,[1,nRuns*population]);
+        returnStruct.(varParam).sesLen_flat=reshape(sesLen,[1,nRuns*population]);
         % // TODO 
         % ? Should this be a ceiling function
-        nSharedPopulationStruct.(varParam).roundSL_flat=ceil(nSharedPopulationStruct.(varParam).sesLen_flat);
-        nSharedPopulationStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).fakeViews_flat=reshape(fakeViews,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).trueViews_flat=reshape(trueViews,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).totalViews_flat=reshape(totalViews,[1,nRuns*population]);
+        returnStruct.(varParam).roundSL_flat=ceil(returnStruct.(varParam).sesLen_flat);
+        returnStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
+        returnStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
 
-%%
-
-        nSharedPopulationStruct.(varParam).nFollowers_mat=nFollowers;
-        nSharedPopulationStruct.(varParam).opn_mat=opn;
-        nSharedPopulationStruct.(varParam).con_mat=con;
-        nSharedPopulationStruct.(varParam).ext_mat=ext;
-        nSharedPopulationStruct.(varParam).agr_mat=agr;
-        nSharedPopulationStruct.(varParam).nrt_mat=nrt;
-        nSharedPopulationStruct.(varParam).OL_mat=OL;
-        nSharedPopulationStruct.(varParam).pol_mat=pol;
-        nSharedPopulationStruct.(varParam).fakeShares_mat=fakeShares;
-        nSharedPopulationStruct.(varParam).trueShares_mat=trueShares;
-        tempRatio_mat = nSharedPopulationStruct.(varParam).trueShares_mat + nSharedPopulationStruct.(varParam).fakeShares_mat;
-        nSharedPopulationStruct.(varParam).ratioShares_mat = nSharedPopulationStruct.(varParam).fakeShares_mat ./ tempRatio_mat;
-        nSharedPopulationStruct.(varParam).frqUse_mat=frqUse;
-        nSharedPopulationStruct.(varParam).sesLen_mat=sesLen;
+        returnStruct.(varParam).nFollowers_mat=nFollowers;
+        returnStruct.(varParam).opn_mat=opn;
+        returnStruct.(varParam).con_mat=con;
+        returnStruct.(varParam).ext_mat=ext;
+        returnStruct.(varParam).agr_mat=agr;
+        returnStruct.(varParam).nrt_mat=nrt;
+        returnStruct.(varParam).OL_mat=OL;
+        returnStruct.(varParam).pol_mat=pol;
+        returnStruct.(varParam).fakeShares_mat=fakeShares;
+        returnStruct.(varParam).trueShares_mat=trueShares;
+        tempRatio_mat = returnStruct.(varParam).trueShares_mat + returnStruct.(varParam).fakeShares_mat;
+        returnStruct.(varParam).ratioShares_mat = returnStruct.(varParam).fakeShares_mat ./ tempRatio_mat;
+        returnStruct.(varParam).frqUse_mat=frqUse;
+        returnStruct.(varParam).sesLen_mat=sesLen;
         % // TODO 
         % ? Should this be a ceiling function
-        nSharedPopulationStruct.(varParam).roundSL_mat=ceil(nSharedPopulationStruct.(varParam).sesLen_mat);
-        nSharedPopulationStruct.(varParam).shareFreq_mat=shareFreq;
-        nSharedPopulationStruct.(varParam).emoState_mat=emoState;
-        nSharedPopulationStruct.(varParam).fakeViews_mat=fakeViews;
-        nSharedPopulationStruct.(varParam).trueViews_mat=trueViews;
-        nSharedPopulationStruct.(varParam).totalViews_mat=totalViews;
+        returnStruct.(varParam).roundSL_mat=ceil(returnStruct.(varParam).sesLen_mat);
+        returnStruct.(varParam).shareFreq_mat=shareFreq;
+        returnStruct.(varParam).emoState_mat=emoState;
+        returnStruct.timeOfRun = timeOfRun;
+        returnStruct.varParamVals = varParamVals;
     end
-    nSharedPopulationStruct.timeOfRun = timeOfRun;
-    nSharedPopulationStruct.varParamVals = varParamVals;
-    nSharedPopulationStruct.varParamVals_len = varParamVals_len;
 end
