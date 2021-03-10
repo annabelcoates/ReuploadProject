@@ -117,7 +117,7 @@ public class Simulation
         }
         foreach(Account a in o.accountList)
         {
-            a.person.AdjustEnvironmentDetermined(0.5, onlineLit, ES_MEAN, doesAffect);
+            a.person.AdjustEnvironmentDetermined(0.5, 0.8, onlineLit, OL_STD + OL_STD2, ES_MEAN, ES_STD + ES_STD2, doesAffect);
         }
         Console.WriteLine("GBD in " + timer.ElapsedMilliseconds);
     }
