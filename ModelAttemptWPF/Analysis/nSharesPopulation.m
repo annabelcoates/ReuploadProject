@@ -117,6 +117,6 @@ function returnStruct=nSharedPopulation(scriptPath)
         returnStruct.(varParam).shareFreq_mat=shareFreq;
         returnStruct.(varParam).emoState_mat=emoState;
         returnStruct.timeOfRun = timeOfRun;
-
+        returnStruct.varParamVals = varParamVals;
     end
 end

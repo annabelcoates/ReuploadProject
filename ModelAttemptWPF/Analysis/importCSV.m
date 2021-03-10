@@ -65,9 +65,10 @@ function csvStruct=import(scriptPath, csvFileName)
     
         for i=2:nRuns
             fileName = resultsPaths{i, varIdx};
-            csvInput=csvread(fileName,1,1);
+            csvInput=csvread(fileName);
             csvStruct.(varParam)(i,:,:) = csvInput;
         end
     end
     csvStruct.timeOfRun = timeOfRun;
+    csvStruct.varParamVals = varParamVals;
 end

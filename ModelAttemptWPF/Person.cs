@@ -31,6 +31,9 @@ public class Person
     public int nFakeShares;
     public int nTrueShares;
     public bool isSet = false;
+    public int nFakeViews;
+    public int nTrueViews;
+    public int nTotalViews;
 
     public Random random = new Random();
 
@@ -114,6 +117,12 @@ public class Person
         double shareProb = Math.Min(0.9,this.sharingFreq * (2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*1.2)/4);
         //Console.WriteLine(this.sharingFreq + ", " + believabilityFactor + ", " + politicalFactor + ", " + emotionalFactor + ", " + shareProb);
         // return the likelihood that someone will share the news
+
+        if (news.isTrue == false)
+        {
+            this.nFakeViews++;
+        }
+
         return shareProb;
 
     }

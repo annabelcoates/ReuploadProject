@@ -1,3 +1,16 @@
+clear;
+
 scriptPath = fileparts(mfilename('fullpath'));
-sharedFakeNewsStruct = importCSV(scriptPath, 'nSharedFakeNews')
-populationStruct = nSharesPopulation(scriptPath)
+cd (scriptPath);
+timesList = loadTimes(scriptPath);
+lastTime = size(timesList);
+lastTime = lastTime(1);
+desiredRun = timesList{lastTime};
+topResultsPath = fullfile(scriptPath, '..', 'Results', desiredRun);
+saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
+
+%%
+
+sharedFakeNewsStruct = importCSV(scriptPath, 'nSharedFakeNews');
+populationStruct = nSharesPopulation(scriptPath);
+myPlot('OL_flat', 'fakeShares_flat', populationStruct, populationStruct, populationStruct.varParamVals, saveFolderPath);
