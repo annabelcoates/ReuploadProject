@@ -122,8 +122,12 @@ public class Person
         {
             this.nFakeViews++;
         }
+        else
+        {
+            this.nTrueViews++;
+        }
+        this.nTotalViews++;
 
         return shareProb;
-
     }
 }
