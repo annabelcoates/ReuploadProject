@@ -90,7 +90,7 @@ public class Simulation
         for (int i = 0; i < N_SEED; i++)
         {
             Account a = unspec[random.Next(IDCount-i)];
-            a.person.SetEnvironmentDetermined(random.NextDouble(), NormalDistribution(onlineLit, OL_STD), NormalDistribution(ES_MEAN, ES_STD));
+            a.person.PreSetEnvironmentDetermined(random.NextDouble(), NormalDistribution(onlineLit, OL_STD), NormalDistribution(ES_MEAN, ES_STD));
             unspec.Remove(a);
         }
         while (unspec.Count > 0)
@@ -108,14 +108,17 @@ public class Simulation
             if (rs.Count > 0)
             {
                 Account f = rs[random.Next(rs.Count)];
-                double TPL = NormalDistribution(f.person.politicalLeaning, PL_STD2) * doesAffect + random.NextDouble() * (1-doesAffect);
-                double TOL = NormalDistribution(f.person.onlineLiteracy, OL_STD2) * doesAffect + NormalDistribution(onlineLit, OL_STD+OL_STD2) * (1-doesAffect); //adding the two variances, to account for the variance of a random walk
-                double TES = NormalDistribution(f.person.emotionalState, ES_STD2) * doesAffect + NormalDistribution(ES_MEAN, ES_STD+ES_STD2) * (1-doesAffect);
-                a.person.SetEnvironmentDetermined(TPL, TOL, TES);
+                //double TPL = NormalDistribution(f.person.politicalLeaning, PL_STD2) * doesAffect + random.NextDouble() * (1-doesAffect);
+                //double TOL = NormalDistribution(f.person.onlineLiteracy, OL_STD2) * doesAffect + NormalDistribution(onlineLit, OL_STD+OL_STD2) * (1-doesAffect); //adding the two variances, to account for the variance of a random walk
+                //double TES = NormalDistribution(f.person.emotionalState, ES_STD2) * doesAffect + NormalDistribution(ES_MEAN, ES_STD+ES_STD2) * (1-doesAffect);
+                a.person.PreSetEnvironmentDetermined(NormalDistribution(f.person.politicalLeaning, PL_STD2), NormalDistribution(f.person.onlineLiteracy, OL_STD2), NormalDistribution(f.person.emotionalState, ES_STD2));
                 unspec.Remove(a);
             }
         }
-        timer.Stop();
+        foreach(Account a in o.accountList)
+        {
+            a.person.AdjustEnvironmentDetermined(random.NextDouble(), NormalDistribution(onlineLit, OL_STD + OL_STD2), NormalDistribution(ES_MEAN, ES_STD + ES_STD2), doesAffect);
+        }
         Console.WriteLine("GBD in " + timer.ElapsedMilliseconds);
     }
  

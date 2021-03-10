@@ -32,7 +32,7 @@ public class Person
     public int nTrueShares;
     public bool isSet = false;
 
-    public Random random = new Random();
+    //public Random random = new Random();
 
     private double SHARING_FREQ_FACTOR = 0.25;
 
@@ -53,13 +53,22 @@ public class Person
         //this.DetermineComplexBehaviours(); // set the behavioural parameters based on the personality traits
 	}
 
-    public void SetEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emotionalState)
+    public void PreSetEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emotionalState)
     {
         this.politicalLeaning = politicalLeaning;
         this.onlineLiteracy = onlineLiteracy;
         this.emotionalState = emotionalState; // emotional state starts average
-        DetermineComplexBehaviours();
+        //DetermineComplexBehaviours();
         this.isSet = true;
+    }
+    public void AdjustEnvironmentDetermined(double politicalLeaning, double onlineLiteracy, double emotionalState, double doesAffect)
+    {
+        //this.politicalLeaning = doesAffect * this.politicalLeaning + (1-doesAffect) * politicalLeaning;
+        this.politicalLeaning = simulation.NormalDistribution(politicalLeaning, (1 - doesAffect) / 2.5;
+        this.onlineLiteracy = doesAffect * this.onlineLiteracy + (1 - doesAffect) * onlineLiteracy;
+        this.emotionalState = doesAffect * this.emotionalState + (1 - doesAffect) * emotionalState; // emotional state starts average
+        DetermineComplexBehaviours();
+        //this.isSet = true;
     }
 
     public void DetermineComplexBehaviours()
@@ -102,7 +111,7 @@ public class Person
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 
-        double shareProb = Math.Min(1,this.sharingFreq * (believabilityFactor) * (politicalFactor+0.2) * (emotionalFactor + 0.2));
+        double shareProb = Math.Min(0.9,this.sharingFreq * (2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*1.2)/4);
         //Console.WriteLine(this.sharingFreq + ", " + believabilityFactor + ", " + politicalFactor + ", " + emotionalFactor + ", " + shareProb);
         // return the likelihood that someone will share the news
         return shareProb;

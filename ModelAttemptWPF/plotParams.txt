@@ -3,7 +3,5 @@
 OL,
 # ratioShares,
 # OL,ratioShares
-frqUse,
-sesLen,
-shareFreq,
+pol,
 emoState,

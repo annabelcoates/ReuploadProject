@@ -32,7 +32,7 @@ namespace ModelAttemptWPF
 
 
 
-        private void ShareNews(News news, int hourOfDay)
+        /*(private void ShareNews(News news, int hourOfDay)
         { 
             // can only be called by CreateFakeNews(), CreateTrueNews() and ViewFeed()
                 Post newPost = new Post(news, hourOfDay,this);
@@ -50,7 +50,7 @@ namespace ModelAttemptWPF
         public bool HasSeen(News news)
         {
             return this.seen.Contains(news);
-        }
+        }*/
 
         public bool HasShared(News news)
         {
