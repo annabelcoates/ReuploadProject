@@ -73,7 +73,7 @@ namespace ModelAttemptWPF
             double[] values = { 0, 0.5, 1 };
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
-            this.SaveRunParams(values, timeString);
+            this.SaveRunParams(variable, values, timeString);
             this.Close();
         }
 
@@ -239,14 +239,14 @@ namespace ModelAttemptWPF
 
         }
 
-        private void SaveRunParams(double[] values, string timeString)
+        private void SaveRunParams(int variable, double[] values, string timeString)
         {
             List<string> runParams = new List<string>();
             runParams.Add(RUNS.ToString() + " # nRuns");
             runParams.Add(fixedN.ToString() + " # population");
             runParams.Add(fixedNFake.ToString() + " # nFake");
             runParams.Add(fixedNTrue.ToString() + " # nTrue");
-            runParams.Add(timeString + " # timeOfRun");
+            runParams.Add(variable.ToString() + " # variable");
             
             string varParams = "";
             foreach (double val in values)
