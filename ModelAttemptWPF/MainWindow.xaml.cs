@@ -246,6 +246,7 @@ namespace ModelAttemptWPF
             runParams.Add(fixedN.ToString() + " # population");
             runParams.Add(fixedNFake.ToString() + " # nFake");
             runParams.Add(fixedNTrue.ToString() + " # nTrue");
+            runParams.Add(timeString + " # timeOfRun");
             runParams.Add(variable.ToString() + " # variable");
             
             string varParams = "";
