@@ -12,5 +12,5 @@ saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
 %%
 
 sharedFakeNewsStruct = importCSV(scriptPath, 'nSharedFakeNews');
-populationStruct = nSharesPopulation(scriptPath);
+populationStruct = nSharesPopulationFunc(scriptPath);
 myPlot('OL_flat', 'fakeShares_flat', populationStruct, populationStruct, populationStruct.varParamVals, saveFolderPath);

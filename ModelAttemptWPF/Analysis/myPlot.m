@@ -2,10 +2,6 @@ function []=myPlot(x, y, xStruct, yStruct, varParamVals, saveFolderPath)
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
     for varIdx = 1:varParamVals_len
-        disp ('hi')
-        disp (class(varParamVals))
-        disp (varParamVals)
-        disp (varIdx)
         varParam = erase(varParamVals{varIdx}, '_');
         figure();
         if isempty(y)
