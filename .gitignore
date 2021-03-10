@@ -269,4 +269,5 @@ __pycache__/
 *.pyc
 /ModelAttemptWPF/Analysis/octave-workspace
 /ModelAttemptWPF/Results/OL60_1/.~lock.nSharesAll.csv#
-/ModelAttemptWPF
+/ModelAttemptWPF/timesOfRuns.txt
+/ModelAttemptWPF/runParams.txt
