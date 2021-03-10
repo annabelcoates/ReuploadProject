@@ -265,7 +265,7 @@ namespace ModelAttemptWPF
             string timesFilePath = globalLoc + @"\ModelAttemptWPF\timesOfRuns.txt";
             File.AppendAllText(
                 timesFilePath,
-                timeString
+                timeString + "\n"
             );
         }
     }

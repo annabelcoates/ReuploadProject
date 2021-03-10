@@ -1,14 +1,18 @@
 scriptPath = fileparts(mfilename('fullpath'));
-cd (script_path);
-resultsPath = fullfile(script_path, '..', 'Results', timeOfRun)
-saveFolderPath = fullfile(resultspath, 'AnalysisResults');
+cd (scriptPath);
+timesList = loadTimes(scriptPath);
+lastTime = size(timesList);
+lastTime = lastTime(1);
+desiredRun = timesList{lastTime};
+topResultsPath = fullfile(scriptPath, '..', 'Results', desiredRun);
+saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
 if ~exist(saveFolderPath, 'dir')
-    mkdir(saveFolderPath);
+    mkdir(saveFolderPath)
 end
 
 %%
 
-runParamsInputFilePath = 'runParams.txt' % fullfile(script_path, '..', 'Results', 'runParams.txt');
+runParamsInputFilePath = fullfile(topResultsPath, 'runParams.txt');
 runParamsInputFile = fopen(runParamsInputFilePath, 'r');
 runParamsInput = textscan(runParamsInputFile, '%s', 'CommentStyle', '#');
 runParamsInput = runParamsInput{1};
@@ -42,7 +46,7 @@ for i = 1:nRuns
     for j = 1:varParamVals_len
         tempVarParamVals = strcat(varParamVals, int2str(i));
         tempPath = fullfile(...
-        scriptPath, '..','Results', timeOfRun, tempVarParamVals);
+        topResultsPath, tempVarParamVals);
         resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
     end
 end
@@ -137,7 +141,6 @@ for idx = 1:plotParamsString_len
     myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, saveFolderPath)
 end
 
-
 %%
 
 function []=myPlot(x, y, runParamsStruct, varParamVals, saveFolderPath)
@@ -176,4 +179,13 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, saveFolderPath)
             hold off;
         end
     end
+end
+
+function [timesList]=loadTimes(scriptPath)
+    timesPath = fullfile(scriptPath, '..', 'timesOfRuns.txt');
+
+    timesFile = fopen(timesPath, 'r');
+    timesList = textscan(timesFile, '%s', 'CommentStyle', '#');
+    fclose(timesFile);
+    timesList = timesList{1};
 end
