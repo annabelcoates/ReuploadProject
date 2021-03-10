@@ -1,3 +1,19 @@
+csvFiles = {
+    'nSharesPopulation'
+    'nSharesAll'
+    'nViewsAll'
+    'newsInfo'
+    'sharersAll'
+    'viewersAll'
+    'nSharedFakeNews'
+    'FacebookUK'
+    'nSharedFakeNews'
+    'small_world_graph'
+    'fakeShareProbs'
+    'trueShareProbs'
+    'follows'
+}
+
 scriptPath = fileparts(mfilename('fullpath'));
 cd (scriptPath);
 timesList = loadTimes(scriptPath);
@@ -41,81 +57,86 @@ for idx = 1:varParamVals_len
     varParamVals{idx} = ['OL' varParamVals{idx} '_'];
 end
 
-resultsPaths = cell(nRuns, varParamVals_len);
-for i = 1:nRuns
-    for j = 1:varParamVals_len
-        tempVarParamVals = strcat(varParamVals, int2str(i));
-        tempPath = fullfile(...
-        topResultsPath, tempVarParamVals);
-        resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
+for csvFile in csvFiles
+% csvFiles = 'nSharesPopulation'
+    resultsPaths.(csvFile) = cell(nRuns, varParamVals_len);
+    for i = 1:nRuns
+        for j = 1:varParamVals_len
+            tempVarParamVals = strcat(varParamVals, int2str(i));
+            tempPath = fullfile(...
+            topResultsPath, tempVarParamVals);
+            resultsPaths.(csvFile){i, j} = fullfile(tempPath{j}, [csvFile 'csv']);
+        end
     end
 end
 
-%%
+for csvFile in csvFiles
+    for varIdx = 1:varParamVals_len
 
-for varIdx = 1:varParamVals_len
-    for i=1:nRuns
-        fileName = resultsPaths{i, varIdx};
-        nSharesPop=csvread(fileName,1,1);
-        nFollowers(i,:)=nSharesPop(:,1);
-        opn(i,:)=nSharesPop(:,2);
-        con(i,:)=nSharesPop(:,3);
-        ext(i,:)=nSharesPop(:,4);
-        agr(i,:)=nSharesPop(:,5);
-        nrt(i,:)=nSharesPop(:,6);
-        OL(i,:)=nSharesPop(:,7);
-        pol(i,:)=nSharesPop(:,8); % Political
-        fakeShares(i,:)=nSharesPop(:,9);
-        trueShares(i,:)=nSharesPop(:,10); % True
-        frqUse(i,:)=nSharesPop(:,11);
-        sesLen(i,:)=20.*(nSharesPop(:,12));
-        shareFreq(i,:)=nSharesPop(:,13);
-        emoState(i,:)=nSharesPop(:,14);
+        if csvFile == 
+
+        for i=1:nRuns
+            fileName = resultsPaths{i, varIdx};
+            nSharesPop=csvread(fileName,1,1);
+            nFollowers(i,:)=nSharesPop(:,1);
+            opn(i,:)=nSharesPop(:,2);
+            con(i,:)=nSharesPop(:,3);
+            ext(i,:)=nSharesPop(:,4);
+            agr(i,:)=nSharesPop(:,5);
+            nrt(i,:)=nSharesPop(:,6);
+            OL(i,:)=nSharesPop(:,7);
+            pol(i,:)=nSharesPop(:,8); % Political
+            fakeShares(i,:)=nSharesPop(:,9);
+            trueShares(i,:)=nSharesPop(:,10); % True
+            frqUse(i,:)=nSharesPop(:,11);
+            sesLen(i,:)=20.*(nSharesPop(:,12));
+            shareFreq(i,:)=nSharesPop(:,13);
+            emoState(i,:)=nSharesPop(:,14);
+        end
+        varParam = erase(varParamVals{varIdx}, '_');
+
+    %%
+    % Plot Parameters Names
+        runParamsStruct.(varParam).nFollowers_flat=reshape(nFollowers,[1,nRuns*population]);
+        runParamsStruct.(varParam).opn_flat=reshape(opn,[1,nRuns*population]);
+        runParamsStruct.(varParam).con_flat=reshape(con,[1,nRuns*population]);
+        runParamsStruct.(varParam).ext_flat=reshape(ext,[1,nRuns*population]);
+        runParamsStruct.(varParam).agr_flat=reshape(agr,[1,nRuns*population]);
+        runParamsStruct.(varParam).nrt_flat=reshape(nrt,[1,nRuns*population]);
+        runParamsStruct.(varParam).OL_flat=reshape(OL,[1,nRuns.*population]);
+        runParamsStruct.(varParam).pol_flat=reshape(pol,[1,nRuns*population]);
+        runParamsStruct.(varParam).fakeShares_flat=reshape(fakeShares,[1,nRuns*population]);
+        runParamsStruct.(varParam).trueShares_flat=reshape(trueShares,[1,nRuns*population]);
+        tempRatio_flat = runParamsStruct.(varParam).trueShares_flat + runParamsStruct.(varParam).fakeShares_flat;
+        runParamsStruct.(varParam).ratioShares_flat = runParamsStruct.(varParam).fakeShares_flat ./ tempRatio_flat;
+        runParamsStruct.(varParam).frqUse_flat=reshape(frqUse,[1,nRuns*population]);
+        runParamsStruct.(varParam).sesLen_flat=reshape(sesLen,[1,nRuns*population]);
+        % // TODO 
+        % ? Should this be a ceiling function
+        runParamsStruct.(varParam).roundSL_flat=ceil(runParamsStruct.(varParam).sesLen_flat);
+        runParamsStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
+        runParamsStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
+
+        runParamsStruct.(varParam).nFollowers_mat=nFollowers;
+        runParamsStruct.(varParam).opn_mat=opn;
+        runParamsStruct.(varParam).con_mat=con;
+        runParamsStruct.(varParam).ext_mat=ext;
+        runParamsStruct.(varParam).agr_mat=agr;
+        runParamsStruct.(varParam).nrt_mat=nrt;
+        runParamsStruct.(varParam).OL_mat=OL;
+        runParamsStruct.(varParam).pol_mat=pol;
+        runParamsStruct.(varParam).fakeShares_mat=fakeShares;
+        runParamsStruct.(varParam).trueShares_mat=trueShares;
+        tempRatio_mat = runParamsStruct.(varParam).trueShares_mat + runParamsStruct.(varParam).fakeShares_mat;
+        runParamsStruct.(varParam).ratioShares_mat = runParamsStruct.(varParam).fakeShares_mat ./ tempRatio_mat;
+        runParamsStruct.(varParam).frqUse_mat=frqUse;
+        runParamsStruct.(varParam).sesLen_mat=sesLen;
+        % // TODO 
+        % ? Should this be a ceiling function
+        runParamsStruct.(varParam).roundSL_mat=ceil(runParamsStruct.(varParam).sesLen_mat);
+        runParamsStruct.(varParam).shareFreq_mat=shareFreq;
+        runParamsStruct.(varParam).emoState_mat=emoState;
     end
-    varParam = erase(varParamVals{varIdx}, '_');
-
-%%
-% Plot Parameters Names
-    runParamsStruct.(varParam).nFollowers_flat=reshape(nFollowers,[1,nRuns*population]);
-    runParamsStruct.(varParam).opn_flat=reshape(opn,[1,nRuns*population]);
-    runParamsStruct.(varParam).con_flat=reshape(con,[1,nRuns*population]);
-    runParamsStruct.(varParam).ext_flat=reshape(ext,[1,nRuns*population]);
-    runParamsStruct.(varParam).agr_flat=reshape(agr,[1,nRuns*population]);
-    runParamsStruct.(varParam).nrt_flat=reshape(nrt,[1,nRuns*population]);
-    runParamsStruct.(varParam).OL_flat=reshape(OL,[1,nRuns.*population]);
-    runParamsStruct.(varParam).pol_flat=reshape(pol,[1,nRuns*population]);
-    runParamsStruct.(varParam).fakeShares_flat=reshape(fakeShares,[1,nRuns*population]);
-    runParamsStruct.(varParam).trueShares_flat=reshape(trueShares,[1,nRuns*population]);
-    tempRatio_flat = runParamsStruct.(varParam).trueShares_flat + runParamsStruct.(varParam).fakeShares_flat;
-    runParamsStruct.(varParam).ratioShares_flat = runParamsStruct.(varParam).fakeShares_flat ./ tempRatio_flat;
-    runParamsStruct.(varParam).frqUse_flat=reshape(frqUse,[1,nRuns*population]);
-    runParamsStruct.(varParam).sesLen_flat=reshape(sesLen,[1,nRuns*population]);
-    % // TODO 
-    % ? Should this be a ceiling function
-    runParamsStruct.(varParam).roundSL_flat=ceil(runParamsStruct.(varParam).sesLen_flat);
-    runParamsStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
-    runParamsStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
-
-    runParamsStruct.(varParam).nFollowers_mat=nFollowers;
-    runParamsStruct.(varParam).opn_mat=opn;
-    runParamsStruct.(varParam).con_mat=con;
-    runParamsStruct.(varParam).ext_mat=ext;
-    runParamsStruct.(varParam).agr_mat=agr;
-    runParamsStruct.(varParam).nrt_mat=nrt;
-    runParamsStruct.(varParam).OL_mat=OL;
-    runParamsStruct.(varParam).pol_mat=pol;
-    runParamsStruct.(varParam).fakeShares_mat=fakeShares;
-    runParamsStruct.(varParam).trueShares_mat=trueShares;
-    tempRatio_mat = runParamsStruct.(varParam).trueShares_mat + runParamsStruct.(varParam).fakeShares_mat;
-    runParamsStruct.(varParam).ratioShares_mat = runParamsStruct.(varParam).fakeShares_mat ./ tempRatio_mat;
-    runParamsStruct.(varParam).frqUse_mat=frqUse;
-    runParamsStruct.(varParam).sesLen_mat=sesLen;
-    % // TODO 
-    % ? Should this be a ceiling function
-    runParamsStruct.(varParam).roundSL_mat=ceil(runParamsStruct.(varParam).sesLen_mat);
-    runParamsStruct.(varParam).shareFreq_mat=shareFreq;
-    runParamsStruct.(varParam).emoState_mat=emoState;
-
 end
 %%
 
