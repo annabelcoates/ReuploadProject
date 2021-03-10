@@ -10,8 +10,8 @@ namespace ModelAttemptWPF
 
     public class Facebook : OSN
     {
-        private const String pythonRel = @"\FacebookUK\network_generator.py";
-        private const String pythonSrcFile = @"\FacebookUK\pythonSource.txt";
+        private const String pythonRel = @"\ModelAttemptWPF\network_generator.py";
+        private const String pythonSrcFile = @"\ModelAttemptWPF\pythonSource.txt";
         public Facebook(string name, int ftf):base(name, ftf)
         {
 
@@ -41,25 +41,17 @@ namespace ModelAttemptWPF
         //    }
         //}
 
-        public void GenerateSmallWorldNetwork(string varParamString, string runNumberString)
+        public void GenerateSmallWorldNetwork(string graphFilePath, string scriptFilePath)
         {
-            string python_script = MainWindow.globalLoc + pythonRel;
             // TODO
             // ! WARNING: Hardcoded values
-               Console.WriteLine("");
-                    Console.WriteLine("********");
-                    Console.WriteLine("PREPARING TO RUN PYTHON SCRIPT WITH THESE PARAMETERS:");
-                    Console.WriteLine(varParamString);
-                    Console.WriteLine(runNumberString);
-                    Console.WriteLine("********");
-                    Console.WriteLine("");
-            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]" + " " + varParamString + "_" + runNumberString;
+            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]" + " " + graphFilePath;
             ProcessStartInfo start = new ProcessStartInfo();
             // ! NOTE: You MUST store the path string of your Python3 executable in the python source file
             using (System.IO.StreamReader file = new System.IO.StreamReader(MainWindow.globalLoc + pythonSrcFile))
             {
                 start.FileName = file.ReadLine();
-                start.Arguments = string.Format("{0} {1}", python_script, python_args);
+                start.Arguments = string.Format("{0} {1}", scriptFilePath, python_args);
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
 
@@ -76,11 +68,11 @@ namespace ModelAttemptWPF
         
         // TODO
         // ? Should we have the `new` keyword set or should we remove it
-        public new void CreateMutualFollowsFromGraph(string filePath, string varParamString, string runNumberString)
+        public new void CreateMutualFollowsFromGraph(string graphFilePath, string scriptFilePath)
         {
             accountList = accountList.OrderBy(o => o.person.connectivity).ToList();
-            GenerateSmallWorldNetwork(varParamString, runNumberString);
-            List<string[]> connections = LoadCsvFile(filePath);
+            GenerateSmallWorldNetwork(graphFilePath, scriptFilePath);
+            List<string[]> connections = LoadCsvFile(graphFilePath);
             foreach (string[] connection in connections)
             {
                 int followerID = Convert.ToInt16(connection[0]);

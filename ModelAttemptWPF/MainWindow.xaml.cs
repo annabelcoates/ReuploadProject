@@ -21,13 +21,13 @@ namespace ModelAttemptWPF
         //Facebook facebook;
         public static string globalLoc;
         private string smallWorldPath;
-        private string followsPath;
         private string resultsPath;
+        private string pythonScriptPath;
+        private string timeString;
 
-        private const string smallWorldPathRel = @"\FacebookUK\small_world_graph_";
-        private const string pythonSource = @"\FacebookUK\pythonSource.txt";
-        private const string followsPathRel = @"\FacebookUK\follows";
-        private const string resultsPathRel = @"\ModelAttemptWPF\Results\";
+        private const string smallWorldPathRel = @"small_world_graph.csv";
+        private const string resultsPathRel = @"\ModelAttemptWPF\Results";
+        private const string pythonScriptPathRel = @"\ModelAttemptWPF\network_generator.py";
 
         // define fixed settings 
         private const int fixedN = 1000; // the fixed number of people in the simulation
@@ -56,9 +56,10 @@ namespace ModelAttemptWPF
         public MainWindow()
         {
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
-            smallWorldPath = globalLoc + smallWorldPathRel;
-            followsPath = globalLoc + followsPathRel;
-            resultsPath = globalLoc + resultsPathRel;
+            timeString = DateTime.Now.ToString(@"yyyy\-dd\-yyyy\-hh\-mm\-ss");
+            resultsPath = globalLoc + resultsPathRel + @"\" + timeString;
+            pythonScriptPath = globalLoc + pythonScriptPathRel;
+            Directory.CreateDirectory(resultsPath);
             
             int variable = 6;
             // instructions for variable:
@@ -72,7 +73,7 @@ namespace ModelAttemptWPF
             double[] values = { 0, 0.5, 1 };
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
-            this.SaveRunParams(values);
+            this.SaveRunParams(values, timeString);
             this.Close();
         }
 
@@ -97,11 +98,14 @@ namespace ModelAttemptWPF
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
+            
             string varParamString = Convert.ToInt64((val * 100)).ToString();
             string runNumberString = i.ToString();
-            string smallWorldPathThread = smallWorldPath + varParamString + "_" + runNumberString + ".csv";
-            string followsPathThread = followsPath + varParamString + "_" + runNumberString + "_";
-            //this.Activate();
+            
+            string resultsPathThread = resultsPath + @"\" + name + varParamString + "_" + runNumberString + @"\";
+            Directory.CreateDirectory(resultsPathThread);
+            string smallWorldPathThread = resultsPathThread + smallWorldPathRel;
+
             Simulation simulation = new Simulation(name, val, i,(variable == 5 ? val : usePsych)); // create a new simulation object
             simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
@@ -109,7 +113,7 @@ namespace ModelAttemptWPF
             // Give facebook a small initial population
             //int defaultFollows = Convert.ToInt32(n * DEFAULT_FRAC_FOLLOWS); // set the default number of people that each Facebook user will follow
             facebook.PopulateFromPeople(simulation.humanPopulation); // Populate facebook with users from the simulation population, make a network graph in python
-            facebook.CreateMutualFollowsFromGraph(smallWorldPathThread, varParamString, runNumberString); // Create follows as defined by the network graph
+            facebook.CreateMutualFollowsFromGraph(smallWorldPathThread, pythonScriptPath); // Create follows as defined by the network graph
             // TODO
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
@@ -134,7 +138,7 @@ namespace ModelAttemptWPF
 
             facebook.RunFor(runtime);
 
-            SimulationEnd(simulation, facebook, followsPathThread, smallWorldPathThread);
+            SimulationEnd(simulation, facebook, resultsPathThread, smallWorldPathThread);
         }
         
         private void AddDistributedNews(int nFake,int nTrue, Simulation simulation, OSN osn,double meanEFake, double meanETrue, double meanBFake,double meanBTrue)
@@ -155,8 +159,7 @@ namespace ModelAttemptWPF
             }
         }
 
-       
-        private void SimulationEnd(Simulation simulation, OSN facebook, string followsPathThread, string smallWorldPathThread)
+        private void SimulationEnd(Simulation simulation, OSN facebook, string resultsPathThread, string smallWorldPathThread)
         {
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
@@ -164,14 +167,11 @@ namespace ModelAttemptWPF
             double newValue = simulation.value;
             string endFileName = Convert.ToInt64((newValue * 100)).ToString();
 
-            string generalPath = resultsPath + simulation.versionName + endFileName +"_"+simulation.runNumber+@"\"; //!! set to local results folder
-            Directory.CreateDirectory(generalPath);
+            facebook.SaveFollowCSV(resultsPathThread, smallWorldPathThread);
 
-            facebook.SaveFollowCSV(generalPath, followsPathThread, smallWorldPathThread);
+            File.WriteAllLines(resultsPathThread + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
 
-            File.WriteAllLines(generalPath + "nSharedFakeNews.csv", facebook.nSharedFakeNewsList.Select(x => string.Join(",", x)));
-
-            File.WriteAllLines(generalPath + "newsInfo.csv", facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel, x.politicalLeaning)));
+            File.WriteAllLines(resultsPathThread + "newsInfo.csv", facebook.newsList.Select(x => string.Join(",", x.believability, x.emotionalLevel, x.politicalLeaning)));
 
             var csv = new StringBuilder();
             var csv2 = new StringBuilder();
@@ -182,8 +182,8 @@ namespace ModelAttemptWPF
             // List<double> populationAverages = simulation.CalculateAverages();
             //var firstLine = string.Format("{0},{1},{2},{3},{4},{5},{6}", populationAverages[0], populationAverages[1], populationAverages[2], populationAverages[3], populationAverages[4], populationAverages[5], populationAverages[6]);
             // csv.AppendLine(firstLine);
-            File.WriteAllLines(generalPath + "fakeShareProbs.csv", facebook.fakeShareProbs.Select(x => string.Join(",", x)));
-            File.WriteAllLines(generalPath + "trueShareProbs.csv", facebook.trueShareProbs.Select(x => string.Join(",", x)));
+            File.WriteAllLines(resultsPathThread + "fakeShareProbs.csv", facebook.fakeShareProbs.Select(x => string.Join(",", x)));
+            File.WriteAllLines(resultsPathThread + "trueShareProbs.csv", facebook.trueShareProbs.Select(x => string.Join(",", x)));
             foreach (News news in facebook.newsList)
             {
                 // the number that shared with respect to time
@@ -210,15 +210,15 @@ namespace ModelAttemptWPF
             }
             // TODO
             // ? Change "nSharesAll" to "nSharedAll"
-            File.WriteAllText(generalPath + "nSharesAll.csv", csvNShared.ToString());
-            File.WriteAllText(generalPath + "nViewsAll.csv", csvNViewed.ToString());
-            File.WriteAllText(generalPath + "sharersAll.csv", csvSharers.ToString());
-            File.WriteAllText(generalPath + "viewersAll.csv", csvViewers.ToString());
-           // File.WriteAllText(generalPath + "sharerPersonalityAverages.csv", csv.ToString());
-           // File.WriteAllText(generalPath + "viewerPersonalityAverages.csv", csv2.ToString());
+            File.WriteAllText(resultsPathThread + "nSharesAll.csv", csvNShared.ToString());
+            File.WriteAllText(resultsPathThread + "nViewsAll.csv", csvNViewed.ToString());
+            File.WriteAllText(resultsPathThread + "sharersAll.csv", csvSharers.ToString());
+            File.WriteAllText(resultsPathThread + "viewersAll.csv", csvViewers.ToString());
+           // File.WriteAllText(resultsPathThread + "sharerPersonalityAverages.csv", csv.ToString());
+           // File.WriteAllText(resultsPathThread + "viewerPersonalityAverages.csv", csv2.ToString());
 
 
-            CreateNSharesCSV(generalPath, facebook);
+            CreateNSharesCSV(resultsPathThread, facebook);
             
             //MakeNextSimulation(simulation);
             timer.Stop();
@@ -226,7 +226,7 @@ namespace ModelAttemptWPF
 
         }
     
-        public void CreateNSharesCSV(string generalPath, OSN facebook)
+        public void CreateNSharesCSV(string resultsPathThread, OSN facebook)
         {
             var csv = new StringBuilder();
             csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings
@@ -235,17 +235,19 @@ namespace ModelAttemptWPF
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
                 csv.AppendLine(line);
             }
-            File.WriteAllText(generalPath+"nSharesPopulation.csv", csv.ToString());
+            File.WriteAllText(resultsPathThread+"nSharesPopulation.csv", csv.ToString());
 
         }
 
-        private void SaveRunParams(double[] values)
+        private void SaveRunParams(double[] values, string timeString)
         {
             List<string> runParams = new List<string>();
             runParams.Add(RUNS.ToString() + " # nRuns");
             runParams.Add(fixedN.ToString() + " # population");
             runParams.Add(fixedNFake.ToString() + " # nFake");
             runParams.Add(fixedNTrue.ToString() + " # nTrue");
+            runParams.Add(timeString + " # timeOfRun");
+            
             string varParams = "";
             foreach (double val in values)
             {
@@ -253,11 +255,17 @@ namespace ModelAttemptWPF
             }
             varParams = varParams.Remove(varParams.Length - 1);
             runParams.Add(varParams + " # variable parameters");
-            string writeFilePath = @"\ModelAttemptWPF\runParams.txt";
-            writeFilePath = globalLoc + writeFilePath;
+            
+            string writeFilePath = resultsPath + @"\runParams.txt";
             File.WriteAllLines(
                 writeFilePath,
                 runParams
+            );
+
+            string timesFilePath = globalLoc + @"\ModelAttemptWPF\timesOfRuns.txt";
+            File.AppendAllText(
+                timesFilePath,
+                timeString
             );
         }
     }

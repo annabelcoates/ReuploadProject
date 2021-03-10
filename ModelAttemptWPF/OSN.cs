@@ -318,10 +318,10 @@ namespace ModelAttemptWPF
             var line = String.Format("{0},{1}", from, to); // so that the columns match from smallworld path
             followCSV.AppendLine(line);
         }
-        public void SaveFollowCSV(string resultsPath, string followsPath, string smallWorldPath)
+        public void SaveFollowCSV(string resultsPath, string smallWorldPath)
         {
             string[] lines = followCSV.ToString().Split(Environment.NewLine.ToCharArray());
-            File.WriteAllLines(followsPath+this.name+".csv", lines);
+            File.WriteAllLines(resultsPath+this.name+".csv", lines);
             string[] allSmallWorld = File.ReadAllLines(smallWorldPath);
             File.AppendAllLines(resultsPath+"follows.csv", allSmallWorld);
 

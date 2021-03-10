@@ -1,9 +1,15 @@
-clear;
-script_path = fileparts(mfilename('fullpath'));
+scriptPath = fileparts(mfilename('fullpath'));
 cd (script_path);
+resultsPath = fullfile(script_path, '..', 'Results', timeOfRun)
+saveFolderPath = fullfile(resultspath, 'AnalysisResults');
+if ~exist(saveFolderPath, 'dir')
+    mkdir(saveFolderPath);
+end
 
-runParamsInputFileName = fullfile('..', 'runParams.txt');
-runParamsInputFile = fopen(runParamsInputFileName, 'r');
+%%
+
+runParamsInputFilePath = 'runParams.txt' % fullfile(script_path, '..', 'Results', 'runParams.txt');
+runParamsInputFile = fopen(runParamsInputFilePath, 'r');
 runParamsInput = textscan(runParamsInputFile, '%s', 'CommentStyle', '#');
 runParamsInput = runParamsInput{1};
 fclose(runParamsInputFile);
@@ -12,8 +18,14 @@ nRuns = str2num(runParamsInput{1});
 population = str2num(runParamsInput{2});
 nFake = str2num(runParamsInput{3});
 nTrue = str2num(runParamsInput{4});
+timeOfRun = runParamsInput{5};
 fakeShares=zeros(nRuns,population);
 nFollowers=zeros(nRuns,population);
+
+%%
+% copyfile(runParamsInputFilePath, saveFolderPath);
+
+%%
 
 runParamsInput_len = size(runParamsInput);
 runParamsInput_len = runParamsInput_len(1);
@@ -30,7 +42,7 @@ for i = 1:nRuns
     for j = 1:varParamVals_len
         tempVarParamVals = strcat(varParamVals, int2str(i));
         tempPath = fullfile(...
-        '..','Results', tempVarParamVals);
+        scriptPath, '..','Results', timeOfRun, tempVarParamVals);
         resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
     end
 end
@@ -103,8 +115,8 @@ for varIdx = 1:varParamVals_len
 end
 %%
 
-plotParamsFileName = fullfile('..', 'plotParams.txt');
-plotParamsFile = fopen(plotParamsFileName, 'r');
+plotParamsFilePath = fullfile('..', 'plotParams.txt');
+plotParamsFile = fopen(plotParamsFilePath, 'r');
 plotParamsString = textscan(plotParamsFile, '%s', 'CommentStyle', '#');
 plotParamsString = plotParamsString{1};
 fclose(plotParamsFile);
@@ -121,25 +133,20 @@ end
 
 %%
 
-folderName = datestr(datetime('now'));
-folderName = strrep(folderName,':','-');
-folderName = ['AnalysisResults ' folderName ];
-mkdir(folderName);
-
-%%
-
 for idx = 1:plotParamsString_len
-    myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, folderName)
+    myPlot(plotParams{idx, 1}, plotParams{idx, 2}, runParamsStruct, varParamVals, saveFolderPath)
 end
+
+
 %%
 
-function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
+function []=myPlot(x, y, runParamsStruct, varParamVals, saveFolderPath)
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
     for varIdx = 1:varParamVals_len
         varParam = erase(varParamVals{varIdx}, '_');
+        figure('visible', 'off');
         if isempty(y)
-            figure();
             histogram(...
                 runParamsStruct.(varParam).([x '_flat']),...
                 100,'Normalization','pdf');
@@ -147,11 +154,10 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
             ylabel('PDF');
             figName = [varParam ' Histogram plot of ' [x '\_flat']];
             saveName = [varParam ' Histogram plot of ' [x '_flat']];
-            savePath = fullfile(folderName, [saveName '.png']);
+            savePath = fullfile(saveFolderPath, [saveName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
         else
-            figure();
             hold on;
             xax = runParamsStruct.(varParam).([x '_flat']);
             yax = runParamsStruct.(varParam).([y '_flat']);
@@ -164,7 +170,7 @@ function []=myPlot(x, y, runParamsStruct, varParamVals, folderName)
             ylabel([y '\_flat']);
             figName = [varParam ' Scatter plot of ' [x '\_flat'] ' against ' [y '\_flat']];
             saveName = [varParam ' Scatter plot of ' [x '_flat'] ' against ' [y '_flat']];
-            savePath = fullfile(folderName, [saveName '.png']);
+            savePath = fullfile(saveFolderPath, [saveName '.png']);
             title(figName);
             saveas(gcf, [savePath '.png']);
             hold off;
