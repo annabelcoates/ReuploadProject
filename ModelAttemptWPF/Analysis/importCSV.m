@@ -1,5 +1,5 @@
-function csvStruct=import(scriptPath, csvFileName)
-
+function csvStruct=import(csvFileName)
+    scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
     timesList = loadTimes(scriptPath);
     lastTime = size(timesList);
@@ -40,13 +40,14 @@ function csvStruct=import(scriptPath, csvFileName)
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
     for idx = 1:varParamVals_len
-        varParamVals{idx} = ['OL' varParamVals{idx} '_'];
+        varParamVals{idx} = ['OL' varParamVals{idx}];
     end
 
     resultsPaths = cell(nRuns, varParamVals_len);
     for i = 1:nRuns
         for j = 1:varParamVals_len
-            tempVarParamVals = strcat(varParamVals, int2str(i));
+            tempVarParamVals = strcat(varParamVals, '_');
+            tempVarParamVals = strcat(tempVarParamVals, int2str(i));
             tempPath = fullfile(...
             topResultsPath, tempVarParamVals);
             resultsPaths{i, j} = fullfile(tempPath{j}, [csvFileName '.csv']);
@@ -55,7 +56,7 @@ function csvStruct=import(scriptPath, csvFileName)
 
 
     for varIdx = 1:varParamVals_len
-        varParam = erase(varParamVals{varIdx}, '_');
+        varParam = varParamVals{varIdx};
         fileName = resultsPaths{1, varIdx};
         csvInput=csvread(fileName);
         csvInputDims = size(csvInput);
@@ -71,4 +72,5 @@ function csvStruct=import(scriptPath, csvFileName)
     end
     csvStruct.timeOfRun = timeOfRun;
     csvStruct.varParamVals = varParamVals;
+    csvStruct.varParamVals_len = varParamVals_len;
 end

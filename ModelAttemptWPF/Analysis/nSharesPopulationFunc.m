@@ -40,13 +40,14 @@ function nSharedPopulationStruct=nSharedPopulation(scriptPath)
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
     for idx = 1:varParamVals_len
-        varParamVals{idx} = ['OL' varParamVals{idx} '_'];
+        varParamVals{idx} = ['OL' varParamVals{idx}];
     end
 
     resultsPaths = cell(nRuns, varParamVals_len);
     for i = 1:nRuns
         for j = 1:varParamVals_len
-            tempVarParamVals = strcat(varParamVals, int2str(i));
+            tempVarParamVals = strcat(varParamVals, '_');
+            tempVarParamVals = strcat(tempVarParamVals, int2str(i));
             tempPath = fullfile(...
             topResultsPath, tempVarParamVals);
             resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
@@ -55,7 +56,7 @@ function nSharedPopulationStruct=nSharedPopulation(scriptPath)
 
 
     for varIdx = 1:varParamVals_len
-        varParam = erase(varParamVals{varIdx}, '_');
+        varParam = varParamVals{varIdx};
         for i=1:nRuns
             fileName = resultsPaths{i, varIdx};
             nSharesPop=csvread(fileName,1,1);
