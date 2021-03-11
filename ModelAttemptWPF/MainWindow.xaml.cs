@@ -51,6 +51,8 @@ namespace ModelAttemptWPF
         public const int FB_TIMEFRAME = 50;
 
 
+        public static int semaphore = 0;
+
         public List<double> values;
 
         public MainWindow()
@@ -74,7 +76,7 @@ namespace ModelAttemptWPF
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(variable, values, timeString);
-            this.Close();
+            //this.Close();
         }
 
         private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double ol, int runtime, int variable, double[] values)
@@ -87,8 +89,9 @@ namespace ModelAttemptWPF
                     // ! Multithreading fix: dummy variable
                     int runCountCurrent = 1;
                     runCountCurrent += i;
-                    System.Threading.Thread t = new System.Threading.Thread(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent));
+                    System.Threading.Tasks.Task t = new System.Threading.Tasks.Task(() => innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent));
                     t.Start();
+                    
                     //innerSim(name, n, k, nFake, nTrue, ol, runtime, variable, val, runCountCurrent);
                 }
             }
@@ -96,6 +99,8 @@ namespace ModelAttemptWPF
 
         private void innerSim(string name, int n, int k, int nFake, int nTrue, double ol, int runtime, int variable, double val, int i)
         {
+            semaphore++;
+            Console.WriteLine("semaphore inc to " + semaphore);
             System.Diagnostics.Stopwatch timer = new System.Diagnostics.Stopwatch();
             timer.Start();
             
@@ -223,7 +228,9 @@ namespace ModelAttemptWPF
             //MakeNextSimulation(simulation);
             timer.Stop();
             Console.WriteLine("Writing output of run took " + timer.ElapsedMilliseconds);
-
+            semaphore--;
+            Console.WriteLine("semaphore dec to " + semaphore);
+            if (semaphore == 0) Console.WriteLine("FINISHED");
         }
     
         public void CreateNSharesCSV(string resultsPathThread, OSN facebook)
