@@ -1,0 +1,265 @@
+1. Ratio of `spreading' fake vs true news over time, with lines for different "personality trait" settings, as well as for different "homophily" settings
+
+    !!! drawSharesOrViews
+
+    Tim:
+        For 'spread' I came up with 3 measures: number of shares, number of views and 'viral'
+        A post is 'viral' if it has over 750 (or some other large number) of views
+        So, what proportion (of fake/true/all news) is viral is a slightly different question than how often is that news viewed on average
+
+    So, say we had some function `propSpread : true/fake news -> "spreadiness"`
+    We want...
+        x-axis: `Time`
+        y-axis : `propSpread(true) '/. propSpread(true)`
+    Now, `propSpread(x)` can be:
+        `amount of viewed news of type x`
+        `amount of shared news of type x`
+        `amount of viewed news of type x above a certain threshold`
+        `amount of viewed news of type x above a certain threshold`
+            Can also consider raising the threshold incrementally
+    We also want different lines for different personality traits and homophily settings
+        This is most easily done by setting traits/homophily as the `variable` and then plotting each of them as a line
+
+    Leeeeet's do it!
+
+    Is the number of fakeViews _from_ the users the same as the number of fakeViews _of_ the articles? I think so...
+        Right, you can draw a bipartite graph where one set of nodes is the people and the other is the articles and an edge represents a view and the number of edges going into the latter set is equal to the number coming out of the former
+        
+
+2. A 3d plot of believability and emotional engagement of news (on x and y) with the 'spreading' on the z axis
+
+    # TODO !!! (or not?)
+
+    So, we have the three methods of interpreting spreading (shares, views, virality).
+    Now, rather than plotting them against time, we want to plot them against believability and emotionality.
+    That means that we want a SCATTER plot.
+    I think the easiest way to do this is to do the same as in `spreadByTime`.
+    The nSharesAll matrix (for example) is naturally sorted by TIME and by NEWS ITEM.
+
+    Now, given that we do not want TIME as an axis, we will be losing that information. As such, that means we want the number of shares/views at the END of the simulation.
+
+    So, sum over runs again and divide by the number of runs (and squeeze, if you like) to get a (ITEMS, TIME) matrix. Let's call it `M`.
+
+    Then, you take `M` and do `Z = M(:,size(M)(2))` to get the vector for ITEMS at the end of the simulation.
+
+    Then,I just need to get the relevant news properties from `newsInfo` and just stick them in X and Y seeing as how they're already ordered by news item.
+
+3. Plotting the psych level on the x axis, and 'spread' on the y axis. Possibly with different levels of homophily
+
+    !!! Ignore the homophily bit for now. !!!
+
+
+
+4. The difference between the most mislead (or perhaps 90th percentile most) person and the least mislead person.  Potentially also looking at averages and variances. This can be plotted against personality traits on/off
+
+    !!! Do this last !!!
+    ^^^^^^^^^^^^^^^^^^^^
+    (NOTE: This would require us to alter the c# code, to also keep track of whether or not people assess the news as believable; which we already compute, but do not store. I'll add this in after dinner.)
+
+    
+
+5. On the x-axis, how well specific news is spreading, and on the y-axis political leaning / believability / emotional level of news. Track this with and without personality traits on
+
+    !!! Actually, isn't this just the same as 2 !!!
+
+    ??? Is spreading implies time but I will just assume end of simulation ???
+        It can't be time on the x-axis because then you lose the specific news items and therefore any connection to news properties.
+        It can't be the item itself because then you just have a scatter plot of the items and their respective properties.
+        Then it must be the end-time spread of each item.
+
+    ??? I kind of disagree here with the axes then. I think it makes more sense to put the item properties on the x-axis to see what impact they have on spreading. ???
+
+    So if we have `V` variable values, we will have `V` lines. So, this is a lot like timOG again.
+
+    In fact, this is just a combo of timOG, grab only the end time slice of per-item values then... Wait. "How well specific news is spreading"? What's on the x-axis exactly? Items or spreading? I would assume spreading value on the x-axis and the properties on the y-axis, so...
+
+    Take the last time slice of length ITEM, then make a (4, ITEM) matrix with the 1st, 2nd, 3rd and 4th rows being items, believability, emotionality and polarity respectively and then do 3 figures, each with a different item property on the x-axis and the spread on the y-axis.
+
+    Each figure should have `V` lines on it. So it is timOG combined with (2).
+
+    Consider splitting the (4, ITEM) matrix into 3 (2, ITEM) matrices containing the items and a property, sorting the whole thing by the property and then using plot instead of scatter.
+
+6. Graph personality types (x-axis) against how much fake news they share
+
+    Quite straightforward
+
+7. Same, but using how much fake news they believe versus how much true news they believe
+
+
+=====================
+
+8. drawVarvsSpread
+
+psych 0 on one side and 1 on the other
+
+dashed line is total (average) so it's in between (totS)
+S = shares
+V = views
+T = true
+F = false
+
+Against personality:
+True goes up for shares but not views
+False doesn't really go up
+
+C#: variable 5, 10 values
+
+=====================
+
+9. drawSharesOrViews
+
+viral is in here
+
+9 figures
+11 loops for 11 parameters
+
+the virality is computed by all the "C" e.g. "tc = "
+
+so you get a matrix that's full of zeros and ones where one is true and zero is false
+
+Then it sums over that.
+
+You get the total time in which something has been viral
+
+You use parameter 2 because it's 3-dimensional
+
+There's squeeze to get rid of the 3rd dimension for printing
+
+If we look at the function where we don't care about time, it's a binary question of "how many have gone viral and how many have not"
+
+You can also think of the average time in which they've gone viral for
+
+turn up runs if they're
+
+=====================
+
+10. believabilityFactor
+
+When we're assessing the news, we have the believability factor here
+All we have to do is writei to a CSV file
+AssessNews
+line 112 person.cs
+output believability factor
+actually we want a combination
+if they never see the news, the BF will be zero
+Can just calculate aggregates in c# and output the aggregate per person and per news.
+Leave this last
+
+=====================
+
+11. Summary
+
+We need around 10ish proper different things to look at that are interesting and that also talk about personality trait effects as well as the other stuff like homophily
+this is the primary focus, keep that in mind
+
+=====================
+
+12. viewersAll and sharersAll
+
+I don't see an immediate need for these to be fixed but if they come in handy I can just write a script to take them in as something other than a matrix
+
+=====================
+
+13. Files
+
+nSharesPopulation
+    row: person
+    col: trait
+    val: depends
+
+    
+nSharesAll
+    row: any news item
+    col: time
+    val: number of shares that item has had by that time
+    
+nSharedFakeNews
+    row: fake news item
+    col: time
+    val: number of shares that item has had by that time
+
+nViewsAll
+    row: any news item
+    col: time
+    val: number of view that item has had by that time
+
+viewersAll
+    row: any news item
+    vals: list of people who have viewed that item by the end of the sim
+
+sharersAllStruct
+    row: any news item
+    vals: list of people who have shared that item by the end of the sim
+
+newsInfoStruct
+    row: any news item:
+    col: believability, emotionality, polarity
+
+=====================
+
+14. Meeting
+
+believability is the axis where they are most separate
+almost all true news has a believability of >=0.8
+fake <=0.4
+Are the people who are looking at fake news looking at because it's believable
+But there's no inverse (or any) correlation between emotionality and believability
+
+total fake views
+
+Don't know which has psych level as parameter
+
+The only one with spread really is total fake viral
+
+Want to figure out whether the psychology 
+
+=====================
+
+15. The big dip
+
+Prob of sharing was too wide (wider for random than others)
+All things equal, there ought to be a difference between the most and least shared
+
+If people are more polarized in their sharing habits, then people who share a lot will see very little (relative to people who are not sharing).
+
+Why doesn't this impact max psych?
+
+Changing shareFreq dist didn't remove dip.
+
+Adjusting measurements to only check for first view didn't remove dip.
+
+Theory: as the psych parameter increases, shares increases. This initially raises the view count. However, as the psych parameters increase further, the impact of antisocial psych effects begin to overtake the impact of increased sharing, therefore leading to the trends seen.
+
+As the bell curve for shareFreq sharpens, the difference in sharing will definitely shrink and this occurs 
+
+==============
+
+16. Personality traits and online
+
+vars: usePsych, doesAffect (in MainWindow)
+
+variable = 1 (online lit)
+values (whatever, 0 and 1 may be too extreme)
+
+Theory: correlation between effect of online literacy and 
+
+x-axis: online literacy vals
+y-axis: measure of spreading true news vs fake news
+    It's up to me 
+    There might be a link between OL and the rate of spreading of different types of news
+
+Two buttons
+    Homophily and traits
+    Four choices, (off and on for each)
+
+Graph of spreading online literacy changes when you turn it on or off
+
+So change homophily and PT (on/off each) by hand
+
+Put the OL var on x-axis
+
+Our point is to justify why OL is important
+
+Viral, "spreading", 
+
+Tim: the relationship between OL and some kind of spreading depends on the knobs
