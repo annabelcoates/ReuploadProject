@@ -39,13 +39,14 @@ varParamVals = strsplit(varParamVals, ',');
 varParamVals_len = size(varParamVals);
 varParamVals_len = varParamVals_len(2);
 for idx = 1:varParamVals_len
-    varParamVals{idx} = ['OL' varParamVals{idx} '_'];
+    varParamVals{idx} = ['OL' varParamVals{idx}];
 end
 
 resultsPaths = cell(nRuns, varParamVals_len);
 for i = 1:nRuns
     for j = 1:varParamVals_len
-        tempVarParamVals = strcat(varParamVals, int2str(i));
+        tempVarParamVals = strcat(varParamVals, '_');
+        tempVarParamVals = strcat(tempVarParamVals, int2str(i));
         tempPath = fullfile(...
         topResultsPath, tempVarParamVals);
         resultsPaths{i, j} = fullfile(tempPath{j}, 'nSharesPopulation.csv');
@@ -54,6 +55,7 @@ end
 
 
 for varIdx = 1:varParamVals_len
+    varParam = varParamVals{varIdx};
     for i=1:nRuns
         fileName = resultsPaths{i, varIdx};
         nSharesPop=csvread(fileName,1,1);
@@ -71,8 +73,10 @@ for varIdx = 1:varParamVals_len
         sesLen(i,:)=20.*(nSharesPop(:,12));
         shareFreq(i,:)=nSharesPop(:,13);
         emoState(i,:)=nSharesPop(:,14);
+        fakeViews(i,:)=nSharesPop(:,15);
+        trueViews(i,:)=nSharesPop(:,16);
+        totalViews(i,:)=nSharesPop(:,17);
     end
-    varParam = erase(varParamVals{varIdx}, '_');
 
 %%
 % Plot Parameters Names
@@ -95,6 +99,11 @@ for varIdx = 1:varParamVals_len
     nSharedPopulationStruct.(varParam).roundSL_flat=ceil(nSharedPopulationStruct.(varParam).sesLen_flat);
     nSharedPopulationStruct.(varParam).shareFreq_flat=reshape(shareFreq,[1,nRuns*population]);
     nSharedPopulationStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
+    nSharedPopulationStruct.(varParam).fakeViews_flat=reshape(fakeViews,[1,nRuns*population]);
+    nSharedPopulationStruct.(varParam).trueViews_flat=reshape(trueViews,[1,nRuns*population]);
+    nSharedPopulationStruct.(varParam).totalViews_flat=reshape(totalViews,[1,nRuns*population]);
+
+%%
 
     nSharedPopulationStruct.(varParam).nFollowers_mat=nFollowers;
     nSharedPopulationStruct.(varParam).opn_mat=opn;
@@ -115,9 +124,13 @@ for varIdx = 1:varParamVals_len
     nSharedPopulationStruct.(varParam).roundSL_mat=ceil(nSharedPopulationStruct.(varParam).sesLen_mat);
     nSharedPopulationStruct.(varParam).shareFreq_mat=shareFreq;
     nSharedPopulationStruct.(varParam).emoState_mat=emoState;
-    nSharedPopulationStruct.timeString = timeOfRun
-
+    nSharedPopulationStruct.(varParam).fakeViews_mat=fakeViews;
+    nSharedPopulationStruct.(varParam).trueViews_mat=trueViews;
+    nSharedPopulationStruct.(varParam).totalViews_mat=totalViews;
 end
+nSharedPopulationStruct.timeOfRun = timeOfRun;
+nSharedPopulationStruct.varParamVals = varParamVals;
+nSharedPopulationStruct.varParamVals_len = varParamVals_len;
 %%
 
 function [timesList]=loadTimes(scriptPath)

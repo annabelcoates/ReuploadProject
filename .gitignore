@@ -14,6 +14,7 @@ ModelAttemptWPF/Analysis/test.m
 octave-workspace
 FacebookUK/small_world_graph*
 FacebookUK/follows*
+scratch.m
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
