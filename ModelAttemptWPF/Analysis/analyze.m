@@ -18,4 +18,4 @@ newsInfoStruct = importCSV('newsInfo', desiredSim);
 % viewersAllStruct = importCSV('viewersAll', desiredSim);
 % sharersAllStruct = importCSV('sharersAll', desiredSim);
 
-beliefEmoteSpreadOld(nSharesAllStruct, nViewsAllStruct, newsInfoStruct, 100, 200, 0);
+fakeSharesByTrait(nSharesPopulationStruct, 0)
