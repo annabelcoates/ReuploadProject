@@ -1,14 +1,17 @@
 clear;
+
 scriptPath = fileparts(mfilename('fullpath'));
 cd (scriptPath);
 timesList = loadTimes(scriptPath);
 lastTime = size(timesList);
 lastTime = lastTime(1);
 desiredSim = timesList{lastTime};
-%nSharedFakeNews;
+topResultsPath = fullfile(scriptPath, '..', 'Results', desiredSim);
+saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
+
+%%
+
 nSharesPopulationStruct = nSharesPopulationFunc(desiredSim);
 nSharesAllStruct = importCSV('nSharesAll', desiredSim);
 nViewsAllStruct = importCSV('nViewsAll', desiredSim);
-% viewersAllStruct = importCSV('viewersAll', desiredSim);
-% sharersAllStruct = importCSV('sharersAll', desiredSim);
 newsInfoStruct = importCSV('newsInfo', desiredSim);
