@@ -1,8 +1,9 @@
 % s : nSharesAll
 % v : nViewsAll
+% newsInfo
 % nF : number of fake news
 % nF : number of true news
-function spreadByTrait(s,v,nF,nT)
+function spreadByTrait(s,v,newsInfo,nF,nT)
     n = nT + nF;
     hold on;
     inputs = s.extra.varParamVals;
@@ -35,6 +36,18 @@ function spreadByTrait(s,v,nF,nT)
         % Get the number of runs
         [runs, ~] = size(s.(inputs{i}));
 
+        newsProps = sum(newsInfo.(inputs{i}),1)./runs;
+        newsProps = squeeze(newsProps);
+        newsBel = newsProps(:,1);
+        newsBelF = newsBel(1:nF);
+        newsBelT = newsBel(nF+1:n);
+        newsEmo = newsProps(:,2);
+        newsEmoF = newsEmo(1:nF);
+        newsEmoT = newsEmo(nF+1:n);
+        newsPol = newsProps(:,3);
+        newsPolF = newsPol(1:nF);
+        newsPolT = newsPol(nF+1:n);
+        
         %% Shares
         % Sum along the runs (i.e. the 1st dimension)
         % Then divide by total runs to average over runs
