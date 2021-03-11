@@ -5,8 +5,8 @@ function fakeSharesByPsych(s)
     %should be the same for both
     figMean = figure();
     figVar = figure();
-    meanDifffakeSharesList = 1:s.extra.varParamVals_len;
-    varDifffakeSharesList = 1:s.extra.varParamVals_len;
+    meanDiffFakeSharesList = 1:s.extra.varParamVals_len;
+    varDiffFakeSharesList = 1:s.extra.varParamVals_len;
     % Iterate over parameter 
     for i = 1:s.extra.varParamVals_len
         % Get the number of runs
@@ -14,17 +14,17 @@ function fakeSharesByPsych(s)
 
         fakeShares = s.(inputs{i}).fakeShares_mat;
         % Find max and min mislead person of each run and take the difference
-        difffakeShares = max(fakeShares, [], 2) - min(fakeShares, [], 2);
-        meanDifffakeShares = mean(difffakeShares);
-        varDifffakeShares = var(difffakeShares);
-        meanDifffakeSharesList(i) = meanDifffakeShares;
-        varDifffakeSharesList(i) = varDifffakeShares;
+        diffFakeShares = max(fakeShares, [], 2) - min(fakeShares, [], 2);
+        meanDiffFakeShares = mean(diffFakeShares);
+        varDiffFakeShares = var(diffFakeShares);
+        meanDiffFakeSharesList(i) = meanDiffFakeShares;
+        varDiffFakeSharesList(i) = varDiffFakeShares;
         %%
     end
     figure(figMean);
-    plot(varNums, meanDifffakeSharesList)
-    title('Mean of diff fake views')
-    figure(figVar);
-    plot(varNums, varDifffakeSharesList)
-    title('Variance in diff fake views')
+    plot(varNums, meanDiffFakeSharesList)
+    title('Mean of diff fake shares')
+    % figure(figVar);
+    % plot(varNums, varDiffFakeSharesList)
+    % title('Variance in diff fake shares')
 end
