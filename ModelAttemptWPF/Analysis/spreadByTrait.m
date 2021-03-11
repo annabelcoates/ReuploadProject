@@ -14,7 +14,7 @@ function spreadByTrait(s,v,newsInfo,nF,nT)
     % B : Views
     % C : Viral
     % T : True
-    % F : Flase
+    % F : False
     % Total true shares
     figAT = figure();
     % Total fake shares
