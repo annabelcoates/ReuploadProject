@@ -198,6 +198,15 @@ namespace ModelAttemptWPF
                 }
                 if (news.HasSeen(account) == false)
                 {
+
+                    if (news.isTrue == false)
+                    {
+                        account.person.nFakeViews++;
+                    }
+                    else
+                    {
+                        account.person.nTrueViews++;
+                    }
                     newsList[news.ID].nViewed++;
                     //newsList[news.ID].viewers.Add(account.person);
                     //news.nViews.Add(1);
