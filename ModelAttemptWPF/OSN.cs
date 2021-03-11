@@ -180,7 +180,7 @@ namespace ModelAttemptWPF
             {
                 double randomWeightedDouble = random.NextDouble() *(Math.Pow(BASE_DECAY,news.NumberOfTimesViewed(account.person)));//!!consider different distributions
                 // TO do change this back to exponential
-                double shareProb = account.person.AssesNews(news);
+                double shareProb = account.person.AssessNews(news);
                 //if we want to know the probabilities with which things would be shared
                 /*if (news.isTrue)
                 {

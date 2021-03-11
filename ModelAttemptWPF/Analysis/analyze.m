@@ -5,7 +5,8 @@ nSharesPopulationStruct = nSharesPopulationFunc(desiredSim);
 nSharesAllStruct = importCSV('nSharesAll', desiredSim);
 nViewsAllStruct = importCSV('nViewsAll', desiredSim);
 newsInfoStruct = importCSV('newsInfo', desiredSim);
+beliefPerNewsStruct = importCSV('beliefPerNews', desiredSim);
 % viewersAllStruct = importCSV('viewersAll', desiredSim);
 % sharersAllStruct = importCSV('sharersAll', desiredSim);
 
-spreadByPsych(nSharesAllStruct, nViewsAllStruct, 100, 200);
+% beliefEmoteSpreadOld(nSharesAllStruct, nViewsAllStruct, newsInfoStruct, 100, 200, 5,0);

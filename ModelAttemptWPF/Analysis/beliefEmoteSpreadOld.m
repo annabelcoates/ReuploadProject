@@ -3,7 +3,7 @@
 % newsInfo
 % nF : number of fake news
 % nF : number of true news
-function beliefEmoteSpread(s,v,newsInfo,nF,nT, threeD)
+function beliefEmoteSpread(s,v,newsInfo,nF,nT,varValIdx,threeD)
     view(3);
     n = nT + nF;
     inputs = s.extra.varParamVals;
@@ -43,12 +43,10 @@ function beliefEmoteSpread(s,v,newsInfo,nF,nT, threeD)
         figCFtwo = figure();
     end
     % Iterate over parameter 
-    for i = 1:s.extra.varParamVals_len
-        % Get the number of runs
-        [runs, ~] = size(s.(inputs{i}));
+    for i = 1:s.extra.nRuns
 
-
-        newsProps = sum(newsInfo.(inputs{i}),1)./runs;
+        newsProps = newsInfo.(inputs{varValIdx});
+        newsProps = newsProps(i,:,:);
         newsProps = squeeze(newsProps);
         newsBel = newsProps(:,1);
         newsBelF = newsBel(1:nF);
@@ -58,9 +56,12 @@ function beliefEmoteSpread(s,v,newsInfo,nF,nT, threeD)
         newsEmoT = newsEmo(nF+1:n);
         
         %% Shares
+
+
         % Sum along the runs (i.e. the 1st dimension)
         % Then divide by total runs to average over runs
-        mata = sum(s.(inputs{i}),1)./runs;
+        mata = s.(inputs{varValIdx});
+        mata = mata(i,:,:);
         mata = squeeze(mata);
         ta = mata(:, size(mata, 2));
         X = squeeze(ta);
@@ -73,7 +74,8 @@ function beliefEmoteSpread(s,v,newsInfo,nF,nT, threeD)
 
         
         %% Views
-        matb = sum(v.(inputs{i}),1)./runs;
+        matb = v.(inputs{varValIdx});
+        matb = matb(i,:,:);
         matb = squeeze(matb);
         tb = matb(:, size(matb, 2));
         Y = squeeze(tb);

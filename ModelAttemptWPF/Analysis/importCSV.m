@@ -74,4 +74,5 @@ function csvStruct=import(csvFileName, desiredSim)
     csvStruct.extra.varParamVals = varParamVals;
     csvStruct.extra.varParamVals_len = varParamVals_len;
     csvStruct.extra.varParamValsNum = varParamValsNum;
+    csvStruct.extra.nRuns = nRuns;
 end
