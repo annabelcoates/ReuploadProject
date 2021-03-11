@@ -12,7 +12,7 @@ function drawSharesOrViews(s,v,nF,nT)
   figCAll = figure();
   figCT = figure();
   figCF = figure();
-  for i = 1:numel(inputs)
+  for i = 1:s.extra.varParamVals_len
       [runs, ~] = size(s.(inputs{i}));
       runs
       mata = sum(s.(inputs{i}),1)./runs;

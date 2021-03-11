@@ -37,7 +37,7 @@ namespace ModelAttemptWPF
         private const double onlineLit = 0.5; //default mean online literacy
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
         private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
-        private const int RUNS = 1;
+        private const int RUNS = 10;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.1;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
