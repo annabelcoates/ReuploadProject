@@ -38,10 +38,10 @@ public class Simulation
 	}
 
 
-    public Person CreatePerson(double o, double c, double e, double a, double n)
+    public Person CreatePerson(double o, double c, double e, double a, double n, int nFake, int nTrue)
     {
         string name = nameList[random.Next(nameList.Count)];
-        Person newPerson = new Person(IDCount, name, o, c, e, a, n, usePsych, this);
+        Person newPerson = new Person(IDCount, name, o, c, e, a, n, usePsych, this, nFake, nTrue);
         IDCount++;
         humanPopulation.Add(newPerson);
         return newPerson;
@@ -55,7 +55,7 @@ public class Simulation
         }
     }*/
 
-    public void DistributionPopulate(int n)
+    public void DistributionPopulate(int n, int nFake, int nTrue)
     {
         // Assume a normal distribution of each personality trait
         // Distribution of personality traits for the UK
@@ -74,8 +74,7 @@ public class Simulation
         for (int i = 0; i < n; i++)
         {
             // assign OCEAN values according to a normal distribution
-           CreatePerson(NormalDistribution(oMean,oStd), NormalDistribution(cMean, cStd), NormalDistribution(eMean, eStd), NormalDistribution(aMean, aStd),
-               NormalDistribution(nMean, nStd));
+            CreatePerson(NormalDistribution(oMean,oStd), NormalDistribution(cMean, cStd), NormalDistribution(eMean, eStd), NormalDistribution(aMean, aStd), NormalDistribution(nMean, nStd), nFake, nTrue);
         }
     }
     public void GraphBasedDistribute(OSN o, double onlineLit, double doesAffect)

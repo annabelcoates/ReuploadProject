@@ -1,5 +1,6 @@
 ﻿using ModelAttemptWPF;
 using System;
+using System.Collections.Generic;
 
 public class Person
 {
@@ -37,9 +38,11 @@ public class Person
 
     public Random random = new Random();
 
+    public double[] beliefPerNews;
+
     private double SHARING_FREQ_FACTOR = 0.25;
 
-    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double usePsych, Simulation simulation)
+    public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double usePsych, Simulation simulation, int nFake, int nTrue)
 	{
         this.ID = ID;
         this.name = name;
@@ -50,6 +53,11 @@ public class Person
         this.nrt = nrt;
         this.usePsych = usePsych;
         this.simulation = simulation;
+        int nNews = nFake + nTrue;
+        this.beliefPerNews = new double[nNews];
+        for (int i = 0; i < nNews; i++) {
+            this.beliefPerNews[i] = 0;
+        }
         //this.politicalLeaning = politicalLeaning;
         //this.onlineLiteracy = onlineLiteracy;
         //this.emotionalState = 0.5; // emotional state starts average
@@ -97,7 +105,7 @@ public class Person
     }
 
 
-    public double AssesNews(News news)
+    public double AssessNews(News news)
     {
         // Currently the news is assessed according to 3 factors equally, politics, emotional level and believability
 
@@ -110,7 +118,7 @@ public class Person
         double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
         //believabilityFactor = 1 - onlineLiteracy;
         // The perceived believability is dependent on the believability of the article and the person's online literacy
-        
+        this.beliefPerNews[news.ID] = believabilityFactor;
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 

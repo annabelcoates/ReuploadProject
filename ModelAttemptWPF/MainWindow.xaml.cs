@@ -27,7 +27,7 @@ namespace ModelAttemptWPF
 
         private const string smallWorldPathRel = @"small_world_graph.csv";
         private const string resultsPathRel = @"\ModelAttemptWPF\Results";
-        private const string pythonScriptPathRel = @"\ModelAttemptWPF\network_generator.py";
+        private const string pythonScriptPathRel = @"\ModelAttemptWPF\network_generator.pyw";
 
         // define fixed settings 
         private const int fixedN = 1000; // the fixed number of people in the simulation
@@ -58,7 +58,7 @@ namespace ModelAttemptWPF
         public MainWindow()
         {
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
-            timeString = DateTime.Now.ToString(@"yyyy\-dd\-hh\-mm\-ss");
+            timeString = DateTime.Now.ToString(@"yyyy\-dd\-HH\-mm\-ss");
             resultsPath = globalLoc + resultsPathRel + @"\" + timeString;
             pythonScriptPath = globalLoc + pythonScriptPathRel;
             Directory.CreateDirectory(resultsPath);
@@ -112,7 +112,7 @@ namespace ModelAttemptWPF
             string smallWorldPathThread = resultsPathThread + smallWorldPathRel;
 
             Simulation simulation = new Simulation(name, val, i,(variable == 5 ? val : usePsych)); // create a new simulation object
-            simulation.DistributionPopulate(n); // populate with people, personality traits taken from UK distribution
+            simulation.DistributionPopulate(n, nFake, nTrue); // populate with people, personality traits taken from UK distribution
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
 
             // Give facebook a small initial population
@@ -184,11 +184,13 @@ namespace ModelAttemptWPF
             var csvNViewed = new StringBuilder();
             var csvSharers = new StringBuilder();
             var csvViewers = new StringBuilder();
+            var csvBeliefPerNews = new StringBuilder();
             // List<double> populationAverages = simulation.CalculateAverages();
             //var firstLine = string.Format("{0},{1},{2},{3},{4},{5},{6}", populationAverages[0], populationAverages[1], populationAverages[2], populationAverages[3], populationAverages[4], populationAverages[5], populationAverages[6]);
             // csv.AppendLine(firstLine);
             File.WriteAllLines(resultsPathThread + "fakeShareProbs.csv", facebook.fakeShareProbs.Select(x => string.Join(",", x)));
             File.WriteAllLines(resultsPathThread + "trueShareProbs.csv", facebook.trueShareProbs.Select(x => string.Join(",", x)));
+
             foreach (News news in facebook.newsList)
             {
                 // the number that shared with respect to time
@@ -213,12 +215,20 @@ namespace ModelAttemptWPF
               //  csv2.AppendLine(newLine2);
 
             }
+
+            foreach (Account account in facebook.accountList) {
+                csvBeliefPerNews.Append(
+                    string.Join(",", account.person.beliefPerNews)+"\n"
+                );
+            }
+
             // TODO
             // ? Change "nSharesAll" to "nSharedAll"
             File.WriteAllText(resultsPathThread + "nSharesAll.csv", csvNShared.ToString());
             File.WriteAllText(resultsPathThread + "nViewsAll.csv", csvNViewed.ToString());
             File.WriteAllText(resultsPathThread + "sharersAll.csv", csvSharers.ToString());
             File.WriteAllText(resultsPathThread + "viewersAll.csv", csvViewers.ToString());
+            File.WriteAllText(resultsPathThread + "beliefPerNews.csv", csvBeliefPerNews.ToString());
            // File.WriteAllText(resultsPathThread + "sharerPersonalityAverages.csv", csv.ToString());
            // File.WriteAllText(resultsPathThread + "viewerPersonalityAverages.csv", csv2.ToString());
 
@@ -236,7 +246,7 @@ namespace ModelAttemptWPF
         public void CreateNSharesCSV(string resultsPathThread, OSN facebook)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq"); // column headings
+            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq,emotionalState,nFakeViews,nTrueViews,nTotalView"); // column headings
             foreach (Account account in facebook.accountList)
             {
                 var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState, account.person.nFakeViews, account.person.nTrueViews, account.person.nTotalViews);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares

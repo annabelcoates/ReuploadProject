@@ -10,7 +10,6 @@ namespace ModelAttemptWPF
 
     public class Facebook : OSN
     {
-        private const String pythonRel = @"\ModelAttemptWPF\network_generator.py";
         private const String pythonSrcFile = @"\ModelAttemptWPF\pythonSource.txt";
         public Facebook(string name, int ftf):base(name, ftf)
         {
@@ -54,6 +53,7 @@ namespace ModelAttemptWPF
                 start.Arguments = string.Format("{0} {1}", scriptFilePath, python_args);
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
+                start.CreateNoWindow = true;
 
                 using (Process process = Process.Start(start))
                 {
