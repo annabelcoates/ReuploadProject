@@ -35,7 +35,11 @@ function csvStruct=import(csvFileName, desiredSim)
     varParamVals = strsplit(varParamVals, ',');
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
+    % // TODO
+    % ! Do this for nSharesPopulationFunc too
+    varParamValsNum = 1:varParamVals_len;
     for idx = 1:varParamVals_len
+        varParamValsNum(idx) = str2num(varParamVals{idx});
         varParamVals{idx} = ['OL' varParamVals{idx}];
     end
 
@@ -69,5 +73,5 @@ function csvStruct=import(csvFileName, desiredSim)
     csvStruct.extra.timeOfRun = timeOfRun;
     csvStruct.extra.varParamVals = varParamVals;
     csvStruct.extra.varParamVals_len = varParamVals_len;
-    csvStruct.extra.varParamValsNum = str2double(varParamVals) / 10;
+    csvStruct.extra.varParamValsNum = varParamValsNum;
 end

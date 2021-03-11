@@ -15,22 +15,22 @@ function spreadByTime(s,v,nF,nT)
     % C : Viral
     % T : True
     % F : Flase
-    % Total true shares
-    figAT = figure();
-    % Total fake shares
-    figAF = figure();
-    % Total views
-    figBAll = figure();
-    % Total true views
-    figBT = figure();
-    % Total fake views
-    figBF = figure();
-    % Total viral
-    figCAll = figure();
-    % Total true viral
-    figCT = figure();
-    % Total fake viral
-    figCF = figure();
+    % % Total true shares
+    % figAT = figure();
+    % % Total fake shares
+    % figAF = figure();
+    % % Total views
+    % figBAll = figure();
+    % % Total true views
+    % figBT = figure();
+    % % Total fake views
+    % figBF = figure();
+    % % Total viral
+    % figCAll = figure();
+    % % Total true viral
+    % figCT = figure();
+    % % Total fake viral
+    % figCF = figure();
     % Iterate over parameter 
     XList = 1:s.extra.varParamVals_len;
     XFList = 1:s.extra.varParamVals_len;
@@ -86,7 +86,7 @@ function spreadByTime(s,v,nF,nT)
 
         %% Viral
         % A matrix of booleans rather than a matrix of integers
-        viralThreshold=750
+        viralThreshold=750;
         tc = sum(matb > viralThreshold,2)./n;
         tcF = sum(matbF > viralThreshold,2)./nF;
         tcT = sum(matbT > viralThreshold,2)./nT;
