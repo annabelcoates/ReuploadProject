@@ -1,7 +1,7 @@
 function drawSharesOrViews(s,v,nF,nT)
   n = nT + nF;
   hold on;
-  inputs = fieldnames(s);
+  inputs = s.extra.varParamVals;
   %should be the same for both
   figAAll = figure();
   figAT = figure();
@@ -13,8 +13,8 @@ function drawSharesOrViews(s,v,nF,nT)
   figCT = figure();
   figCF = figure();
   for i = 1:s.extra.varParamVals_len
+      % Get the number of runs
       [runs, ~] = size(s.(inputs{i}));
-      runs
       mata = sum(s.(inputs{i}),1)./runs;
       matb = sum(v.(inputs{i}),1)./runs;
       mataF = mata(1,1:nF,:);

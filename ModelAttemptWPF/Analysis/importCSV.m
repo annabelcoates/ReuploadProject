@@ -1,11 +1,7 @@
-function csvStruct=import(csvFileName)
+function csvStruct=import(csvFileName, desiredSim)
     scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
-    timesList = loadTimes(scriptPath);
-    lastTime = size(timesList);
-    lastTime = lastTime(1);
-    desiredRun = timesList{lastTime};
-    topResultsPath = fullfile(scriptPath, '..', 'Results', desiredRun);
+    topResultsPath = fullfile(scriptPath, '..', 'Results', desiredSim);
     saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
     if ~exist(saveFolderPath, 'dir')
         mkdir(saveFolderPath)
@@ -73,4 +69,5 @@ function csvStruct=import(csvFileName)
     csvStruct.extra.timeOfRun = timeOfRun;
     csvStruct.extra.varParamVals = varParamVals;
     csvStruct.extra.varParamVals_len = varParamVals_len;
+    csvStruct.extra.varParamValsNum = str2double(varParamVals) / 10;
 end

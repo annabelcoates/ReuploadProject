@@ -38,13 +38,14 @@ varParamVals = strsplit(varParamVals, ',');
 varParamVals_len = size(varParamVals);
 varParamVals_len = varParamVals_len(2);
 for idx = 1:varParamVals_len
-    varParamVals{idx} = ['OL' varParamVals{idx} '_'];
+    varParamVals{idx} = ['OL' varParamVals{idx}];
 end
 
 resultsPaths = cell(nRuns, varParamVals_len);
 for i = 1:nRuns
     for j = 1:varParamVals_len
-        tempVarParamVals = strcat(varParamVals, int2str(i));
+        tempVarParamVals = strcat(varParamVals, '_');
+        tempVarParamVals = strcat(tempVarParamVals, int2str(i));
         tempPath = fullfile(...
         topResultsPath, tempVarParamVals);
         resultsPaths{i, j} = fullfile(tempPath{j}, 'viewersAll.csv');
@@ -53,7 +54,7 @@ end
 
 
 for varIdx = 1:varParamVals_len
-    varParam = erase(varParamVals{varIdx}, '_');
+    varParam = varParamVals{varIdx};
     fileName = resultsPaths{1, varIdx};
     csvInput=csvread(fileName);
     csvInputDims = size(csvInput);
@@ -66,6 +67,9 @@ for varIdx = 1:varParamVals_len
         csvInput=csvread(fileName,1,1);
         viewersAllStruct.(varParam)(i,:,:) = csvInput;
     end
+    viewersAllStruct.extra.timeOfRun = timeOfRun;
+    viewersAllStruct.extra.varParamVals = varParamVals;
+    viewersAllStruct.extra.varParamVals_len = varParamVals_len;
 end
 %%
 function [timesList]=loadTimes(scriptPath)

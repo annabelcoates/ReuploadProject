@@ -1,11 +1,7 @@
-function nSharedPopulationStruct=nSharedPopulation(scriptPath)
+function nSharedPopulationStruct=nSharedPopulation(desiredSim)
     scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
-    timesList = loadTimes(scriptPath);
-    lastTime = size(timesList);
-    lastTime = lastTime(1);
-    desiredRun = timesList{lastTime};
-    topResultsPath = fullfile(scriptPath, '..', 'Results', desiredRun);
+    topResultsPath = fullfile(scriptPath, '..', 'Results', desiredSim);
     saveFolderPath = fullfile(topResultsPath, 'AnalysisResults');
     if ~exist(saveFolderPath, 'dir')
         mkdir(saveFolderPath)
