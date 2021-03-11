@@ -122,8 +122,7 @@ public class Person
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 
-        double shareProb = Math.Min(0.9,this.sharingFreq * (2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*1.8)/4);
-        //Console.WriteLine(this.sharingFreq + ", " + believabilityFactor + ", " + politicalFactor + ", " + emotionalFactor + ", " + shareProb);
+        double shareProb = Math.Min(0.9,this.sharingFreq * (1.2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*2)/3.2);
         // return the likelihood that someone will share the news
 
         this.nTotalViews++;
