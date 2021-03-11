@@ -47,7 +47,7 @@ namespace ModelAttemptWPF
         // TODO
         // ? Should this be 0.5
         //public const double DEFAULT_FRAC_FOLLOWS = 0.5;
-        public const int RUNTIME = 300;
+        public const int RUNTIME = 400;
         public const int FB_TIMEFRAME = 50;
 
 
