@@ -40,7 +40,7 @@ public class Person
 
     public double[] beliefPerNews;
 
-    private double SHARING_FREQ_FACTOR = 0.25;
+    private double SHARING_FREQ_FACTOR = 0.15;
 
     public Person(int ID,string name,double opn, double con, double ext, double agr, double nrt, double usePsych, Simulation simulation, int nFake, int nTrue)
 	{
@@ -113,7 +113,7 @@ public class Person
         double poldist = news.politicalLeaning - this.politicalLeaning;
         double politicalFactor = Math.Max(0.4 - 0.4*Math.Abs(poldist), 1-5*poldist*poldist); //if poldist is close, then we care strongly about how close -- if it's far, probability is small
         // how much the news appeals emotionally increases with the person's emotional level and how emotional the news is
-        double emotionalFactor = (this.nrt * news.emotionalLevel) * usePsych + news.emotionalLevel * (1-usePsych);
+        double emotionalFactor = (this.nrt * news.emotionalLevel) * usePsych + 0.4925 * news.emotionalLevel * (1-usePsych); //0.4925 is default nrt
 
         double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
         //believabilityFactor = 1 - onlineLiteracy;
@@ -122,7 +122,7 @@ public class Person
 
         // According to Pennycook & Rand (2018) failing to identify news is fake is the biggest affector of how likely a person is to believe and therefore share it (partisanship/ political factor is more minor)
 
-        double shareProb = Math.Min(0.9,this.sharingFreq * (2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*1.2)/4);
+        double shareProb = Math.Min(0.9,this.sharingFreq * (2*believabilityFactor + politicalFactor + emotionalFactor*emotionalState*1.8)/4);
         //Console.WriteLine(this.sharingFreq + ", " + believabilityFactor + ", " + politicalFactor + ", " + emotionalFactor + ", " + shareProb);
         // return the likelihood that someone will share the news
 
