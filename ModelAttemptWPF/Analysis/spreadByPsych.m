@@ -2,13 +2,13 @@
 % v : nViewsAll
 % nF : number of fake news
 % nF : number of true news
-function spreadByPsych(s,v,nF,nT,k)
+function spreadByPsych(s,v,nF,nT)
     n = nT + nF;
     inputs = s.extra.varParamVals;
-    varNums = 0:1/(length(s.extra.varParamVals)-1):1;
+    varNums = s.extra.varParamValsNum;
     %should be the same for both
     % Total shares
-    %figAAll = figure();
+    figAAll = figure();
     % A : Shares
     % B : Views
     % C : Viral
@@ -63,9 +63,9 @@ function spreadByPsych(s,v,nF,nT,k)
         X = squeeze(ta);
         XF = squeeze(taF);
         XT = squeeze(taT);
-        XList(i) = X(k);
-        XFList(i) = XF(k);
-        XTList(i) = XT(k);
+        XList(i) = X(n);
+        XFList(i) = XF(nF);
+        XTList(i) = XT(nT);
 
         
         
@@ -79,9 +79,9 @@ function spreadByPsych(s,v,nF,nT,k)
         Y = squeeze(tb);
         YF = squeeze(tbF);
         YT = squeeze(tbT);
-        YList(i) = Y(k);
-        YFList(i) = YF(k);
-        YTList(i) = YT(k);
+        YList(i) = Y(n);
+        YFList(i) = YF(nF);
+        YTList(i) = YT(nT);
 
         %% Viral
         % A matrix of booleans rather than a matrix of integers
@@ -92,30 +92,36 @@ function spreadByPsych(s,v,nF,nT,k)
         Z = squeeze(tc);
         ZF = squeeze(tcF);
         ZT = squeeze(tcT);
-        ZList(i) = Z(k);
-        ZFList(i) = ZF(k);
-        ZTList(i) = ZT(k);
+        ZList(i) = Z(n);
+        ZFList(i) = ZF(nF);
+        ZTList(i) = ZT(nT);
         %%
     end
     figure();
-    hold on;
-    title("Shares");
+    title("Total shares");
     plot(varNums, XList);
-    plot(varNums, XFList, '-.');
-    plot(varNums, XTList, '--');
-    hold off;
     figure();
-    hold on;
-    title("Views");
+    title("Total fake shares");
+    plot(varNums, XFList);
+    figure();
+    title("Total true shares");
+    plot(varNums, XTList);
+    figure();
+    title("Total views");
     plot(varNums, YList);
-    plot(varNums, YFList, '-.');
-    plot(varNums, YTList, '--');
-    hold off;
     figure();
-    hold on;
-    title("Viral");
+    title("Total fake views");
+    plot(varNums, YFList);
+    figure();
+    title("Total true views");
+    plot(varNums, YTList);
+    figure();
+    title("Total viral");
     plot(varNums, ZList);
-    plot(varNums, ZFList, '-.');
-    plot(varNums, ZTList, '--');
-    hold off;
+    figure();
+    title("Total fake viral");
+    plot(varNums, ZFList);
+    figure();
+    title("Total true viral");
+    plot(varNums, ZTList);
 end

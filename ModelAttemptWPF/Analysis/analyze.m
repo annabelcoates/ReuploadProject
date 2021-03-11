@@ -18,4 +18,4 @@ newsInfoStruct = importCSV('newsInfo', desiredSim);
 % viewersAllStruct = importCSV('viewersAll', desiredSim);
 % sharersAllStruct = importCSV('sharersAll', desiredSim);
 
-fakeSharesByTrait(nSharesPopulationStruct, 0)
+spreadByPsych(nSharesAllStruct, nViewsAllStruct, 100, 200);
