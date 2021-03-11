@@ -37,7 +37,7 @@ namespace ModelAttemptWPF
         private const double onlineLit = 0.5; //default mean online literacy
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
         private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
-        private const int RUNS = 3;
+        private const int RUNS = 10;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.2;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -63,7 +63,7 @@ namespace ModelAttemptWPF
             pythonScriptPath = globalLoc + pythonScriptPathRel;
             Directory.CreateDirectory(resultsPath);
             
-            int variable = 1;
+            int variable = 5;
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
@@ -72,8 +72,8 @@ namespace ModelAttemptWPF
             // 5 means varying whether or not to use personality
             // 6 means varying whether or not derived traits spread via the network
 
-            //double[] values = { 0,0.2,0.4,0.6,0.8, 1 };
-            double[] values = { 0.2, 0.4, 0.6, 0.8 };
+            double[] values = { 0,0.2,0.4,0.6,0.8, 1 };
+            //double[] values = { 0.2, 0.4, 0.6, 0.8 };
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(variable, values, timeString);

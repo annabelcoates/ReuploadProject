@@ -12,9 +12,9 @@ function []=myPlot(x, y, xStruct, yStruct, varParamVals, saveFolderPath)
             ylabel('PDF');
             figName = [varParam ' Histogram plot of ' [x]];
             saveName = [varParam ' Histogram plot of ' [x]];
-            savePath = fullfile(saveFolderPath, [saveName '.png']);
+            % savePath = fullfile(saveFolderPath, [saveName '.png']);
             title(figName);
-            saveas(gcf, [savePath '.png']);
+            % saveas(gcf, [savePath '.png']);
         else
             hold on;
             xax = xStruct.(varParam).([x]);
@@ -28,9 +28,9 @@ function []=myPlot(x, y, xStruct, yStruct, varParamVals, saveFolderPath)
             ylabel([y]);
             figName = [varParam ' Scatter plot of ' [x] ' against ' [y]];
             saveName = [varParam ' Scatter plot of ' [x] ' against ' [y]];
-            savePath = fullfile(saveFolderPath, [saveName '.png']);
+            % savePath = fullfile(saveFolderPath, [saveName '.png']);
             title(figName);
-            saveas(gcf, [savePath '.png']);
+            % saveas(gcf, [savePath '.png']);
             hold off;
         end
     end
