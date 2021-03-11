@@ -1,4 +1,4 @@
-function drawSharesVsViews(s,v,nF,nT)
+function drawSharesOrViews(s,v,nF,nT)
   n = nT + nF;
   hold on;
   inputs = fieldnames(s);
