@@ -1,8 +1,8 @@
 clear;
 %nSharedFakeNews;
-nSharedPopulation;
-nSharesAll;
-nViewsAll;
-viewersAll;
-sharersAll;
-newsInfo;
+nSharesPopulationStruct = nSharesPopulationFunc();
+nSharesAllStruct = importCSV('nSharesAll');
+nViewsAllStruct = importCSV('nViewsAll');
+% viewersAllStruct = importCSV('viewersAll');
+% sharersAllStruct = importCSV('sharersAll');
+newsInfoStruct = importCSV('newsInfo');
