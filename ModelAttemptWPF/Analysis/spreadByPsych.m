@@ -2,7 +2,7 @@
 % v : nViewsAll
 % nF : number of fake news
 % nF : number of true news
-function spreadByTime(s,v,nF,nT)
+function spreadByPsych(s,v,nF,nT)
     n = nT + nF;
     hold on;
     inputs = s.extra.varParamVals;

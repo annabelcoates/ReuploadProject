@@ -1,11 +1,10 @@
 % s : nSharesAll
 % v : nViewsAll
-% newsInfo
 % nF : number of fake news
 % nF : number of true news
-function beliefEmoteSpread(s,v,newsInfo,nF,nT)
-    view(3);
+function spreadByTrait(s,v,nF,nT)
     n = nT + nF;
+    hold on;
     inputs = s.extra.varParamVals;
     %should be the same for both
     % Total shares
@@ -36,107 +35,91 @@ function beliefEmoteSpread(s,v,newsInfo,nF,nT)
         % Get the number of runs
         [runs, ~] = size(s.(inputs{i}));
 
-
-        newsProps = sum(newsInfo.(inputs{i}),1)./runs;
-        newsProps = squeeze(newsProps);
-        newsBel = newsProps(:,1);
-        newsBelF = newsBel(1:nF);
-        newsBelT = newsBel(nF+1:n);
-        newsEmo = newsProps(:,2);
-        newsEmoF = newsEmo(1:nF);
-        newsEmoT = newsEmo(nF+1:n);
-        
         %% Shares
         % Sum along the runs (i.e. the 1st dimension)
         % Then divide by total runs to average over runs
         mata = sum(s.(inputs{i}),1)./runs;
-        mata = squeeze(mata);
-        ta = mata(:, size(mata, 2));
+        % First nF rows are all false news
+        mataF = mata(1,1:nF,:);
+        % Last nT=n-nF rows are all true news
+        mataT = mata(1,nF+1:n,:);
+        % Sum over value per news item (i.e. sum over rows)
+        % Then divide by the total number of news items `n` to get the proportional value (in this case of total shares)
+        ta = sum(mata,2)./n;
+        % Then for fake shares
+        taF = sum(mataF,2)./nF;
+        % Then for true shares
+        taT = sum(mataT,2)./nT;
+        % Squeeze gets takes the remaining (1, 1, #) matrix and makes it an (#) vector
         X = squeeze(ta);
-        mataF = mata(1:nF,:);
-        taF = mataF(:, size(mataF, 2));
         XF = squeeze(taF);
-        mataT = mata(nF+1:n,:);
-        taT = mataT(:, size(mataT, 2));
         XT = squeeze(taT);
-
         
         %% Views
         matb = sum(v.(inputs{i}),1)./runs;
-        matb = squeeze(matb);
-        tb = matb(:, size(matb, 2));
+        matbF = matb(1,1:nF,:);
+        matbT = matb(1,nF+1:n,:);
+        tb = sum(matb,2)./n;
+        tbF = sum(matbF,2)./nF;
+        tbT = sum(matbT,2)./nT;
         Y = squeeze(tb);
-        matbF = matb(1:nF,:);
-        tbF = matbF(:, size(matbF, 2));
         YF = squeeze(tbF);
-        matbT = matb(nF+1:n,:);
-        tbT = matbT(:, size(matbT, 2));
         YT = squeeze(tbT);
 
         %% Viral
         % A matrix of booleans rather than a matrix of integers
-        viralThreshold=750;
-        tc = tb > viralThreshold;
-        tcF = tbF > viralThreshold;
-        tcT = tbT > viralThreshold;
+        viralThreshold=750
+        tc = sum(matb > viralThreshold,2)./n;
+        tcF = sum(matbF > viralThreshold,2)./nF;
+        tcT = sum(matbT > viralThreshold,2)./nT;
         Z = squeeze(tc);
         ZF = squeeze(tcF);
         ZT = squeeze(tcT);
         %%
-        view(3);
         figure(figAAll);
         title("Total shares")
-        scatter3(newsBel,newsEmo,X);
         hold on;
-        view(3);
+        plot(X);
         %%
         figure(figAT);
         title("Total true shares")
-        scatter3(newsBelT,newsEmoT,XT);
         hold on;
-        view(3);
+        plot(XT);
         %%
         figure(figAF);
         title("Total fake shares")
-        scatter3(newsBelF,newsEmoF,XF);
         hold on;
-        view(3);
+        plot(XF);
         %%
         figure(figBAll);
         title("Total views")
-        scatter3(newsBel,newsEmo,Y);
         hold on;
-        view(3);
+        plot(Y);
         %%
         figure(figBT);
         title("Total true views")
-        scatter3(newsBelT,newsEmoT,YT);
         hold on;
-        view(3);
+        plot(YT);
         %%
         figure(figBF);
         title("Total fake views")
-        scatter3(newsBelF,newsEmoF,YF);
         hold on;
-        view(3);
+        plot(YF);
         %%
         figure(figCAll);
         title("Total viral")
-        scatter3(newsBel,newsEmo,Z);
         hold on;
-        view(3);
+        plot(Z);
         %%
         figure(figCT);
         title("Total true viral")
-        scatter3(newsBelT,newsEmoT,ZT);
         hold on;
-        view(3);
+        plot(ZT);
         %%
         figure(figCF);
         title("Total fake viral")
-        scatter3(newsBelF,newsEmoF,ZF);
         hold on;
-        view(3);
+        plot(ZF);
         %%
     end
     hold off;
