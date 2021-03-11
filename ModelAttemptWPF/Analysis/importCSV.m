@@ -35,8 +35,6 @@ function csvStruct=import(csvFileName, desiredSim)
     varParamVals = strsplit(varParamVals, ',');
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
-    % // TODO
-    % ! Do this for nSharesPopulationFunc too
     varParamValsNum = 1:varParamVals_len;
     for idx = 1:varParamVals_len
         varParamValsNum(idx) = str2num(varParamVals{idx});

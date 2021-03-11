@@ -35,7 +35,9 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
     varParamVals = strsplit(varParamVals, ',');
     varParamVals_len = size(varParamVals);
     varParamVals_len = varParamVals_len(2);
+    varParamValsNum = 1:varParamVals_len;
     for idx = 1:varParamVals_len
+        varParamValsNum(idx) = str2num(varParamVals{idx});
         varParamVals{idx} = ['OL' varParamVals{idx}];
     end
 
@@ -128,4 +130,6 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
     nSharedPopulationStruct.extra.timeOfRun = timeOfRun;
     nSharedPopulationStruct.extra.varParamVals = varParamVals;
     nSharedPopulationStruct.extra.varParamVals_len = varParamVals_len;
+    nSharedPopulationStruct.extra.varParamValsNum = varParamValsNum;
+    nSharedPopulationStruct.extra.nRuns = nRuns;
 end
