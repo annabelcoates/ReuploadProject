@@ -1,4 +1,10 @@
 clear;
+scriptPath = fileparts(mfilename('fullpath'));
+cd (scriptPath);
+timesList = loadTimes(scriptPath);
+lastTime = size(timesList);
+lastTime = lastTime(1);
+desiredSim = timesList{lastTime};
 %nSharedFakeNews;
 nSharesPopulationStruct = nSharesPopulationFunc();
 nSharesAllStruct = importCSV('nSharesAll');
