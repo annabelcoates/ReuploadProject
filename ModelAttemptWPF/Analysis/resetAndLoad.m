@@ -1,4 +1,5 @@
-nSharedFakeNews;
+clear;
+%nSharedFakeNews;
 nSharedPopulation;
 nSharesAll;
 nViewsAll;
