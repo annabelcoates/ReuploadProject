@@ -33,9 +33,9 @@ function variousViewsByPsych(s)
     hold on;
     xlabel("Influence of personality traits");
     ylabel("Number of views per person");
-    plot(varNums./100, meanTotalViewsList,'color','black')
-    plot(varNums./100, meanTrueViewsList, '--','color','black')
-    plot(varNums./100, meanFakeViewsList, '-.','color','black')
-    set(figTotal, 'Position', [100,100,380,250]);
-    saveas(figTotal, 'SbV.png');
+    plot(varNums./100, meanTotalViewsList,'color','black','LineWidth', 1.5)
+    plot(varNums./100, meanTrueViewsList, '--','color','black','LineWidth', 1.5)
+    plot(varNums./100, meanFakeViewsList, '-.','color','black','LineWidth', 1.5)
+    set(figTotal, 'Position', [100,100,250,250]);
+    saveas(figTotal, 'VbP.png');
 end

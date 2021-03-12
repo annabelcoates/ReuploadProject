@@ -33,9 +33,9 @@ function variousSharesByPsych(s)
     hold on;
     xlabel("Influence of personality traits");
     ylabel("Number of shares per person");
-    plot(varNums./100, meanTotalSharesList,'color','black')
-    plot(varNums./100, meanTrueSharesList, '--','color','black')
-    plot(varNums./100, meanFakeSharesList, '-.','color','black')
-    set(figTotal, 'Position', [100,100,380,250]);
+    plot(varNums./100, meanTotalSharesList,'color','black','LineWidth', 1.5);
+    plot(varNums./100, meanTrueSharesList, '--','color','black','LineWidth', 1.5);
+    plot(varNums./100, meanFakeSharesList, '-.','color','black','LineWidth', 1.5);
+    set(figTotal, 'Position', [100,100,250,250]);
     saveas(figTotal, 'SbP.png');
 end
