@@ -3,7 +3,7 @@
 % nF : number of fake news
 % nF : number of true news
 % k : runtime
-function spreadByVar(s,v,nF,nT,k, saveFolderPath)
+function [XList, XFList, XTList, YList, YFList, YTList, ZList, ZFList, ZTList]=spreadByVar(s,v,nF,nT,k, saveFolderPath)
     n = nT + nF;
     inputs = s.extra.varParamVals;
     varNums = 0:1/(length(s.extra.varParamVals)-1):1;
