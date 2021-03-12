@@ -1,4 +1,4 @@
-function csvStruct=import(csvFileName, desiredSim)
+function csvStruct=importCSV(csvFileName, desiredSim)
     scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
     topResultsPath = fullfile(scriptPath, '..', 'Results', desiredSim);
@@ -20,7 +20,9 @@ function csvStruct=import(csvFileName, desiredSim)
     nFake = str2num(runParamsInput{3});
     nTrue = str2num(runParamsInput{4});
     timeOfRun = runParamsInput{5};
-    variableSetting = runParamsInput{6};
+    varSetting = runParamsInput{6};
+    usePsych = runParamsInput{7};
+    defaultDoesAffect = runParamsInput{8};
     fakeShares=zeros(nRuns,population);
     nFollowers=zeros(nRuns,population);
 
@@ -73,4 +75,5 @@ function csvStruct=import(csvFileName, desiredSim)
     csvStruct.extra.varParamVals_len = varParamVals_len;
     csvStruct.extra.varParamValsNum = varParamValsNum;
     csvStruct.extra.nRuns = nRuns;
+    csvStruct.extra.varSetting = varSetting;
 end

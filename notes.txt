@@ -263,3 +263,12 @@ Our point is to justify why OL is important
 Viral, "spreading", 
 
 Tim: the relationship between OL and some kind of spreading depends on the knobs
+
+Plan:
+    Do 0.2 incremenets for OL
+    First, do 00,01,10,11 for PT and homophily
+    Each time, graph spreadsByVar (where `var == 1` which is OL)
+    
+
+Log:
+    I modified the code so that `GraphBased...` is called on `val` or `doesAffect` rather than `val` or `1`
