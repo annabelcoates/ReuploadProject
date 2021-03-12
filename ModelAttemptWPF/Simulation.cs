@@ -21,6 +21,7 @@ public class Simulation
     // whatever is being changed in each simulation run
     public double value;
     private double usePsych;
+    public double provideWarning;
     private const double ES_MEAN = 0.5;
     private const double ES_STD = 0.1;
     private const int N_SEED = 40;
@@ -29,12 +30,13 @@ public class Simulation
     private const double PL_STD2 = 0.06;
     private const double ES_STD2 = 0.08;
 
-    public Simulation(string versionName,double value,int runNumber,double usePsych)
+    public Simulation(string versionName,double value,int runNumber,double usePsych, double provideWarning)
 	{
         this.versionName = versionName;
         this.value = value;
         this.runNumber = runNumber;
         this.usePsych = usePsych;
+        this.provideWarning = provideWarning;
 	}
 
 

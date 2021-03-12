@@ -43,9 +43,10 @@ namespace ModelAttemptWPF
         private const int fixedNFake = 100; // number of fake news articles in the experiment
         private const int fixedNTrue = 200; // number if true news articles in the experiment (true news is more prevalent than fake news)
         private const double onlineLit = 0.5; //default mean online literacy
-        private const double usePsych = 0.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
-        private const double defaultDoesAffect = 0.0; //whether the networkgraph affects PL/OL/ES
-        private const int RUNS = 8;
+        private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
+        private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
+        private const double provideWarning = 1.0; //whether users are warned that something is fake news
+        private const int RUNS = 5;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.2;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -80,7 +81,7 @@ namespace ModelAttemptWPF
             // 5 means varying whether or not to use personality
             // 6 means varying whether or not derived traits spread via the network
 
-            double[] values = {0.01,0.02,0.03,0.04,0.05};
+            double[] values = { 0, 1 };
             //double[] values = { 0.2, 0.4, 0.6, 0.8 };
 
 
@@ -121,7 +122,7 @@ namespace ModelAttemptWPF
             Directory.CreateDirectory(resultsPathThread);
             string smallWorldPathThread = resultsPathThread + smallWorldPathRel;
 
-            Simulation simulation = new Simulation(name, val, i,(variable == 5 ? val : usePsych)); // create a new simulation object
+            Simulation simulation = new Simulation(name, val, i,(variable == 5 ? val : usePsych), provideWarning); // create a new simulation object
             simulation.DistributionPopulate(n, nFake, nTrue); // populate with people, personality traits taken from UK distribution
             Facebook facebook = new Facebook("FacebookUK", (variable == 3 ? (int)val : FB_TIMEFRAME)); // make a facebook object
 
@@ -133,7 +134,7 @@ namespace ModelAttemptWPF
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
             
-            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : defaultDoesAffect));
+            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : doesAffect));
             // Create some news to be shared
             // TODO
             // ! These parameters appear to be input the wrong way around
@@ -250,7 +251,11 @@ namespace ModelAttemptWPF
             Console.WriteLine("Writing output of run took " + timer.ElapsedMilliseconds);
             semaphore--;
             Console.WriteLine("semaphore dec to " + semaphore);
-            if (semaphore == 0) Console.WriteLine("FINISHED");
+            if (semaphore == 0)
+            {
+                Console.WriteLine("FINISHED");
+                Environment.Exit(0);
+            }
         }
     
         public void CreateNSharesCSV(string resultsPathThread, OSN facebook)
@@ -276,7 +281,7 @@ namespace ModelAttemptWPF
             runParams.Add(timeString + " # timeOfRun");
             runParams.Add(variable.ToString() + " # variable");
             runParams.Add(usePsych.ToString() + " # usePsych");
-            runParams.Add(defaultDoesAffect.ToString() + " # defaultDoesAffect");
+            runParams.Add(doesAffect.ToString() + " # defaultDoesAffect");
             
             string varParams = "";
             foreach (double val in values)

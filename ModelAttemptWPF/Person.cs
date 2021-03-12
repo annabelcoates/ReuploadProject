@@ -115,7 +115,11 @@ public class Person
         // how much the news appeals emotionally increases with the person's emotional level and how emotional the news is
         double emotionalFactor = (this.nrt * news.emotionalLevel) * usePsych + 0.4925 * news.emotionalLevel * (1-usePsych); //0.4925 is default nrt
 
-        double believabilityFactor = news.believability * onlineLiteracy + (1-onlineLiteracy);
+        double believabilityFactorPreWarn = news.believability * onlineLiteracy + (1-onlineLiteracy);
+        double belCorrection = believabilityFactorPreWarn + (this.con - 0.5) * (news.isTrue ? 0.6667 : -0.6667) * usePsych + (simulation.NormalDistribution(0.6625, 0.175) - 0.5) * (news.isTrue ? 0.6667 : -0.6667) * (1-usePsych);
+        if (belCorrection > 1) belCorrection = 1;
+        if (belCorrection < 0) belCorrection = 0;
+        double believabilityFactor = simulation.provideWarning * belCorrection + (1 - simulation.provideWarning) * believabilityFactorPreWarn;
         //believabilityFactor = 1 - onlineLiteracy;
         // The perceived believability is dependent on the believability of the article and the person's online literacy
         this.beliefPerNews[news.ID] = believabilityFactor;
