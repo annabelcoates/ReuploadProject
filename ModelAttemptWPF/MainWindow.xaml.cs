@@ -26,8 +26,8 @@ namespace ModelAttemptWPF
         // Graph 2: population, degree
         // e.g. "[1000,30]"
         // keywords: preferential attachment
-        public const int graphGeneratorIdx = 1;
-        public const string graphGeneratorArgs = "[1000,30,0.3]";
+        public const int graphGeneratorIdx = 2;
+        public const string graphGeneratorArgs = "[1000,30]";
         private string smallWorldPath;
         private string resultsPath;
         private string pythonScriptPath;
@@ -45,8 +45,8 @@ namespace ModelAttemptWPF
         private const double onlineLit = 0.5; //default mean online literacy
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
         private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
-        private const double provideWarning = 1.0; //whether users are warned that something is fake news
-        private const int RUNS = 5;
+        private const double provideWarning = 0.0; //whether users are warned that something is fake news
+        private const int RUNS = 50;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.2;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -72,7 +72,7 @@ namespace ModelAttemptWPF
             pythonScriptPath = globalLoc + pythonScriptPathRel;
             Directory.CreateDirectory(resultsPath);
             
-            int variable = 1;
+            int variable = 5;
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
