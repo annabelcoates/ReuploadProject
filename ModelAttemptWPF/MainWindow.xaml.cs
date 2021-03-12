@@ -20,8 +20,14 @@ namespace ModelAttemptWPF
         Random random = new Random();
         //Facebook facebook;
         public static string globalLoc;
-        public static int graphGeneratorIdx;
-        public static string graphGeneratorArgs;
+        // Graph 1: population, degree, edge randomization (keep between 0.2-0.5)
+        // e.g. "[1000,30,0.3]"
+        // keywords: clustering, small-world effects
+        // Graph 2: population, degree
+        // e.g. "[1000,30]"
+        // keywords: preferential attachment
+        public const int graphGeneratorIdx = 1;
+        public const string graphGeneratorArgs = "[1000,30,0.3]";
         private string smallWorldPath;
         private string resultsPath;
         private string pythonScriptPath;
@@ -77,8 +83,6 @@ namespace ModelAttemptWPF
             double[] values = {0.01,0.02,0.03,0.04,0.05};
             //double[] values = { 0.2, 0.4, 0.6, 0.8 };
 
-            graphGeneratorIdx = 2;
-            graphGeneratorArgs = "[1000,25]";
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(variable, values, timeString);
