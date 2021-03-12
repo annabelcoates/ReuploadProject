@@ -2,7 +2,8 @@
 % v : nViewsAll
 % nF : number of fake news
 % nF : number of true news
-function spreadByPsych(s,v,nF,nT,k)
+% k : runtime
+function spreadByVar(s,v,nF,nT,k, saveFolderPath)
     n = nT + nF;
     inputs = s.extra.varParamVals;
     varNums = 0:1/(length(s.extra.varParamVals)-1):1;
@@ -123,37 +124,52 @@ function spreadByPsych(s,v,nF,nT,k)
     end
     figure();
     hold on;
-    title("Shares");
+    figNameX='Shares';
+    title(figNameX);
     plot(varNums, XList);
     plot(varNums, XFList, '-.');
     plot(varNums, XTList, '--');
+    saveFileX = fullfile(saveFolderPath, [figNameX '.png']);
+    saveas(gcf, saveFileX);
     hold off;
     figure();
     hold on;
-    title("SharesMax");
+    figNameXmax='SharesMax';
+    title(figNameXmax);
     plot(varNums, XListmax);
     plot(varNums, XFListmax, '-.');
     plot(varNums, XTListmax, '--');
+    saveFileXmax = fullfile(saveFolderPath, [figNameXmax '.png']);
+    saveas(gcf, saveFileXmax);
     hold off;
     figure();
     hold on;
-    title("SharesMin");
+    figNameXmin='SharesMin';
+    title(figNameXmin);
     plot(varNums, XListmin);
     plot(varNums, XFListmin, '-.');
     plot(varNums, XTListmin, '--');
+    saveFileXmin = fullfile(saveFolderPath, [figNameXmin '.png']);
+    saveas(gcf, saveFileXmin);
     hold off;
     figure();
     hold on;
-    title("Views");
+    figNameY='Views';
+    title(figNameY);
     plot(varNums, YList);
     plot(varNums, YFList, '-.');
     plot(varNums, YTList, '--');
+    saveFileY = fullfile(saveFolderPath, [figNameY '.png']);
+    saveas(gcf, saveFileY);
     hold off;
     figure();
     hold on;
-    title("Viral");
+    figNameZ='Viral';
+    title(figNameZ);
     plot(varNums, ZList);
     plot(varNums, ZFList, '-.');
     plot(varNums, ZTList, '--');
+    saveFileZ = fullfile(saveFolderPath, [figNameZ '.png']);
+    saveas(gcf, saveFileZ);
     hold off;
 end

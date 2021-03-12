@@ -9,6 +9,13 @@ graph_args = [
     float(s) if '.' in s else int(s) 
     for s in sys.argv[2].strip('[]()').split(',')
 ]
+print()
+print("*******")
+print("Using these graph args!")
+print(graph_generator)
+print(graph_args)
+print("*******")
+print()
 edge_file_path = sys.argv[3]
 g = graph_generator(*graph_args)
 

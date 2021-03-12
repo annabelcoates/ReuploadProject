@@ -42,9 +42,22 @@ namespace ModelAttemptWPF
 
         public void GenerateSmallWorldNetwork(string graphFilePath, string scriptFilePath)
         {
+            string graphGeneratorName = "connected_watts_strogatz_graph";
+            switch (MainWindow.graphGeneratorIdx)
+            {
+                case 1:
+                    graphGeneratorName = "connected_watts_strogatz_graph";
+                    break;
+                case 2:
+                    graphGeneratorName = "barabasi_albert_graph";
+                    break;
+                default:
+                    graphGeneratorName = "connected_watts_strogatz_graph";
+                    break;
+            }
             // TODO
             // ! WARNING: Hardcoded values
-            string python_args = "connected_watts_strogatz_graph [1000,50,0.3]" + " " + graphFilePath;
+            string python_args =  graphGeneratorName + " " + MainWindow.graphGeneratorArgs + " " + graphFilePath;
             ProcessStartInfo start = new ProcessStartInfo();
             // ! NOTE: You MUST store the path string of your Python3 executable in the python source file
             using (System.IO.StreamReader file = new System.IO.StreamReader(MainWindow.globalLoc + pythonSrcFile))

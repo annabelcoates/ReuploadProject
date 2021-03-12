@@ -1,4 +1,4 @@
-function nSharedPopulationStruct=nSharedPopulation(desiredSim)
+function nSharedPopulationStruct=nSharesPopulationFunc(desiredSim)
     scriptPath = fileparts(mfilename('fullpath'));
     cd (scriptPath);
     topResultsPath = fullfile(scriptPath, '..', 'Results', desiredSim);
@@ -20,7 +20,9 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
     nFake = str2num(runParamsInput{3});
     nTrue = str2num(runParamsInput{4});
     timeOfRun = runParamsInput{5};
-    variableSetting = runParamsInput{6};
+    varSetting = runParamsInput{6};
+    usePsych = runParamsInput{7};
+    defaultDoesAffect = runParamsInput{8};
     fakeShares=zeros(nRuns,population);
     nFollowers=zeros(nRuns,population);
 
@@ -74,7 +76,6 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
             emoState(i,:)=nSharesPop(:,14);
             fakeViews(i,:)=nSharesPop(:,15);
             trueViews(i,:)=nSharesPop(:,16);
-            totalViews(i,:)=nSharesPop(:,17);
         end
 
     %%
@@ -100,7 +101,6 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
         nSharedPopulationStruct.(varParam).emoState_flat=reshape(emoState,[1,nRuns*population]);
         nSharedPopulationStruct.(varParam).fakeViews_flat=reshape(fakeViews,[1,nRuns*population]);
         nSharedPopulationStruct.(varParam).trueViews_flat=reshape(trueViews,[1,nRuns*population]);
-        nSharedPopulationStruct.(varParam).totalViews_flat=reshape(totalViews,[1,nRuns*population]);
 
 %%
 
@@ -125,11 +125,11 @@ function nSharedPopulationStruct=nSharedPopulation(desiredSim)
         nSharedPopulationStruct.(varParam).emoState_mat=emoState;
         nSharedPopulationStruct.(varParam).fakeViews_mat=fakeViews;
         nSharedPopulationStruct.(varParam).trueViews_mat=trueViews;
-        nSharedPopulationStruct.(varParam).totalViews_mat=totalViews;
     end
     nSharedPopulationStruct.extra.timeOfRun = timeOfRun;
     nSharedPopulationStruct.extra.varParamVals = varParamVals;
     nSharedPopulationStruct.extra.varParamVals_len = varParamVals_len;
     nSharedPopulationStruct.extra.varParamValsNum = varParamValsNum;
     nSharedPopulationStruct.extra.nRuns = nRuns;
+    nSharedPopulationStruct.extra.varSetting = varSetting;
 end

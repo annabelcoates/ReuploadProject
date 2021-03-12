@@ -20,6 +20,14 @@ namespace ModelAttemptWPF
         Random random = new Random();
         //Facebook facebook;
         public static string globalLoc;
+        // Graph 1: population, degree, edge randomization (keep between 0.2-0.5)
+        // e.g. "[1000,30,0.3]"
+        // keywords: clustering, small-world effects
+        // Graph 2: population, degree
+        // e.g. "[1000,30]"
+        // keywords: preferential attachment
+        public const int graphGeneratorIdx = 1;
+        public const string graphGeneratorArgs = "[1000,30,0.3]";
         private string smallWorldPath;
         private string resultsPath;
         private string pythonScriptPath;
@@ -59,12 +67,12 @@ namespace ModelAttemptWPF
         public MainWindow()
         {
             globalLoc = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).ToString()).ToString()).ToString();
-            timeString = DateTime.Now.ToString(@"yyyy\-dd\-HH\-mm\-ss");
+            timeString = DateTime.Now.ToString(@"yyyy\-MM\-dd\-HH\-mm\-ss");
             resultsPath = globalLoc + resultsPathRel + @"\" + timeString;
             pythonScriptPath = globalLoc + pythonScriptPathRel;
             Directory.CreateDirectory(resultsPath);
             
-            int variable = 5;
+            int variable = 1;
             // instructions for variable:
             // 1 means that the onlineLit is variable
             // 2 means the ratio between initial true and fake news is variable
@@ -75,6 +83,7 @@ namespace ModelAttemptWPF
 
             double[] values = { 0, 1 };
             //double[] values = { 0.2, 0.4, 0.6, 0.8 };
+
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
             this.SaveRunParams(variable, values, timeString);
@@ -125,7 +134,7 @@ namespace ModelAttemptWPF
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
             
-            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : 1));
+            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : defaultDoesAffect));
             // Create some news to be shared
             // TODO
             // ! These parameters appear to be input the wrong way around
@@ -252,10 +261,10 @@ namespace ModelAttemptWPF
         public void CreateNSharesCSV(string resultsPathThread, OSN facebook)
         {
             var csv = new StringBuilder();
-            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq,emotionalState,nFakeViews,nTrueViews,nTotalView"); // column headings
+            csv.AppendLine("ID,nFollowers,o,c,e,a,n,Online Literacy,Political Leaning,nFakeShares,nTrueShares,freqUse,sessionLength,shareFreq,emotionalState,nFakeViews,nTrueViews"); // column headings
             foreach (Account account in facebook.accountList)
             {
-                var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState, account.person.nFakeViews, account.person.nTrueViews, account.person.nTotalViews);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
+                var line = String.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16}", account.ID, account.followers.Count, account.person.opn, account.person.con, account.person.ext, account.person.agr, account.person.nrt, account.person.onlineLiteracy, account.person.politicalLeaning,account.person.nFakeShares, account.person.nTrueShares,account.person.freqUse,account.person.sessionLength, account.person.sharingFreq, account.person.emotionalState, account.person.nFakeViews, account.person.nTrueViews);// o,c,e,a,n,OL,PL nFakeShares, nTrueShares
                 csv.AppendLine(line);
             }
             File.WriteAllText(resultsPathThread+"nSharesPopulation.csv", csv.ToString());
@@ -271,6 +280,8 @@ namespace ModelAttemptWPF
             runParams.Add(fixedNTrue.ToString() + " # nTrue");
             runParams.Add(timeString + " # timeOfRun");
             runParams.Add(variable.ToString() + " # variable");
+            runParams.Add(usePsych.ToString() + " # usePsych");
+            runParams.Add(defaultDoesAffect.ToString() + " # defaultDoesAffect");
             
             string varParams = "";
             foreach (double val in values)
