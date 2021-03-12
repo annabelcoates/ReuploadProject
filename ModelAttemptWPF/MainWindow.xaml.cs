@@ -134,7 +134,7 @@ namespace ModelAttemptWPF
             // Delete this method
             // this.facebook.CreateFollowsBasedOnPersonality(defaultFollows); // Create additional follows depending on personality traits
             
-            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : defaultDoesAffect));
+            simulation.GraphBasedDistribute(facebook, (variable == 1 ? val : ol), (variable == 6 ? val : doesAffect));
             // Create some news to be shared
             // TODO
             // ! These parameters appear to be input the wrong way around
@@ -281,7 +281,7 @@ namespace ModelAttemptWPF
             runParams.Add(timeString + " # timeOfRun");
             runParams.Add(variable.ToString() + " # variable");
             runParams.Add(usePsych.ToString() + " # usePsych");
-            runParams.Add(defaultDoesAffect.ToString() + " # defaultDoesAffect");
+            runParams.Add(doesAffect.ToString() + " # defaultDoesAffect");
             
             string varParams = "";
             foreach (double val in values)
