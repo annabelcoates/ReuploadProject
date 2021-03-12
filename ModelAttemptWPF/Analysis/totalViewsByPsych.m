@@ -16,7 +16,7 @@ function totalViewsByPsych(s)
         % Get the number of runs
         % [runs, ~] = size(s.(inputs{i}));
 
-        totalViews = s.(inputs{i}).fakeViews_mat + s.(inputs{i}).trueViews_mat
+        totalViews = s.(inputs{i}).fakeViews_mat + s.(inputs{i}).trueViews_mat;
         % Find max and min mislead person of each run and take the difference
         diffTotalViews = max(totalViews, [], 2) - min(totalViews, [], 2);
         meanDiffTotalViews = mean(diffTotalViews);
