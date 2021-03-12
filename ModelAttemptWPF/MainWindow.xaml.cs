@@ -46,7 +46,7 @@ namespace ModelAttemptWPF
         private const double usePsych = 1.0; //amplification of psychology (1 = normal psych levels, 0 is no psychology effects)
         private const double doesAffect = 1.0; //whether the networkgraph affects PL/OL/ES
         private const double provideWarning = 0.0; //whether users are warned that something is fake news
-        private const int RUNS = 50;
+        private const int RUNS = 100;
         private const double MEAN_EMO_FAKE_NEWS = 0.66;
         private const double MEAN_BEL_FAKE_NEWS = 0.2;
         private const double MEAN_EMO_TRUE_NEWS = 0.33;
@@ -81,8 +81,8 @@ namespace ModelAttemptWPF
             // 5 means varying whether or not to use personality
             // 6 means varying whether or not derived traits spread via the network
 
-            double[] values = { 0, 1 };
-            //double[] values = { 0.2, 0.4, 0.6, 0.8 };
+            //double[] values = { 0, 1 };
+            double[] values = { 0, 0.2, 0.4, 0.6, 0.8, 1 };
 
 
             this.UKDistributionSimulation("OL", fixedN, fixedK, fixedNFake, fixedNTrue, onlineLit, RUNTIME, variable, values); // start the simulation with these parameters
@@ -92,6 +92,7 @@ namespace ModelAttemptWPF
 
         private void UKDistributionSimulation(string name,int n,int k,int nFake,int nTrue, double ol, int runtime, int variable, double[] values)
         {
+            System.Threading.ThreadPool.SetMaxThreads(16, 16);
             foreach (double val in values)
             {
                 for (int i = 0; i < RUNS; i++)

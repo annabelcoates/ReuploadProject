@@ -1,7 +1,7 @@
 % s : nSharesPopulation
 function trueSharesByPsych(s)
     inputs = s.extra.varParamVals;
-    varNums = s.extra.varParamValsNum
+    varNums = s.extra.varParamValsNum;
     %should be the same for both
     figDiff = figure();
     figMean = figure();

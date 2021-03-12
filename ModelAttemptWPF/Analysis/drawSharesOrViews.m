@@ -13,7 +13,14 @@ function drawSharesOrViews(s,v,nF,nT)
   figCT = figure();
   figCF = figure();
   for i = 1:s.extra.varParamVals_len
-      c = (i-1)/(s.extra.varParamVals_len-1);
+      %c = (i-1)/(s.extra.varParamVals_len-1);
+      if (i == 1)
+          shape = '';
+          c = '#909090';
+      else
+          shape = '--';
+          c = 'black';
+      end
       % Get the number of runs
       [runs, ~] = size(s.(inputs{i}));
       mata = sum(s.(inputs{i}),1)./runs;
@@ -41,77 +48,86 @@ function drawSharesOrViews(s,v,nF,nT)
       YT = squeeze(tbT);
       ZT = squeeze(tcT);
       figure(figAAll);
-      title("Sharing any news")
+      %title("Sharing any news")
       xlabel("Time steps");
       ylabel("Shares per news article");
       ylim([0 100]);
       hold on;
-      plot(X,'color',[c,1-c,0.2]);
+      plot(X, shape, 'Linewidth', 1.5, 'color',c);
       figure(figAT);
-      title("Sharing true news")
+      %title("Sharing true news")
       xlabel("Time steps");
       ylabel("Shares per true news article");
       ylim([0 100]);
       hold on;
-      plot(XT,'color',[c,1-c,0.2]);
+      plot(XT, shape, 'Linewidth', 1.5, 'color',c);
       figure(figAF);
-      title("Sharing fake news")
+      %title("Sharing fake news")
       xlabel("Time steps");
       ylabel("Shares per fake news article");
       ylim([0 100]);
       hold on;
-      plot(XF,'color',[c,1-c,0.2]);
+      plot(XF, shape, 'Linewidth', 1.5, 'color',c);
       figure(figBAll);
-      title("Viewing any news")
+      %title("Viewing any news")
       xlabel("Time steps");
       ylabel("Views per news article");
       ylim([0 750]);
       hold on;
-      plot(Y,'color',[c,1-c,0.2]);
+      plot(Y, shape, 'Linewidth', 1.5, 'color',c);
       figure(figBT);
-      title("Viewing true news")
+      %title("Viewing true news")
       xlabel("Time steps");
       ylabel("Views per true news article");
       ylim([0 750]);
       hold on;
-      plot(YT,'color',[c,1-c,0.2]);
+      plot(YT, shape, 'Linewidth', 1.5, 'color',c);
       figure(figBF);
-      title("Viewing fake news")
+      %title("Viewing fake news")
       xlabel("Time steps");
       ylabel("Views per fake news article");
       ylim([0 750]);
       hold on;
-      plot(YF,'color',[c,1-c,0.2]);
+      plot(YF, shape, 'Linewidth', 1.5, 'color',c);
       figure(figCAll);
-      title("News going viral")
+      %title("News going viral")
       xlabel("Time steps");
       ylabel("Proportion news gone viral");
       ylim([0 1]);
       hold on;
-      plot(Z,'color',[c,1-c,0.2]);
+      plot(Z, shape, 'Linewidth', 1.5, 'color',c);
       figure(figCT);
-      title("True news going viral")
+      %title("True news going viral")
       xlabel("Time steps");
       ylabel("Proportion true news gone viral");
       ylim([0 1]);
       hold on;
-      plot(ZT,'color',[c,1-c,0.2]);
+      plot(ZT, shape, 'Linewidth', 1.5, 'color',c);
       figure(figCF);
-      title("Fake news going viral")
+      %title("Fake news going viral")
       xlabel("Time steps");
       ylabel("Proportion fake news gone viral");
       ylim([0 1]);
       hold on;
-      plot(ZF,'color',[c,1-c,0.2]);
+      plot(ZF, shape, 'Linewidth', 1.5, 'color',c);
   end
   hold off;
+  set(figAAll, 'Position', [100,100,250,250]);
   saveas(figAAll, 'SN.png');
+  set(figAT, 'Position', [100,100,250,250]);
   saveas(figAT, 'STN.png');
+  set(figAF, 'Position', [100,100,250,250]);
   saveas(figAF, 'SFN.png');
+  set(figBAll, 'Position', [100,100,250,250]);
   saveas(figBAll, 'VN.png');
+  set(figBT, 'Position', [100,100,250,250]);
   saveas(figBT, 'VTN.png');
+  set(figBF, 'Position', [100,100,250,250]);
   saveas(figBF, 'VFN.png');
+  set(figCAll, 'Position', [100,100,250,250]);
   saveas(figCAll, 'RN.png');
+  set(figCT, 'Position', [100,100,250,250]);
   saveas(figCT, 'RTN.png');
+  set(figCF, 'Position', [100,100,250,250]);
   saveas(figCF, 'RFN.png');
 end
